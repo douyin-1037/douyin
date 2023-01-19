@@ -1,0 +1,107 @@
+syntax = "proto3";
+package user;
+option go_package = "userproto";
+
+service UserService {
+  rpc CreateUser(CreateUserReq) returns (CreateUserResp);                                 // 注册
+  rpc GetUser(GetUserReq) returns (GetUserResp);                                          // 查询用户信息
+  rpc CheckUser(CheckUserReq) returns (CheckUserResp);                                    // 校验用户名密码（即登录）
+  rpc FollowUser(FollowUserReq) returns (FollowUserResp);                                 // 关注
+  rpc UnFollowUser(UnFollowUserReq) returns (UnFollowUserResp);                           // 取关
+  rpc GetFollowList(GetFollowListReq) returns (GetFollowListResp);                        // 查询关注列表
+  rpc GetFanList(GetFanListReq) returns (GetFanListResp);                                 // 查询粉丝列表
+  rpc GetFriendList(GetFriendListReq) returns (GetFriendListResp);                        // 查询好友列表
+}
+
+message BaseResp {
+  int64 status_code = 1;
+  string status_msg = 2;
+}
+message UserInfo {
+  int64 user_id = 1;
+  string username = 2;
+  int64 follow_count = 3;
+  int64 follower_count = 4;
+  bool is_follow = 5; // 默认false
+}
+
+message UserAccount {
+  string username = 1;
+  string password = 2;
+}
+
+message CreateUserReq {
+  UserAccount user_account = 1;
+}
+
+message CreateUserResp {
+  BaseResp base_resp = 1;
+  int64 user_id = 2;
+}
+
+message GetUserReq {
+  int64 app_user_id = 1;
+  int64 user_id = 2;
+}
+
+message GetUserResp {
+  BaseResp base_resp = 1;
+  UserInfo user_info = 2;
+}
+
+message CheckUserReq {
+  UserAccount user_account = 1;
+}
+
+message CheckUserResp {
+  BaseResp base_resp = 1;
+  int64 user_id = 2;
+}
+
+message FollowUserReq {
+  int64 fan_user_id = 1;
+  int64 followed_user_id = 2;
+}
+
+message FollowUserResp {
+  BaseResp base_resp = 1;
+}
+
+message UnFollowUserReq {
+  int64 fan_user_id = 1;
+  int64 followed_user_id = 2;
+}
+
+message UnFollowUserResp {
+  BaseResp base_resp = 1;
+}
+
+message GetFollowListReq {
+  int64 app_user_id = 1;
+  int64 user_id = 2;
+}
+
+message GetFollowListResp {
+  BaseResp base_resp = 1;
+  repeated UserInfo user_infos = 2;
+}
+
+message GetFanListReq {
+  int64 app_user_id = 1;
+  int64 user_id = 2;
+}
+
+message GetFanListResp {
+  BaseResp base_resp = 1;
+  repeated UserInfo user_infos = 2;
+}
+
+message GetFriendListReq {
+  int64 app_user_id = 1;
+  int64 user_id = 2;
+}
+
+message GetFriendListResp {
+  BaseResp base_resp = 1;
+  repeated UserInfo user_infos = 2;
+}

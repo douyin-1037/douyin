@@ -1,0 +1,39 @@
+syntax = "proto3";
+package message;
+option go_package = "messageproto";
+
+service MessageService {
+  rpc CreateMessage(CreateMessageReq) returns(CreateMessageResp);                 // 发消息
+  rpc GetComments(GetMessageListReq) returns(GetMessageListResp);                 // 查询消息列表
+}
+
+message BaseResp {
+  int64 status_code = 1;
+  string status_msg = 2;
+}
+
+message MessageInfo {
+  int64 message_id = 1;
+  string content = 3;
+  string create_time = 4;     // yyyy-MM-dd HH:MM:ss
+}
+
+message CreateMessageReq {
+  int64 user_id = 1;
+  int64 to_user_id = 2;
+  string content = 3;
+}
+
+message CreateMessageResp {
+  BaseResp base_resp = 1;
+}
+
+message GetMessageListReq {
+  int64 user_id = 1;
+  int64 to_user_id = 2;
+}
+
+message GetMessageListResp {
+  BaseResp base_resp = 1;
+  repeated MessageInfo message_infos = 2;
+}

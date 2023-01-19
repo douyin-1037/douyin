@@ -1,0 +1,91 @@
+syntax = "proto3";
+package video;
+option go_package = "videoproto";
+
+service VideoService {
+  rpc CreateVideo(CreateVideoReq) returns(CreateVideoResp);                             // 上传视频
+  rpc GetVideoListByUserId(GetVideoListByUserIdReq) returns(GetVideoListByUserIdResp);  // 查询某人视频列表
+  rpc GetVideoListByTime(GetVideoListByTimeReq) returns(GetVideoListByTimeResp);        // 按时间戳查询视频
+  rpc LikeVideo(LikeVideoReq) returns(LikeVideoResp);                                   // 点赞视频
+  rpc UnLikeVideo(UnLikeVideoReq) returns(UnLikeVideoResp);                             // 取消点赞视频
+  rpc GetLikeVideoList(GetLikeVideoListReq) returns(GetLikeVideoListResp);              // 查询点赞视频列表
+}
+
+message BaseResp {
+  int64 status_code = 1;
+  string status_msg = 2;
+}
+
+message VideoBaseInfo {
+  int64 user_id = 1;
+  string oss_video_id = 2;
+  string title = 3;
+}
+
+message VideoInfo {
+  int64 video_id = 1;
+  VideoBaseInfo video_base_info = 2;
+  int64 like_count = 3;
+  int64 comment_count = 4;
+  bool is_favorite = 5;
+}
+
+
+message CreateVideoReq {
+  VideoBaseInfo video_base_info = 1;
+}
+
+message CreateVideoResp {
+  BaseResp base_resp = 1;
+}
+
+message GetVideoListByUserIdReq {
+  int64 app_user_id = 1;
+  int64 user_id = 2;
+}
+
+message GetVideoListByUserIdResp {
+  BaseResp base_resp = 1;
+  repeated VideoInfo video_infos = 2;
+}
+
+message GetVideoListByTimeReq {
+  int64 app_user_id = 1;
+  int64 latest_time = 2;
+  int64 count = 3;
+}
+
+message GetVideoListByTimeResp {
+  BaseResp base_resp = 1;
+  repeated VideoInfo video_infos = 2;
+  int64 next_time = 3;
+}
+
+message LikeVideoReq {
+  int64 user_id = 1;
+  int64 video_id = 2;
+}
+
+message LikeVideoResp {
+  BaseResp base_resp = 1;
+}
+
+message UnLikeVideoReq {
+  int64 user_id = 1;
+  int64 video_id = 2;
+}
+
+message UnLikeVideoResp {
+  BaseResp base_resp = 1;
+}
+
+message GetLikeVideoListReq {
+  int64 app_user_id = 1;
+  int64 user_id = 2;
+}
+
+message GetLikeVideoListResp {
+  BaseResp base_resp = 1;
+  repeated VideoInfo video_infos = 2;
+}
+

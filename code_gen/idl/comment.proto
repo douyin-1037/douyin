@@ -1,0 +1,49 @@
+syntax = "proto3";
+package comment;
+option go_package = "commentproto";
+
+service CommentService {
+  rpc CreateComment(CreateCommentReq) returns(CreateCommentResp);                 // 评论
+  rpc DeleteComment(DeleteCommentReq) returns(DeleteCommentResp);                 // 删除评论
+  rpc GetCommentList(GetCommentListReq) returns(GetCommentListResp);              // 查询视频的评论列表
+}
+
+message BaseResp {
+  int64 status_code = 1;
+  string status_msg = 2;
+}
+
+message CommentInfo {
+  int64 comment_id = 1;
+  int64 user_id = 2;
+  string content = 3;
+  string create_date = 4;     //mm-dd
+}
+
+message CreateCommentReq {
+  int64 user_id = 1;
+  int64 video_id = 2;
+  string content = 3;
+}
+
+message CreateCommentResp {
+  BaseResp base_resp = 1;
+  CommentInfo comment_info = 2;
+}
+
+message DeleteCommentReq {
+  int64 comment_id = 1;
+}
+
+message DeleteCommentResp {
+  BaseResp base_resp = 1;
+}
+
+message GetCommentListReq {
+  int64 video_id = 1;
+}
+
+message GetCommentListResp {
+  BaseResp base_resp = 1;
+  repeated CommentInfo comment_infos = 2;
+}
