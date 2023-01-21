@@ -1,14 +1,11 @@
 package handlers
 
 import (
-	"douyin/cmd"
 	"douyin/common/constant"
 	"douyin/types/bizdto"
 	respond "douyin/types/coredto"
 	"github.com/gin-gonic/gin"
 )
-
-var userService = cmd.UserAppService
 
 func GetUserInfo(c *gin.Context) {
 	appUserID := c.GetInt64(constant.IdentityKey)
