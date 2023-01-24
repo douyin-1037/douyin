@@ -4,16 +4,13 @@ import (
 	"douyin/cmd/router"
 	"douyin/common/conf"
 	"github.com/cloudwego/kitex/pkg/klog"
+	"net/http"
 )
 
-func Init() {
-	conf.InitConfig()
-}
-
 func main() {
-	Init()
+	conf.InitConfig()
 	r := router.NewRouter()
-	if err := r.Run(conf.Server.HttpPort); err != nil {
+	if err := http.ListenAndServe(conf.Server.HttpPort, r); err != nil {
 		klog.Fatal(err)
 	}
 }
