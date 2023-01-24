@@ -1,0 +1,13 @@
+Server:
+  RunMode: debug
+  HttpPort: :8080
+  UserSeviceAddr: 127.0.0.1:8081
+  VideoSeviceAddr: 127.0.0.1:8082
+  RedisAddr: 127.0.0.1:6388
+  Timeout: 86400 #seconds
+  EtcdAddress: 127.0.0.1:2379
+  FeedCount: 5
+
+JWT:
+  Secret: your secret
+  Expires: 24 #hours

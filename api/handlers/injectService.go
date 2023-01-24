@@ -1,8 +1,10 @@
 package handlers
 
-import "douyin/cmd"
+import (
+	"douyin/cmd/inject"
+)
 
-var userService = cmd.UserAppService
-var videoService = cmd.VideoAppService
-var commentService = cmd.CommentAppService
-var messageService = cmd.MessageAppService
+var userService = inject.UserAppService
+var videoService = inject.VideoAppService
+var commentService = inject.CommentAppService
+var messageService = inject.MessageAppService

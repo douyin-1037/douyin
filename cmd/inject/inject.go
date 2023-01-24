@@ -1,4 +1,4 @@
-package cmd
+package inject
 
 import (
 	app "douyin/application"
