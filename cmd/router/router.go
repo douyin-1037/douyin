@@ -24,6 +24,8 @@ func NewRouter() *gin.Engine {
 	{
 		authGroup.POST("/favorite/action/", handlers.LikeAction)
 		authGroup.GET("/favorite/list/", handlers.LikeList)
+		authGroup.POST("/comment/action/", handlers.CommentAction)
+		authGroup.GET("/comment/list/", handlers.CommentList)
 	}
 	return r
 }
