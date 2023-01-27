@@ -4,9 +4,11 @@ go 1.19
 
 require (
 	github.com/appleboy/gin-jwt/v2 v2.9.1
+	github.com/bytedance/mockey v1.1.1
 	github.com/cloudwego/fastpb v0.0.3
 	github.com/cloudwego/kitex v0.4.4
 	github.com/gin-gonic/gin v1.8.2
+	github.com/smartystreets/goconvey v1.7.2
 	github.com/spf13/viper v1.15.0
 	go.uber.org/fx v1.19.1
 	google.golang.org/protobuf v1.28.1
@@ -29,9 +31,11 @@ require (
 	github.com/golang-jwt/jwt/v4 v4.4.3 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/pprof v0.0.0-20220608213341-c488b8fa1db3 // indirect
+	github.com/gopherjs/gopherjs v0.0.0-20181017120253-0766667cb4d1 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/jhump/protoreflect v1.8.2 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
+	github.com/jtolds/gls v4.20.0+incompatible // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/magiconair/properties v1.8.7 // indirect
 	github.com/mattn/go-isatty v0.0.16 // indirect
@@ -40,6 +44,7 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/oleiade/lane v1.0.1 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.6 // indirect
+	github.com/smartystreets/assertions v1.2.0 // indirect
 	github.com/spf13/afero v1.9.3 // indirect
 	github.com/spf13/cast v1.5.0 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
