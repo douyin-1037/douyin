@@ -9,6 +9,7 @@ import (
 
 func NewRouter() *gin.Engine {
 	r := gin.New()
+
 	if conf.Server.RunMode == "debug" {
 		r.Use(gin.Logger(), gin.Recovery())
 	} else {
@@ -24,6 +25,7 @@ func NewRouter() *gin.Engine {
 	{
 		authGroup.POST("/favorite/action/", handlers.LikeAction)
 		authGroup.GET("/favorite/list/", handlers.LikeList)
+		authGroup.GET("/user/", handlers.GetUserInfo)
 	}
 	return r
 }

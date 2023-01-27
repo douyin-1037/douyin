@@ -21,7 +21,8 @@ func GetUserInfo(c *gin.Context) {
 	//user, err := rpc.GetUser(c, req)
 
 	//调用app层接口
-	user, err := userService.GetUser(c, appUserID, param.UserId)
+	//user, err := appImpl.NewUserAppService().GetUser(c, appUserID, param.UserId)
+	user, err := userAppService.GetUser(c, appUserID, param.UserId)
 	if err != nil {
 		respond.Error(c, err)
 		return

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"douyin/api/auth"
 	"douyin/cmd/router"
 	"douyin/common/conf"
 	"github.com/cloudwego/kitex/pkg/klog"
@@ -8,6 +9,7 @@ import (
 
 func Init() {
 	conf.InitConfig()
+	auth.Init()
 }
 
 func main() {
