@@ -4,7 +4,7 @@ package messageservice
 
 import (
 	"context"
-	"douyin/code_gen/kitex_gen/messageproto"
+	messageproto "douyin/code_gen/kitex_gen/messageproto"
 	"fmt"
 	client "github.com/cloudwego/kitex/client"
 	kitex "github.com/cloudwego/kitex/pkg/serviceinfo"
@@ -22,8 +22,8 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	serviceName := "MessageService"
 	handlerType := (*messageproto.MessageService)(nil)
 	methods := map[string]kitex.MethodInfo{
-		"CreateMessage": kitex.NewMethodInfo(createMessageHandler, newCreateMessageArgs, newCreateMessageResult, false),
-		"GetComments":   kitex.NewMethodInfo(getCommentsHandler, newGetCommentsArgs, newGetCommentsResult, false),
+		"CreateMessage":  kitex.NewMethodInfo(createMessageHandler, newCreateMessageArgs, newCreateMessageResult, false),
+		"GetMessageList": kitex.NewMethodInfo(getMessageListHandler, newGetMessageListArgs, newGetMessageListResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "message",
@@ -184,7 +184,7 @@ func (p *CreateMessageResult) IsSetSuccess() bool {
 	return p.Success != nil
 }
 
-func getCommentsHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+func getMessageListHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
 	switch s := arg.(type) {
 	case *streaming.Args:
 		st := s.Stream
@@ -192,64 +192,64 @@ func getCommentsHandler(ctx context.Context, handler interface{}, arg, result in
 		if err := st.RecvMsg(req); err != nil {
 			return err
 		}
-		resp, err := handler.(messageproto.MessageService).GetComments(ctx, req)
+		resp, err := handler.(messageproto.MessageService).GetMessageList(ctx, req)
 		if err != nil {
 			return err
 		}
 		if err := st.SendMsg(resp); err != nil {
 			return err
 		}
-	case *GetCommentsArgs:
-		success, err := handler.(messageproto.MessageService).GetComments(ctx, s.Req)
+	case *GetMessageListArgs:
+		success, err := handler.(messageproto.MessageService).GetMessageList(ctx, s.Req)
 		if err != nil {
 			return err
 		}
-		realResult := result.(*GetCommentsResult)
+		realResult := result.(*GetMessageListResult)
 		realResult.Success = success
 	}
 	return nil
 }
-func newGetCommentsArgs() interface{} {
-	return &GetCommentsArgs{}
+func newGetMessageListArgs() interface{} {
+	return &GetMessageListArgs{}
 }
 
-func newGetCommentsResult() interface{} {
-	return &GetCommentsResult{}
+func newGetMessageListResult() interface{} {
+	return &GetMessageListResult{}
 }
 
-type GetCommentsArgs struct {
+type GetMessageListArgs struct {
 	Req *messageproto.GetMessageListReq
 }
 
-func (p *GetCommentsArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+func (p *GetMessageListArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
 	if !p.IsSetReq() {
 		p.Req = new(messageproto.GetMessageListReq)
 	}
 	return p.Req.FastRead(buf, _type, number)
 }
 
-func (p *GetCommentsArgs) FastWrite(buf []byte) (n int) {
+func (p *GetMessageListArgs) FastWrite(buf []byte) (n int) {
 	if !p.IsSetReq() {
 		return 0
 	}
 	return p.Req.FastWrite(buf)
 }
 
-func (p *GetCommentsArgs) Size() (n int) {
+func (p *GetMessageListArgs) Size() (n int) {
 	if !p.IsSetReq() {
 		return 0
 	}
 	return p.Req.Size()
 }
 
-func (p *GetCommentsArgs) Marshal(out []byte) ([]byte, error) {
+func (p *GetMessageListArgs) Marshal(out []byte) ([]byte, error) {
 	if !p.IsSetReq() {
-		return out, fmt.Errorf("No req in GetCommentsArgs")
+		return out, fmt.Errorf("No req in GetMessageListArgs")
 	}
 	return proto.Marshal(p.Req)
 }
 
-func (p *GetCommentsArgs) Unmarshal(in []byte) error {
+func (p *GetMessageListArgs) Unmarshal(in []byte) error {
 	msg := new(messageproto.GetMessageListReq)
 	if err := proto.Unmarshal(in, msg); err != nil {
 		return err
@@ -258,54 +258,54 @@ func (p *GetCommentsArgs) Unmarshal(in []byte) error {
 	return nil
 }
 
-var GetCommentsArgs_Req_DEFAULT *messageproto.GetMessageListReq
+var GetMessageListArgs_Req_DEFAULT *messageproto.GetMessageListReq
 
-func (p *GetCommentsArgs) GetReq() *messageproto.GetMessageListReq {
+func (p *GetMessageListArgs) GetReq() *messageproto.GetMessageListReq {
 	if !p.IsSetReq() {
-		return GetCommentsArgs_Req_DEFAULT
+		return GetMessageListArgs_Req_DEFAULT
 	}
 	return p.Req
 }
 
-func (p *GetCommentsArgs) IsSetReq() bool {
+func (p *GetMessageListArgs) IsSetReq() bool {
 	return p.Req != nil
 }
 
-type GetCommentsResult struct {
+type GetMessageListResult struct {
 	Success *messageproto.GetMessageListResp
 }
 
-var GetCommentsResult_Success_DEFAULT *messageproto.GetMessageListResp
+var GetMessageListResult_Success_DEFAULT *messageproto.GetMessageListResp
 
-func (p *GetCommentsResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+func (p *GetMessageListResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
 	if !p.IsSetSuccess() {
 		p.Success = new(messageproto.GetMessageListResp)
 	}
 	return p.Success.FastRead(buf, _type, number)
 }
 
-func (p *GetCommentsResult) FastWrite(buf []byte) (n int) {
+func (p *GetMessageListResult) FastWrite(buf []byte) (n int) {
 	if !p.IsSetSuccess() {
 		return 0
 	}
 	return p.Success.FastWrite(buf)
 }
 
-func (p *GetCommentsResult) Size() (n int) {
+func (p *GetMessageListResult) Size() (n int) {
 	if !p.IsSetSuccess() {
 		return 0
 	}
 	return p.Success.Size()
 }
 
-func (p *GetCommentsResult) Marshal(out []byte) ([]byte, error) {
+func (p *GetMessageListResult) Marshal(out []byte) ([]byte, error) {
 	if !p.IsSetSuccess() {
-		return out, fmt.Errorf("No req in GetCommentsResult")
+		return out, fmt.Errorf("No req in GetMessageListResult")
 	}
 	return proto.Marshal(p.Success)
 }
 
-func (p *GetCommentsResult) Unmarshal(in []byte) error {
+func (p *GetMessageListResult) Unmarshal(in []byte) error {
 	msg := new(messageproto.GetMessageListResp)
 	if err := proto.Unmarshal(in, msg); err != nil {
 		return err
@@ -314,18 +314,18 @@ func (p *GetCommentsResult) Unmarshal(in []byte) error {
 	return nil
 }
 
-func (p *GetCommentsResult) GetSuccess() *messageproto.GetMessageListResp {
+func (p *GetMessageListResult) GetSuccess() *messageproto.GetMessageListResp {
 	if !p.IsSetSuccess() {
-		return GetCommentsResult_Success_DEFAULT
+		return GetMessageListResult_Success_DEFAULT
 	}
 	return p.Success
 }
 
-func (p *GetCommentsResult) SetSuccess(x interface{}) {
+func (p *GetMessageListResult) SetSuccess(x interface{}) {
 	p.Success = x.(*messageproto.GetMessageListResp)
 }
 
-func (p *GetCommentsResult) IsSetSuccess() bool {
+func (p *GetMessageListResult) IsSetSuccess() bool {
 	return p.Success != nil
 }
 
@@ -349,11 +349,11 @@ func (p *kClient) CreateMessage(ctx context.Context, Req *messageproto.CreateMes
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) GetComments(ctx context.Context, Req *messageproto.GetMessageListReq) (r *messageproto.GetMessageListResp, err error) {
-	var _args GetCommentsArgs
+func (p *kClient) GetMessageList(ctx context.Context, Req *messageproto.GetMessageListReq) (r *messageproto.GetMessageListResp, err error) {
+	var _args GetMessageListArgs
 	_args.Req = Req
-	var _result GetCommentsResult
-	if err = p.c.Call(ctx, "GetComments", &_args, &_result); err != nil {
+	var _result GetMessageListResult
+	if err = p.c.Call(ctx, "GetMessageList", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
