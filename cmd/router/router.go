@@ -15,14 +15,17 @@ func NewRouter() *gin.Engine {
 	} else {
 		gin.SetMode(gin.ReleaseMode)
 	}
-	/*
-		unauthGroup := r.Group("/douyin")
-		{
-		}
-	*/
+
+	unauthGroup := r.Group("/douyin")
+	{
+		unauthGroup.GET("/feed", handlers.Feed)
+	}
+
 	authGroup := r.Group("/douyin")
 	authGroup.Use(auth.JWT())
 	{
+		authGroup.POST("/publish/action/", handlers.Upload)
+		authGroup.GET("/publish/list/", handlers.List)
 		authGroup.POST("/favorite/action/", handlers.LikeAction)
 		authGroup.GET("/favorite/list/", handlers.LikeList)
 		authGroup.POST("/comment/action/", handlers.CommentAction)
