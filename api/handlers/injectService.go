@@ -1,10 +1,16 @@
 package handlers
 
 import (
-	"douyin/cmd/inject"
+	app "douyin/application"
+	"douyin/application/impl"
 )
 
-var userService = inject.UserAppService
-var videoService = inject.VideoAppService
-var commentService = inject.CommentAppService
-var messageService = inject.MessageAppService
+var userAppService app.UserAppService
+
+var videoService app.VideoAppService
+
+// var commentService  app.CommentAppService
+// var messageService  app.MessageAppService
+func InjectAppService(userServiceImpl impl.UserAppServiceImpl) {
+	userAppService = userServiceImpl
+}

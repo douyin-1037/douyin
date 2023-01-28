@@ -4,7 +4,7 @@ package messageservice
 
 import (
 	"context"
-	"douyin/code_gen/kitex_gen/messageproto"
+	messageproto "douyin/code_gen/kitex_gen/messageproto"
 	client "github.com/cloudwego/kitex/client"
 	callopt "github.com/cloudwego/kitex/client/callopt"
 )
@@ -12,7 +12,7 @@ import (
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.
 type Client interface {
 	CreateMessage(ctx context.Context, Req *messageproto.CreateMessageReq, callOptions ...callopt.Option) (r *messageproto.CreateMessageResp, err error)
-	GetComments(ctx context.Context, Req *messageproto.GetMessageListReq, callOptions ...callopt.Option) (r *messageproto.GetMessageListResp, err error)
+	GetMessageList(ctx context.Context, Req *messageproto.GetMessageListReq, callOptions ...callopt.Option) (r *messageproto.GetMessageListResp, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -49,7 +49,7 @@ func (p *kMessageServiceClient) CreateMessage(ctx context.Context, Req *messagep
 	return p.kClient.CreateMessage(ctx, Req)
 }
 
-func (p *kMessageServiceClient) GetComments(ctx context.Context, Req *messageproto.GetMessageListReq, callOptions ...callopt.Option) (r *messageproto.GetMessageListResp, err error) {
+func (p *kMessageServiceClient) GetMessageList(ctx context.Context, Req *messageproto.GetMessageListReq, callOptions ...callopt.Option) (r *messageproto.GetMessageListResp, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.GetComments(ctx, Req)
+	return p.kClient.GetMessageList(ctx, Req)
 }
