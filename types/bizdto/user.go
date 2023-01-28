@@ -1,6 +1,8 @@
 package bizdto
 
-import "douyin/types"
+import (
+	"douyin/types/coredto"
+)
 
 type User struct {
 	ID            int64  `json:"id"`
@@ -16,7 +18,7 @@ type UserQueryReq struct {
 }
 
 type UserQueryResp struct {
-	types.BaseResp
+	coredto.BaseResp
 	User *User `json:"user,omitempty"`
 }
 
@@ -27,7 +29,7 @@ type UserRegisterReq struct {
 }
 
 type UserRegisterResp struct {
-	types.BaseResp
+	coredto.BaseResp
 	UserID int64  `json:"user_id"`
 	Token  string `json:"token"` // 用户鉴权token
 }
@@ -39,7 +41,7 @@ type UserLoginReq struct {
 }
 
 type UserLoginResp struct {
-	types.BaseResp
+	coredto.BaseResp
 	UserID int64  `json:"user_id"`
 	Token  string `json:"token"` // 用户鉴权token
 }
@@ -56,7 +58,7 @@ type FollowListReq struct {
 }
 
 type FollowListResp struct {
-	types.BaseResp
+	coredto.BaseResp
 	UserList []*User `json:"user_list,omitempty"`
 }
 
@@ -66,7 +68,7 @@ type FanListReq struct {
 }
 
 type FanListResp struct {
-	types.BaseResp
+	coredto.BaseResp
 	UserList []*User `json:"user_list,omitempty"`
 }
 
