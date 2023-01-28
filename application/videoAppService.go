@@ -11,5 +11,5 @@ type VideoAppService interface {
 	UnLikeVideo(c *gin.Context, appUserID int64, videoID int64) (err error)
 	GetVideoList(c *gin.Context, appUserID int64, userID int64) (videoList []*bizdto.Video, err error)
 	GetLikeVideoList(c *gin.Context, appUserID int64, userID int64) (userList []*bizdto.Video, err error)
-	Feed(c *gin.Context, appUserID int64, latestTime int64) (videoList []*bizdto.Video, err error)
+	Feed(c *gin.Context, appUserID int64, latestTime int64) (videoList []*bizdto.Video, nextTime int64, err error)
 }
