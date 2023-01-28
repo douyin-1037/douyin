@@ -1,16 +1,16 @@
-package test
+package handlers
 
 import (
 	"douyin/api/auth"
-	appImpl "douyin/application/impl"
-	"douyin/cmd/inject"
-	"douyin/cmd/router"
+	. "douyin/application/mock"
 	"douyin/common/conf"
 	"douyin/types/bizdto"
 	"douyin/types/coredto"
 	"encoding/json"
 	"fmt"
 	. "github.com/bytedance/mockey"
+	"github.com/gin-gonic/gin"
+	"github.com/golang/mock/gomock"
 	. "github.com/smartystreets/goconvey/convey"
 	"io"
 	"net/http"
@@ -22,13 +22,19 @@ import (
 func TestUser(t *testing.T) {
 	conf.InitConfig()
 	auth.Init()
-	inject.Inject()
-	r := router.NewRouter()
+	r := gin.New()
+	authGroup := r.Group("/douyin")
+	authGroup.Use(auth.JWT())
+	{
+		authGroup.GET("/user/", GetUserInfo)
+	}
+	ctrl := gomock.NewController(t)
+	m := NewMockUserAppService(ctrl)
 	//向注册的路有发起请求
 	req, _ := http.NewRequest("GET", "/douyin/user/", nil)
 	params := make(url.Values)
 	params.Add("user_id", "1")
-	params.Add("token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjc0NzQ4NzYxLCJleHAiOjE2NzQ4MzUxOTksImF1ZCI6IiIsImlzcyI6IiIsInN1YiI6IiJ9.f9Kd1EFGCyk05Y4lzpmWIJtOgbDYLFVm1x0kiAvEu2k")
+	params.Add("token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjc0OTA1MTQ4LCJleHAiOjE2Nzc1MTM1OTksImF1ZCI6IiIsImlzcyI6IiIsInN1YiI6IiJ9.mRcRqdwU62uEacqanqTZNl5pZ4B0ebqoknpz7mfJ7eI")
 	req.URL.RawQuery = params.Encode()
 	w := httptest.NewRecorder()
 	user_test := &bizdto.User{
@@ -38,9 +44,12 @@ func TestUser(t *testing.T) {
 		FollowerCount: 0,
 		IsFollow:      false,
 	}
+
+	m.EXPECT().GetUser(gomock.Any(), gomock.Any(), gomock.Any()).Return(user_test, nil)
+	UserService = m
+
 	PatchConvey("TestUser", t, func() {
-		fmt.Println("is nil?")
-		Mock(appImpl.UserAppServiceImpl.GetUser).Return(user_test, nil).Build() // mock方法
+
 		r.ServeHTTP(w, req)
 		result := w.Result()
 		defer result.Body.Close()

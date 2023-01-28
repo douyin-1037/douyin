@@ -8,9 +8,9 @@ import (
 type UserAppServiceImpl struct {
 }
 
-func NewUserAppService() UserAppServiceImpl {
-	return *new(UserAppServiceImpl)
+func NewUserAppService() *UserAppServiceImpl {
+	return new(UserAppServiceImpl)
 }
-func (UserAppServiceImpl) GetUser(c *gin.Context, appUserID int64, userID int64) (user *bizdto.User, err error) {
+func (*UserAppServiceImpl) GetUser(c *gin.Context, appUserID int64, userID int64) (user *bizdto.User, err error) {
 	return nil, nil
 }

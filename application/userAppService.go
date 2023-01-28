@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+//go:generate mockgen -destination mock/userAppService_mock.go -source=userAppService.go
 type UserAppService interface {
 	GetUser(c *gin.Context, appUserID int64, userID int64) (user *bizdto.User, err error)
 	//CreateUser(c *gin.Context, username string, password string) (userID int64, err error)
