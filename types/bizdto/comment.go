@@ -1,6 +1,8 @@
 package bizdto
 
-import "douyin/types"
+import (
+	"douyin/types/coredto"
+)
 
 type Comment struct {
 	ID         int64  `json:"id"`          // 评论id
@@ -18,7 +20,7 @@ type CommentOperationReq struct {
 }
 
 type CreateCommentResp struct {
-	types.BaseResp
+	coredto.BaseResp
 	Comment *Comment `json:"comment,omitempty"`
 }
 
@@ -28,6 +30,6 @@ type CommentListReq struct {
 }
 
 type CommentListResp struct {
-	types.BaseResp
+	coredto.BaseResp
 	CommentList []*Comment `json:"comment_list,omitempty"`
 }
