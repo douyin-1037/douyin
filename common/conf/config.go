@@ -2,11 +2,12 @@ package conf
 
 import (
 	"fmt"
-	"github.com/cloudwego/kitex/pkg/klog"
-	"github.com/spf13/viper"
 	"os"
 	"path/filepath"
 	"time"
+
+	"github.com/cloudwego/kitex/pkg/klog"
+	"github.com/spf13/viper"
 )
 
 func (d *DatabaseConfig) DSN() string {

@@ -1,6 +1,8 @@
 package bizdto
 
-import "douyin/types"
+import (
+	"douyin/types/coredto"
+)
 
 type Message struct {
 	ID         int64  `json:"id"`          // 消息id
@@ -21,6 +23,6 @@ type MessageListReq struct {
 }
 
 type MessageListResp struct {
-	types.BaseResp
+	coredto.BaseResp
 	MessageList []*Message `json:"message_list,omitempty"`
 }
