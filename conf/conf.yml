@@ -9,5 +9,5 @@ Server:
   FeedCount: 5
 
 JWT:
-  Secret: your secret
+  Secret: MHcCAQEEIP0dt4lJhJYy6zC+5Zf8jn+DrttPkkggZFlwsX6mD3uloAoGCCqGSM49AwEHoUQDQgAEFvxY1slOtW9KrBy48aJuQN+zlAZu31Hob1KEUhtSnKp8FkNuLGdERmUYhBp2kFU8qhbEg5lMGDKPV55UcmZsGw==
   Expires: 24 #hours
