@@ -2,7 +2,6 @@ package inject
 
 import (
 	"douyin/api/handlers"
-	"douyin/application"
 	appImpl "douyin/application/impl"
 	"go.uber.org/fx"
 )
@@ -14,7 +13,7 @@ var UserAppService appImpl.UserAppServiceImpl
 //var MessageAppService app.MessageAppService
 
 func Inject() {
-	fx.New(application.Module,
+	fx.New(appImpl.Module,
 		fx.Invoke(handlers.InjectAppService),
 	)
 }

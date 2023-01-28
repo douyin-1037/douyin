@@ -5,12 +5,11 @@ import (
 	"douyin/application/impl"
 )
 
-var userAppService app.UserAppService
-
+var UserService app.UserAppService
 var videoService app.VideoAppService
+var commentService app.CommentAppService
+var messageService app.MessageAppService
 
-// var commentService  app.CommentAppService
-// var messageService  app.MessageAppService
-func InjectAppService(userServiceImpl impl.UserAppServiceImpl) {
-	userAppService = userServiceImpl
+func InjectAppService(userServiceImpl *impl.UserAppServiceImpl) {
+	UserService = userServiceImpl
 }

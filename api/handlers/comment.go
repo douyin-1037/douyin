@@ -23,7 +23,7 @@ func CommentAction(c *gin.Context) {
 			coredto.Error(c, err)
 			return
 		}
-		author, err := userService.GetUser(c, appUserID, comment.User.ID)
+		author, err := UserService.GetUser(c, appUserID, comment.User.ID)
 		if err != nil {
 			coredto.Error(c, err)
 			return
@@ -65,7 +65,7 @@ func CommentList(c *gin.Context) {
 	n := len(comments)
 	authors := make([]*bizdto.User, n)
 	for i := 0; i < n; i++ {
-		authors[i], err = userService.GetUser(c, appUserID, comments[i].User.ID)
+		authors[i], err = UserService.GetUser(c, appUserID, comments[i].User.ID)
 		if err != nil {
 			coredto.Error(c, err)
 			return
