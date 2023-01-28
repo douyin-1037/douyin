@@ -2,6 +2,7 @@ package tracer
 
 import (
 	"fmt"
+
 	"github.com/opentracing/opentracing-go"
 	"github.com/uber/jaeger-client-go"
 	jaegercfg "github.com/uber/jaeger-client-go/config"
