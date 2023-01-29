@@ -69,3 +69,13 @@ type FanListResp struct {
 	types.BaseResp
 	UserList []*User `json:"user_list,omitempty"`
 }
+
+//好友列表
+type FriendListReq struct {
+	UserId int64 `form:"user_id" json:"user_id" binding:"required,max=32"`
+}
+
+type FriendListResp struct {
+	types.BaseResp
+	UserList []*User `json:"user_list,omitempty"`
+}
