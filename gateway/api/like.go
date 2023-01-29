@@ -10,7 +10,8 @@ import (
 	"douyin/types/coredto"
 )
 
-// LikeAction 赞操作(POST)：登录用户对视频的点赞和取消点赞操作
+// LikeAction (POST)
+// Like and unlike operations for videos by logged-in users
 func LikeAction(c *gin.Context) {
 	appUserID := c.GetInt64(constant.IdentityKey)
 	param := new(bizdto.LikeOperationReq)
@@ -36,7 +37,8 @@ func LikeAction(c *gin.Context) {
 	}
 }
 
-// LikeList 喜欢列表(GET)：登录用户的所有点赞视频
+// LikeList (GET)
+// All liked videos by logged-in users
 func LikeList(c *gin.Context) {
 	appUserID := c.GetInt64(constant.IdentityKey)
 	param := new(bizdto.LikeListReq)
