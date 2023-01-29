@@ -1,5 +1,8 @@
 package api
 
+// @path: api/handlers/comment.go
+// @description: api layer of comment
+// @auth: wan-nan <wan_nan@foxmail.com>
 import (
 	"github.com/gin-gonic/gin"
 
@@ -10,7 +13,7 @@ import (
 	"douyin/types/coredto"
 )
 
-// CommentAction 评论操作(POST)：登录用户对视频的评论操作和对特定评论的删除操作
+// CommentAction (POST): create comment on video or delete one comment
 func CommentAction(c *gin.Context) {
 	appUserID := c.GetInt64(constant.IdentityKey)
 	param := new(bizdto.CommentOperationReq)
@@ -19,7 +22,7 @@ func CommentAction(c *gin.Context) {
 		return
 	}
 	switch param.ActionType {
-	case 1: // 评论
+	case 1: // create comment on a video
 		comment, err := application.CommentAppIns.CreateComment(c, appUserID, param.VideoId, param.CommentText)
 		if err != nil {
 			coredto.Error(c, err)
@@ -40,7 +43,7 @@ func CommentAction(c *gin.Context) {
 			},
 		}
 		coredto.Send(c, resp)
-	case 2: // 删除评论
+	case 2: // delete one comment
 		if err := application.CommentAppIns.DeleteComment(c, param.CommentId); err != nil {
 			coredto.Error(c, err)
 			return
@@ -51,7 +54,7 @@ func CommentAction(c *gin.Context) {
 	}
 }
 
-// CommentList 评论列表(GET)：获取登录用户的所有评论
+// CommentList (GET): get comment list of one video
 func CommentList(c *gin.Context) {
 	appUserID := c.GetInt64(constant.IdentityKey)
 	param := new(bizdto.CommentListReq)
