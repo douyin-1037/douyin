@@ -3,6 +3,7 @@ package api
 import (
 	"douyin/common/code"
 	"douyin/common/constant"
+	"douyin/gateway/application"
 	"douyin/types/bizdto"
 	respond "douyin/types/coredto"
 
@@ -18,14 +19,14 @@ func Follow(c *gin.Context) {
 	}
 	switch param.ActionType {
 	case 1: // follow
-		err := userService.FollowUser(c, appUserID, param.ToUserId)
+		err := application.UserAppIns.FollowUser(c, appUserID, param.ToUserId)
 		if err != nil {
 			respond.Error(c, err)
 			return
 		}
 		respond.OK(c)
 	case 2: // unfollow
-		err := userService.UnFollowUser(c, appUserID, param.ToUserId)
+		err := application.UserAppIns.UnFollowUser(c, appUserID, param.ToUserId)
 		if err != nil {
 			respond.Error(c, err)
 			return
@@ -43,7 +44,7 @@ func FollowList(c *gin.Context) {
 		respond.Error(c, err)
 		return
 	}
-	users, err := userService.GetFollowList(c, appUserID, param.UserId)
+	users, err := application.UserAppIns.GetFollowList(c, appUserID, param.UserId)
 	if err != nil {
 		respond.Error(c, err)
 		return
@@ -62,7 +63,7 @@ func FanList(c *gin.Context) {
 		respond.Error(c, err)
 		return
 	}
-	users, err := userService.GetFanList(c, appUserID, param.UserId)
+	users, err := application.UserAppIns.GetFanList(c, appUserID, param.UserId)
 	if err != nil {
 		respond.Error(c, err)
 		return
@@ -81,7 +82,7 @@ func FriendList(c *gin.Context) {
 		respond.Error(c, err)
 		return
 	}
-	users, err := userService.GetFriendList(c, appUserID, param.UserId)
+	users, err := application.UserAppIns.GetFriendList(c, appUserID, param.UserId)
 	if err != nil {
 		respond.Error(c, err)
 		return
