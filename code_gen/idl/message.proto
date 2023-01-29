@@ -4,7 +4,7 @@ option go_package = "messageproto";
 
 service MessageService {
   rpc CreateMessage(CreateMessageReq) returns(CreateMessageResp);                 // 发消息
-  rpc GetComments(GetMessageListReq) returns(GetMessageListResp);                 // 查询消息列表
+  rpc GetMessageList(GetMessageListReq) returns(GetMessageListResp);                 // 查询消息列表
 }
 
 message BaseResp {

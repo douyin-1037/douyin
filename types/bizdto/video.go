@@ -1,6 +1,8 @@
 package bizdto
 
-import "douyin/types"
+import (
+	"douyin/types/coredto"
+)
 
 type Video struct {
 	ID           int64  `json:"id"`
@@ -19,7 +21,7 @@ type VideoFeedReq struct {
 }
 
 type VideoFeedResp struct {
-	types.BaseResp
+	coredto.BaseResp
 	NextTime  int64    `json:"next_time"`
 	VideoList []*Video `json:"video_list,omitempty"`
 }
@@ -36,7 +38,7 @@ type LikeListReq struct {
 }
 
 type LikeListResp struct {
-	types.BaseResp
+	coredto.BaseResp
 	VideoList []*Video `json:"video_list,omitempty"`
 }
 
@@ -51,6 +53,6 @@ type VideoListReq struct {
 }
 
 type VideoListResp struct {
-	types.BaseResp
+	coredto.BaseResp
 	VideoList []*Video `json:"video_list,omitempty"`
 }
