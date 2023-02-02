@@ -4,7 +4,7 @@ package videoservice
 
 import (
 	"context"
-	"douyin/code_gen/kitex_gen/videoproto"
+	videoproto "douyin/code_gen/kitex_gen/videoproto"
 	"fmt"
 	client "github.com/cloudwego/kitex/client"
 	kitex "github.com/cloudwego/kitex/pkg/serviceinfo"

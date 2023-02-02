@@ -3,7 +3,7 @@
 package videoservice
 
 import (
-	"douyin/code_gen/kitex_gen/videoproto"
+	videoproto "douyin/code_gen/kitex_gen/videoproto"
 	server "github.com/cloudwego/kitex/server"
 )
 
