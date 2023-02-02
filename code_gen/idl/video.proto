@@ -18,8 +18,9 @@ message BaseResp {
 
 message VideoBaseInfo {
   int64 user_id = 1;
-  string oss_video_id = 2;
-  string title = 3;
+  string play_url = 2;
+  string cover_url = 3;
+  string title = 4;
 }
 
 message VideoInfo {
