@@ -27,7 +27,7 @@ func (i *UserAppService) GetUser(ctx context.Context, appUserID int64, userID in
 	if err != nil {
 		return nil, errors.Wrapf(err, "GetUser rpc failed, appUserID: %v, userID: %v", appUserID, userID)
 	}
-	return toDTO(u), nil
+	return toUserDTO(u), nil
 }
 
 func (i *UserAppService) CreateUser(ctx context.Context, username string, password string) (userID int64, err error) {
@@ -70,7 +70,7 @@ func (i *UserAppService) GetFollowList(ctx context.Context, appUserID int64, use
 	if err != nil {
 		return nil, errors.Wrapf(err, "GetFollowList rpc failed, appUserID: %v, UserID: %v", appUserID, userID)
 	}
-	return toDTOs(us), nil
+	return toUserDTOs(us), nil
 }
 
 func (i *UserAppService) GetFanList(ctx context.Context, appUserID int64, userID int64) (userList []*bizdto.User, err error) {
@@ -81,7 +81,7 @@ func (i *UserAppService) GetFanList(ctx context.Context, appUserID int64, userID
 	if err != nil {
 		return nil, errors.Wrapf(err, "GetFanList rpc failed, appUserID: %v, UserID: %v", appUserID, userID)
 	}
-	return toDTOs(us), nil
+	return toUserDTOs(us), nil
 }
 
 func (i *UserAppService) GetFriendList(ctx context.Context, appUserID int64, userID int64) (userList []*bizdto.User, err error) {
@@ -92,10 +92,10 @@ func (i *UserAppService) GetFriendList(ctx context.Context, appUserID int64, use
 	if err != nil {
 		return nil, errors.Wrapf(err, "GetFriendList rpc failed, appUserID: %v, UserID: %v", appUserID, userID)
 	}
-	return toDTOs(us), nil
+	return toUserDTOs(us), nil
 }
 
-func toDTO(user *userproto.UserInfo) *bizdto.User {
+func toUserDTO(user *userproto.UserInfo) *bizdto.User {
 	if user == nil {
 		return nil
 	}
@@ -108,10 +108,10 @@ func toDTO(user *userproto.UserInfo) *bizdto.User {
 	}
 }
 
-func toDTOs(users []*userproto.UserInfo) []*bizdto.User {
+func toUserDTOs(users []*userproto.UserInfo) []*bizdto.User {
 	us := make([]*bizdto.User, 0, len(users))
 	for _, user := range users {
-		us = append(us, toDTO(user))
+		us = append(us, toUserDTO(user))
 	}
 	return us
 }
