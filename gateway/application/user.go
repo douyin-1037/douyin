@@ -70,7 +70,7 @@ func (i *UserAppService) GetFollowList(ctx context.Context, appUserID int64, use
 	if err != nil {
 		return nil, errors.Wrapf(err, "GetFollowList rpc failed, appUserID: %v, UserID: %v", appUserID, userID)
 	}
-	return toDTOs(us), nil
+	return toUserDTOs(us), nil
 }
 
 func (i *UserAppService) GetFanList(ctx context.Context, appUserID int64, userID int64) (userList []*bizdto.User, err error) {
@@ -81,7 +81,7 @@ func (i *UserAppService) GetFanList(ctx context.Context, appUserID int64, userID
 	if err != nil {
 		return nil, errors.Wrapf(err, "GetFanList rpc failed, appUserID: %v, UserID: %v", appUserID, userID)
 	}
-	return toDTOs(us), nil
+	return toUserDTOs(us), nil
 }
 
 func (i *UserAppService) GetFriendList(ctx context.Context, appUserID int64, userID int64) (userList []*bizdto.User, err error) {
@@ -92,7 +92,7 @@ func (i *UserAppService) GetFriendList(ctx context.Context, appUserID int64, use
 	if err != nil {
 		return nil, errors.Wrapf(err, "GetFriendList rpc failed, appUserID: %v, UserID: %v", appUserID, userID)
 	}
-	return toDTOs(us), nil
+	return toUserDTOs(us), nil
 }
 
 func toUserDTO(user *userproto.UserInfo) *bizdto.User {
