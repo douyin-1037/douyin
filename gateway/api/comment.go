@@ -1,6 +1,6 @@
 package api
 
-// @path: api/handlers/comment.go
+// @path: gateway/api/comment.go
 // @description: api layer of comment
 // @auth: wan-nan <wan_nan@foxmail.com>
 import (
@@ -28,19 +28,14 @@ func CommentAction(c *gin.Context) {
 			coredto.Error(c, err)
 			return
 		}
-		author, err := application.UserAppIns.GetUser(c, appUserID, comment.User.ID)
-		if err != nil {
-			coredto.Error(c, err)
-			return
-		}
+		//author, err := application.UserAppIns.GetUser(c, appUserID, comment.User.ID)
+		//if err != nil {
+		//	coredto.Error(c, err)
+		//	return
+		//}
 		resp := &bizdto.CreateCommentResp{
 			BaseResp: coredto.Success,
-			Comment: &bizdto.Comment{
-				ID:         comment.ID,
-				User:       author,
-				Content:    comment.Content,
-				CreateDate: comment.CreateDate,
-			},
+			Comment:  comment,
 		}
 		coredto.Send(c, resp)
 	case 2: // delete one comment
@@ -66,15 +61,6 @@ func CommentList(c *gin.Context) {
 	if err != nil {
 		coredto.Error(c, err)
 		return
-	}
-	n := len(comments)
-	authors := make([]*bizdto.User, n)
-	for i := 0; i < n; i++ {
-		authors[i], err = application.UserAppIns.GetUser(c, appUserID, comments[i].User.ID)
-		if err != nil {
-			coredto.Error(c, err)
-			return
-		}
 	}
 	resp := &bizdto.CommentListResp{
 		BaseResp:    coredto.Success,
