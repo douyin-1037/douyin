@@ -3,11 +3,13 @@ package application
 import (
 	"context"
 	"github.com/pkg/errors"
+	"mime/multipart"
 
 	"douyin/code_gen/kitex_gen/userproto"
 	"douyin/code_gen/kitex_gen/videoproto"
 	"douyin/common/conf"
 	"douyin/gateway/rpc"
+	"douyin/pkg/cos"
 	"douyin/types/bizdto"
 )
 
@@ -20,34 +22,28 @@ func NewVideoAppService() *VideoAppService {
 	return &VideoAppService{}
 }
 
-func (v VideoAppService) PublishVideo(ctx context.Context, appUserID int64, title string) (err error) {
-	// need oss implementation
-	/*
-		fileHeader, err := ctx.FormFile("data")
-		if err != nil {
-			return err
-		}
-		file, err := fileHeader.Open()
-		if err != nil {
-			return err
-		}
-		defer file.Close()
-		ossUploadReq := &oss.Video{
-			Title:    title,
-			Filename: "/simple-douyin/" + fileHeader.Filename,
-			File:     file,
-		}
-		ossVideoID, err := oss.Upload(ossUploadReq)
-		if err != nil {
-			return err
-		}
-	*/
+func (v VideoAppService) PublishVideo(ctx context.Context, appUserID int64, title string, fileHeader *multipart.FileHeader) (err error) {
+	file, err := fileHeader.Open()
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+	cosUploadReq := &cos.Video{
+		Title:    title,
+		Filename: "/douyin/" + fileHeader.Filename,
+		File:     file,
+		UserID:   appUserID,
+	}
+	videoUrl, err := cos.UploadVideo(ctx, cosUploadReq)
+	if err != nil {
+		return err
+	}
 	req := &videoproto.CreateVideoReq{
 		VideoBaseInfo: &videoproto.VideoBaseInfo{
-			UserId: appUserID,
-			//OssVideoId: ossVideoID,
-			OssVideoId: "",
-			Title:      title,
+			UserId:   appUserID,
+			PlayUrl:  videoUrl.PlayUrl,
+			CoverUrl: videoUrl.CoverUrl,
+			Title:    title,
 		},
 	}
 	if err := rpc.CreateVideo(ctx, req); err != nil {
@@ -168,31 +164,14 @@ func (v VideoAppService) Feed(ctx context.Context, appUserID int64, latestTime i
 // toVideoDTO
 // transform one videoproto.VideoInfo into one bizdto.Video with author information
 func toVideoDTO(v *videoproto.VideoInfo, author *userproto.UserInfo) (*bizdto.Video, error) {
-	// need redis implementation
-	/*
-			playURL, err := cache.GetPlayURL(v.VideoBaseInfo.OssVideoId)
-			if err != nil {
-				return nil, err
-			}
-			coverURL, err := cache.GetCoverURL(v.VideoBaseInfo.OssVideoId)
-			if err != nil {
-				return nil, err
-			}
-			// coverURL := "https://tva1.sinaimg.cn/large/e6c9d24ely1h2wrrikp8uj20tc1io422.jpg"
-		}
-	*/
 	if v == nil {
 		return nil, errors.New("VideoInfo is empty!")
 	}
 	return &bizdto.Video{
-		ID:     v.VideoId,
-		Author: toUserDTO(author),
-		/*
-			PlayAddr:     playURL,
-			CoverAddr:    coverURL,
-		*/
-		PlayAddr:     "",
-		CoverAddr:    "",
+		ID:           v.VideoId,
+		Author:       toUserDTO(author),
+		PlayAddr:     v.VideoBaseInfo.PlayUrl,
+		CoverAddr:    v.VideoBaseInfo.CoverUrl,
 		LikeCount:    v.LikeCount,
 		CommentCount: v.CommentCount,
 		IsFavorite:   v.IsFavorite,
