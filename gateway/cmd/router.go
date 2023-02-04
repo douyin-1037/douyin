@@ -23,5 +23,7 @@ func register(r *gin.Engine) {
 		authGroup.POST("/comment/action/", api.CommentAction)
 		authGroup.GET("/comment/list/", api.CommentList)
 		authGroup.GET("/user/", api.GetUserInfo)
+		authGroup.GET("/message/chat/", api.GetMessageList)
+		authGroup.POST("/message/action/", api.HandleMessageAction)
 	}
 }
