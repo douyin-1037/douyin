@@ -1,12 +1,21 @@
 Server:
   RunMode: debug
   HttpPort: :8080
-  UserSeviceAddr: 127.0.0.1:8081
-  VideoSeviceAddr: 127.0.0.1:8082
-  RedisAddr: 127.0.0.1:6388
+  UserServiceAddr: 127.0.0.1:8081
+  VideoServiceAddr: 127.0.0.1:8082
+  RedisAddr: 127.0.0.1:6379
   Timeout: 86400 #seconds
   EtcdAddress: 127.0.0.1:2379
   FeedCount: 5
+
+Database:
+  DBType: mysql
+  UserName: dev
+  Password: R6Wafw5FH2WC
+  Host: 43.139.147.169:3306
+  DBName: douyin
+  Charset: utf8mb4
+  ParseTime: True
 
 JWT:
   Secret: MHcCAQEEIP0dt4lJhJYy6zC+5Zf8jn+DrttPkkggZFlwsX6mD3uloAoGCCqGSM49AwEHoUQDQgAEFvxY1slOtW9KrBy48aJuQN+zlAZu31Hob1KEUhtSnKp8FkNuLGdERmUYhBp2kFU8qhbEg5lMGDKPV55UcmZsGw==

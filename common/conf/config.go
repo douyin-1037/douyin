@@ -43,7 +43,7 @@ func InitConfig() {
 		klog.Fatal(err)
 	}
 	vp.UnmarshalKey("Server", &Server)
+	vp.UnmarshalKey("Database", &Database)
 	vp.UnmarshalKey("JWT", &JWT)
 	JWT.Expires *= time.Hour
-
 }

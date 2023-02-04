@@ -3,6 +3,9 @@ package main
 import (
 	"context"
 	userproto "douyin/code_gen/kitex_gen/userproto"
+	"douyin/pkg/errno"
+	"douyin/user/pack"
+	"douyin/user/service"
 )
 
 // UserServiceImpl implements the last service interface defined in the IDL.
@@ -10,8 +13,22 @@ type UserServiceImpl struct{}
 
 // CreateUser implements the UserServiceImpl interface.
 func (s *UserServiceImpl) CreateUser(ctx context.Context, req *userproto.CreateUserReq) (resp *userproto.CreateUserResp, err error) {
-	// TODO: Your code here...
-	return
+	// TODO: Your code here... done
+	resp = new(userproto.CreateUserResp)
+
+	if len(req.UserAccount.Username) == 0 || len(req.UserAccount.Password) == 0 || len(req.UserAccount.Username) > 32 || len(req.UserAccount.Password) > 32 {
+		resp.BaseResp = pack.BuildBaseResp(errno.ParamErr)
+		return resp, nil
+	}
+
+	userID, err := service.NewUserRegisterService(ctx).CreateUser(req)
+	if err != nil {
+		resp.BaseResp = pack.BuildBaseResp(err)
+		return resp, nil
+	}
+	resp.BaseResp = pack.BuildBaseResp(errno.Success)
+	resp.UserId = userID
+	return resp, nil
 }
 
 // GetUser implements the UserServiceImpl interface.
@@ -23,6 +40,21 @@ func (s *UserServiceImpl) GetUser(ctx context.Context, req *userproto.GetUserReq
 // CheckUser implements the UserServiceImpl interface.
 func (s *UserServiceImpl) CheckUser(ctx context.Context, req *userproto.CheckUserReq) (resp *userproto.CheckUserResp, err error) {
 	// TODO: Your code here...
+	resp = new(userproto.CheckUserResp)
+
+	if len(req.UserAccount.Username) == 0 || len(req.UserAccount.Password) == 0 || len(req.UserAccount.Username) > 32 || len(req.UserAccount.Password) > 32 {
+		resp.BaseResp = pack.BuildBaseResp(errno.ParamErr)
+		return resp, nil
+	}
+
+	uid, err := service.NewCheckUserService(ctx).CheckUser(req)
+	if err != nil {
+		resp.BaseResp = pack.BuildBaseResp(err)
+		return resp, nil
+	}
+	resp.UserId = uid
+	resp.BaseResp = pack.BuildBaseResp(errno.Success)
+	return resp, nil
 	return
 }
 
