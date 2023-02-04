@@ -13,7 +13,7 @@
 // limitations under the License.
 //
 
-package errno
+package code
 
 import (
 	"errors"

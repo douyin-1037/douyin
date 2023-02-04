@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	userproto "douyin/code_gen/kitex_gen/userproto"
-	"douyin/pkg/errno"
+	"douyin/pkg/code"
 	"douyin/user/pack"
 	"douyin/user/service"
 )
@@ -17,7 +17,7 @@ func (s *UserServiceImpl) CreateUser(ctx context.Context, req *userproto.CreateU
 	resp = new(userproto.CreateUserResp)
 
 	if len(req.UserAccount.Username) == 0 || len(req.UserAccount.Password) == 0 || len(req.UserAccount.Username) > 32 || len(req.UserAccount.Password) > 32 {
-		resp.BaseResp = pack.BuildBaseResp(errno.ParamErr)
+		resp.BaseResp = pack.BuildBaseResp(code.ParamErr)
 		return resp, nil
 	}
 
@@ -26,7 +26,7 @@ func (s *UserServiceImpl) CreateUser(ctx context.Context, req *userproto.CreateU
 		resp.BaseResp = pack.BuildBaseResp(err)
 		return resp, nil
 	}
-	resp.BaseResp = pack.BuildBaseResp(errno.Success)
+	resp.BaseResp = pack.BuildBaseResp(code.Success)
 	resp.UserId = userID
 	return resp, nil
 }
@@ -43,7 +43,7 @@ func (s *UserServiceImpl) CheckUser(ctx context.Context, req *userproto.CheckUse
 	resp = new(userproto.CheckUserResp)
 
 	if len(req.UserAccount.Username) == 0 || len(req.UserAccount.Password) == 0 || len(req.UserAccount.Username) > 32 || len(req.UserAccount.Password) > 32 {
-		resp.BaseResp = pack.BuildBaseResp(errno.ParamErr)
+		resp.BaseResp = pack.BuildBaseResp(code.ParamErr)
 		return resp, nil
 	}
 
@@ -53,7 +53,7 @@ func (s *UserServiceImpl) CheckUser(ctx context.Context, req *userproto.CheckUse
 		return resp, nil
 	}
 	resp.UserId = uid
-	resp.BaseResp = pack.BuildBaseResp(errno.Success)
+	resp.BaseResp = pack.BuildBaseResp(code.Success)
 	return resp, nil
 	return
 }

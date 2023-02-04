@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 	"douyin/code_gen/kitex_gen/userproto"
-	"douyin/pkg/errno"
+	"douyin/pkg/code"
 	"douyin/user/infra/dal"
 	"errors"
 	"golang.org/x/crypto/bcrypt"
@@ -26,7 +26,7 @@ func (s *UserRegisterService) CreateUser(req *userproto.CreateUserReq) (int64, e
 	if !errors.Is(err, gorm.ErrRecordNotFound) {
 		// name exists
 		if err == nil {
-			return 0, errno.UserAlreadyExistErr
+			return 0, code.UserAlreadyExistErr
 		}
 		//other error type
 		return 0, err
