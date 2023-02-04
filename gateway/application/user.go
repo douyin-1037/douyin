@@ -31,13 +31,33 @@ func (i *UserAppService) GetUser(ctx context.Context, appUserID int64, userID in
 }
 
 func (i *UserAppService) CreateUser(ctx context.Context, username string, password string) (userID int64, err error) {
-	//TODO implement me
-	panic("implement me")
+	//TODO implement me done
+	req := &userproto.CreateUserReq{
+		UserAccount: &userproto.UserAccount{
+			Username: username,
+			Password: password,
+		},
+	}
+	userID, err = rpc.CreateUser(ctx, req)
+	if err != nil {
+		return 0, errors.Wrapf(err, "CreateUser rpc failed, username: %v", username)
+	}
+	return userID, nil
 }
 
 func (i *UserAppService) CheckUser(ctx context.Context, username string, password string) (userID int64, err error) {
 	//TODO implement me
-	panic("implement me")
+	req := &userproto.CheckUserReq{
+		UserAccount: &userproto.UserAccount{
+			Username: username,
+			Password: password,
+		},
+	}
+	userID, err = rpc.CheckUser(ctx, req)
+	if err != nil {
+		return 0, errors.Wrapf(err, "CheckUser rpc failed, username: %v", username)
+	}
+	return userID, nil
 }
 
 func (i *UserAppService) FollowUser(ctx context.Context, fanID int64, toUserID int64) (err error) {
