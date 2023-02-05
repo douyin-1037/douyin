@@ -62,7 +62,7 @@ CREATE TABLE `message` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '消息id',
   `to_user_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '该消息接收者的id',
   `from_user_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '该消息发送者的id',
-  `content` varchar(255) NOT NULL DEFAULT '' COMMENT '消息内容',
+  `contents` varchar(255) NOT NULL DEFAULT '' COMMENT '消息内容',
   `created_at` timestamp NULL DEFAULT NULL COMMENT '创建时间',
   `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `deleted_at` timestamp NULL DEFAULT NULL COMMENT '删除时间，可实现软删除',
