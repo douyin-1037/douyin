@@ -52,8 +52,12 @@ func Upload(c *gin.Context) {
 		respond.Error(c, err)
 		return
 	}
-
-	if err := application.VideoAppIns.PublishVideo(c, appUserID, param.Title); err != nil {
+	fileHeader, err := c.FormFile("data")
+	if err != nil {
+		respond.Error(c, err)
+		return
+	}
+	if err := application.VideoAppIns.PublishVideo(c, appUserID, param.Title, fileHeader); err != nil {
 		respond.Error(c, err)
 		return
 	}
