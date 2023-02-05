@@ -1,6 +1,7 @@
 package api
 
 import (
+	"douyin/gateway/api/auth"
 	"github.com/gin-gonic/gin"
 
 	"douyin/common/constant"
@@ -31,6 +32,59 @@ func GetUserInfo(c *gin.Context) {
 	resp := &bizdto.UserQueryResp{
 		BaseResp: respond.Success,
 		User:     user,
+	}
+	respond.Send(c, resp)
+}
+
+// Create User registration interface
+func Create(c *gin.Context) {
+	param := new(bizdto.UserRegisterReq)
+	if err := c.ShouldBind(param); err != nil {
+		respond.Error(c, err)
+		return
+	}
+
+	userID, err := application.UserAppIns.CreateUser(c, param.Username, param.Password)
+	if err != nil {
+		respond.Error(c, err)
+		return
+	}
+
+	token, err := auth.GenerateToken(userID)
+	if err != nil {
+		respond.Error(c, err)
+		return
+	}
+	resp := &bizdto.UserRegisterResp{
+		BaseResp: respond.Success,
+		UserID:   userID,
+		Token:    token,
+	}
+	respond.Send(c, resp)
+}
+
+// Check User login interface
+func Check(c *gin.Context) {
+	param := new(bizdto.UserLoginReq)
+	if err := c.ShouldBind(param); err != nil {
+		respond.Error(c, err)
+		return
+	}
+
+	userID, err := application.UserAppIns.CheckUser(c, param.Username, param.Password)
+	if err != nil {
+		respond.Error(c, err)
+		return
+	}
+	token, err := auth.GenerateToken(userID)
+	if err != nil {
+		respond.Error(c, err)
+		return
+	}
+	resp := &bizdto.UserLoginResp{
+		BaseResp: respond.Success,
+		UserID:   userID,
+		Token:    token,
 	}
 	respond.Send(c, resp)
 }
