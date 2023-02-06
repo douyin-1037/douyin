@@ -55,7 +55,6 @@ func (s *UserServiceImpl) CheckUser(ctx context.Context, req *userproto.CheckUse
 	resp.UserId = uid
 	resp.BaseResp = pack.BuildBaseResp(code.Success)
 	return resp, nil
-	return
 }
 
 // FollowUser implements the UserServiceImpl interface.
