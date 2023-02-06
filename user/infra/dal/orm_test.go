@@ -4,10 +4,12 @@ import (
 	"context"
 	config "douyin/common/conf"
 	"fmt"
+
+	"testing"
+
 	"github.com/cloudwego/kitex/pkg/klog"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"testing"
 )
 
 func testInit() {
@@ -28,7 +30,7 @@ func testInit() {
 
 func TestCreateUser(t *testing.T) {
 	testInit()
-	userName := "lyy"
+	userName := "cdx4"
 	encPassword := "123456"
 	userID, err := CreateUser(context.Background(), userName, encPassword)
 	if err != nil {
@@ -36,3 +38,67 @@ func TestCreateUser(t *testing.T) {
 	}
 	fmt.Println(userID)
 }
+
+func TestFollowUser(t *testing.T) {
+	testInit()
+	var fanID int64 = 21
+	var userID int64 = 19
+	err := FollowUser(context.Background(), fanID, userID)
+	if err != nil {
+		fmt.Println("********", err)
+	}
+	fmt.Println(fanID, " follow ", userID)
+}
+
+func TestUnFollowUser(t *testing.T) {
+	testInit()
+	var fanID int64 = 16
+	var userID int64 = 17
+	err := UnFollowUser(context.Background(), fanID, userID)
+	if err != nil {
+		fmt.Println("********", err)
+	}
+	fmt.Println(fanID, " unfollow ", userID)
+}
+
+func TestGetFanList(t *testing.T) {
+	testInit()
+	var userID int64 = 21
+	list, err := GetFanList(context.Background(), userID)
+	if err != nil {
+		fmt.Println("********", err)
+	}
+	fmt.Println(list)
+}
+
+func TestGetFollowList(t *testing.T) {
+	testInit()
+	var userID int64 = 21
+	list, err := GetFollowList(context.Background(), userID)
+	if err != nil {
+		fmt.Println("********", err)
+	}
+	fmt.Println(list)
+}
+
+func TestGetFriendList(t *testing.T) {
+	testInit()
+	var userID int64 = 21
+	list, err := GetFriendList(context.Background(), userID)
+	if err != nil {
+		fmt.Println("********", err)
+	}
+	fmt.Println(list)
+}
+
+/*
+func TestIdxInout(t *testing.T) {
+	// 生成Context
+	ctx, err := GetContext()
+	if err != nil {
+		t.Errorf("get context error: %s\n", err.Error())
+	} else {
+		t.Logf("%+v", ctx)
+	}
+}
+*/

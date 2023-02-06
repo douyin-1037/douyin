@@ -60,7 +60,20 @@ func (s *UserServiceImpl) CheckUser(ctx context.Context, req *userproto.CheckUse
 // FollowUser implements the UserServiceImpl interface.
 func (s *UserServiceImpl) FollowUser(ctx context.Context, req *userproto.FollowUserReq) (resp *userproto.FollowUserResp, err error) {
 	// TODO: Your code here...
-	return
+	resp = new(userproto.FollowUserResp)
+
+	if req.FollowedUserId < 0 || req.FanUserId < 0 {
+		resp.BaseResp = pack.BuildBaseResp(code.ParamErr)
+		return resp, nil
+	}
+
+	err = service.NewFollowUserService(ctx).FollowUser(req)
+	if err != nil {
+		resp.BaseResp = pack.BuildBaseResp(err)
+		return resp, nil
+	}
+	resp.BaseResp = pack.BuildBaseResp(code.Success)
+	return resp, nil
 }
 
 // UnFollowUser implements the UserServiceImpl interface.
