@@ -1,5 +1,8 @@
 package dal
 
+// @path: comment/infra/dal/orm.go
+// @description: DAL of comment
+// @auth: wan-nan <wan_nan@foxmail.com>
 import (
 	"context"
 	"douyin/comment/infra/dal/model"

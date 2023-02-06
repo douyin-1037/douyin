@@ -1,5 +1,8 @@
 package dal
 
+// @path: comment/infra/dal/init.go
+// @description: initialization of gorm.DB
+// @auth: wan-nan <wan_nan@foxmail.com>
 import (
 	config "douyin/common/conf"
 	"github.com/cloudwego/kitex/pkg/klog"
