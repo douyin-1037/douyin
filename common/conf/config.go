@@ -3,7 +3,6 @@ package conf
 import (
 	"fmt"
 	"os"
-	"path"
 	"path/filepath"
 	"time"
 
@@ -35,7 +34,7 @@ func InitConfig() {
 	}
 	sep := string(filepath.Separator)
 	vp.AddConfigPath(workDirectory + sep + "conf")
-	for path.Base(workDirectory) != "douyin" {
+	for filepath.Base(workDirectory) != "douyin" {
 		vp.AddConfigPath(workDirectory + sep + "conf")
 		workDirectory = filepath.Dir(workDirectory)
 	}
