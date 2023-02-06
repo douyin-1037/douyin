@@ -22,7 +22,7 @@ func (s *CheckUserService) CheckUser(req *userproto.CheckUserReq) (int64, error)
 	user, err := dal.GetUserByName(s.ctx, req.UserAccount.Username)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) { // 如果没找到
-			return 0, code.UserNotExistErr
+			return 0, code.LoginErr
 		}
 		return 0, err
 	}
