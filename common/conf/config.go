@@ -32,9 +32,10 @@ func InitConfig() {
 	if err != nil {
 		klog.Fatal(err)
 	}
-	vp.AddConfigPath(workDirectory + "/conf")
-	for workDirectory != "/" {
-		vp.AddConfigPath(workDirectory + "/conf")
+	sep := string(filepath.Separator)
+	vp.AddConfigPath(workDirectory + sep + "conf")
+	for workDirectory != sep {
+		vp.AddConfigPath(workDirectory + sep + "conf")
 		workDirectory = filepath.Dir(workDirectory)
 	}
 	vp.SetConfigName("conf")
