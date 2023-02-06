@@ -34,10 +34,11 @@ func InitConfig() {
 	}
 	sep := string(filepath.Separator)
 	vp.AddConfigPath(workDirectory + sep + "conf")
-	for workDirectory != sep {
+	for filepath.Base(workDirectory) != "douyin" {
 		vp.AddConfigPath(workDirectory + sep + "conf")
 		workDirectory = filepath.Dir(workDirectory)
 	}
+	vp.AddConfigPath(workDirectory + sep + "conf")
 	vp.SetConfigName("conf")
 	vp.SetConfigType("yaml")
 	if err := vp.ReadInConfig(); err != nil {
