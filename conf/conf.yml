@@ -3,6 +3,8 @@ Server:
   HttpPort: :8080
   UserServiceAddr: 127.0.0.1:8081
   VideoServiceAddr: 127.0.0.1:8082
+  CommentServiceAddr: 127.0.0.1:8083
+  MessageServiceAddr: 127.0.0.1:8084
   RedisAddr: 127.0.0.1:6379
   Timeout: 86400 #seconds
   EtcdAddress: 127.0.0.1:2379

@@ -20,7 +20,10 @@ var Success = BaseResp{
 }
 
 func Error(c *gin.Context, err error) {
-	c.AbortWithStatusJSON(code.HTTPCoder(statuserr.Code(err)), err)
+	c.JSON(http.StatusOK, BaseResp{
+		Code: int64(code.HTTPCoder(statuserr.Code(err))),
+		Msg:  err.Error(),
+	})
 }
 
 func Send(c *gin.Context, resp interface{}) {
