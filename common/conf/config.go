@@ -3,6 +3,7 @@ package conf
 import (
 	"fmt"
 	"os"
+	"path"
 	"path/filepath"
 	"time"
 
@@ -34,10 +35,11 @@ func InitConfig() {
 	}
 	sep := string(filepath.Separator)
 	vp.AddConfigPath(workDirectory + sep + "conf")
-	for workDirectory != sep {
+	for path.Base(workDirectory) != "douyin" {
 		vp.AddConfigPath(workDirectory + sep + "conf")
 		workDirectory = filepath.Dir(workDirectory)
 	}
+	vp.AddConfigPath(workDirectory + sep + "conf")
 	vp.SetConfigName("conf")
 	vp.SetConfigType("yaml")
 	if err := vp.ReadInConfig(); err != nil {
