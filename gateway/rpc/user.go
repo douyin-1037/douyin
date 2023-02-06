@@ -2,6 +2,7 @@ package rpc
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/cloudwego/kitex/client"
@@ -45,6 +46,7 @@ func initUserRPC() {
 func CreateUser(ctx context.Context, req *userproto.CreateUserReq) (int64, error) {
 	resp, err := userClient.CreateUser(ctx, req)
 	if err != nil {
+		fmt.Println(err)
 		return 0, err
 	}
 	if resp.BaseResp.StatusCode != 0 {

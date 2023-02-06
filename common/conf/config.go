@@ -32,18 +32,20 @@ func InitConfig() {
 	if err != nil {
 		klog.Fatal(err)
 	}
-	vp.AddConfigPath(workDirectory + "/conf")
-	for workDirectory != "/" {
-		vp.AddConfigPath(workDirectory + "/conf")
+	sep := string(filepath.Separator)
+	vp.AddConfigPath(workDirectory + sep + "conf")
+	for filepath.Base(workDirectory) != "douyin" {
+		vp.AddConfigPath(workDirectory + sep + "conf")
 		workDirectory = filepath.Dir(workDirectory)
 	}
+	vp.AddConfigPath(workDirectory + sep + "conf")
 	vp.SetConfigName("conf")
 	vp.SetConfigType("yaml")
 	if err := vp.ReadInConfig(); err != nil {
 		klog.Fatal(err)
 	}
 	vp.UnmarshalKey("Server", &Server)
+	vp.UnmarshalKey("Database", &Database)
 	vp.UnmarshalKey("JWT", &JWT)
 	JWT.Expires *= time.Hour
-
 }

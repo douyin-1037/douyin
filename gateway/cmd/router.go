@@ -11,6 +11,8 @@ func register(r *gin.Engine) {
 	unAuthGroup := r.Group("/douyin")
 	{
 		unAuthGroup.GET("/feed", api.Feed)
+		unAuthGroup.POST("/user/register/", api.Create)
+		unAuthGroup.POST("/user/login/", api.Check)
 	}
 
 	authGroup := r.Group("/douyin")
