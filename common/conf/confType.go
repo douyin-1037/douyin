@@ -2,7 +2,7 @@ package conf
 
 var (
 	Server   *ServerConfig
-	OSS      *OSSConfig
+	COS      *COSConfig
 	Database *DatabaseConfig
 	JWT      *JWTConfig
 )
@@ -20,10 +20,11 @@ type ServerConfig struct {
 	FeedCount          int64
 }
 
-type OSSConfig struct {
-	KeyID     string
-	KeySecret string
-	Endpoint  string
+type COSConfig struct {
+	VideoBucket string
+	CoverBucket string
+	SecretID    string
+	SecretKey   string
 }
 
 type DatabaseConfig struct {

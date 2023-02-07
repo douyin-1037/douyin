@@ -1,6 +1,7 @@
 package main
 
 import (
+	"douyin/pkg/cos"
 	"github.com/gin-gonic/gin"
 
 	"douyin/common/conf"
@@ -13,6 +14,7 @@ import (
 func Init() {
 	conf.InitConfig()
 	auth.Init()
+	cos.Init()
 	InitInjectModule()
 	rpc.Init()
 }
