@@ -22,7 +22,9 @@ func CreateMessage(ctx context.Context, userID int64, toUserID int64, content st
 
 func GetMessageList(ctx context.Context, userID int64, toUserID int64) ([]*model.Message, error) {
 	var messages []*model.Message
-	err := DB.WithContext(ctx).Where("from_user_id = ? AND to_user_id = ?", userID, toUserID).Find(&messages).Error
+	err := DB.WithContext(ctx).Where("from_user_id = ? AND to_user_id = ?", userID, toUserID).Or(
+		"from_user_id = ? AND to_user_id = ?", toUserID, userID,
+	).Find(&messages).Error
 	if err != nil {
 		return nil, err
 	}
