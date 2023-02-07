@@ -8,14 +8,16 @@ var (
 )
 
 type ServerConfig struct {
-	RunMode          string
-	HttpPort         string
-	RedisAddress     string
-	UserServiceAddr  string
-	VideoServiceAddr string
-	Timeout          int
-	EtcdAddress      string
-	FeedCount        int64
+	RunMode            string
+	HttpPort           string
+	RedisAddress       string
+	UserServiceAddr    string
+	VideoServiceAddr   string
+	CommentServiceAddr string
+	MessageServiceAddr string
+	Timeout            int
+	EtcdAddress        string
+	FeedCount          int64
 }
 
 type OSSConfig struct {
