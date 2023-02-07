@@ -32,19 +32,12 @@ func UploadVideo(ctx context.Context, v *Video) (*VideoUrl, error) {
 			SecretKey: cosVideo.SecretKey,
 		},
 	})
-	genSnowFlake := new(GenSnowFlake)
-	id, err := genSnowFlake.GenSnowFlake(cosVideo.MachineId)
-	if err != nil {
-		klog.Errorf("UploadVideo--->GenSnowFlake err : %v", err)
-		return nil, err
-	}
-	// 生成useId/id/filename
-	key := strconv.FormatInt(v.UserID, 10) + "/" + strconv.FormatInt(int64(id), 10)
-	videoFileName := key + "/" + v.Filename
+
+	videoFileName := strconv.FormatInt(v.UserID, 10) + "/" + v.Filename
 	replaceSuffixidx := strings.LastIndex(v.Filename, ".")
-	coverFileName := key + "/" + v.Filename[0:replaceSuffixidx] + "_0.jpg"
+	coverFileName := strconv.FormatInt(v.UserID, 10) + "/" + v.Filename[0:replaceSuffixidx] + "_0.jpg"
 	// 上传视频文件
-	_, err = c.Object.Put(ctx, videoFileName, v.File, nil)
+	_, err := c.Object.Put(ctx, videoFileName, v.File, nil)
 	if err != nil {
 		klog.Errorf("UploadVideo--->Put err : %v", err)
 		return nil, err
