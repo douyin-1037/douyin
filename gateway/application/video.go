@@ -97,10 +97,7 @@ func (v VideoAppService) GetVideoList(ctx context.Context, appUserID int64, user
 		}
 	}
 	// pack videos and authors
-	packedVideos, err := toVideoDTOs(videos, authors)
-	if err != nil {
-		return nil, err
-	}
+	packedVideos := toVideoDTOs(videos, authors)
 	return packedVideos, nil
 }
 
@@ -125,10 +122,7 @@ func (v VideoAppService) GetLikeVideoList(ctx context.Context, appUserID int64, 
 			return nil, errors.Wrapf(err, "GetUser rpc failed, appUserID: %v, userID: %v", appUserID, videos[i].VideoBaseInfo.UserId)
 		}
 	}
-	packedVideos, err := toVideoDTOs(videos, authors)
-	if err != nil {
-		return nil, err
-	}
+	packedVideos := toVideoDTOs(videos, authors)
 	return packedVideos, nil
 }
 
@@ -154,18 +148,15 @@ func (v VideoAppService) Feed(ctx context.Context, appUserID int64, latestTime i
 			return nil, 0, errors.Wrapf(err, "GetUser rpc failed, appUserID: %v, userID: %v", appUserID, videos[i].VideoBaseInfo.UserId)
 		}
 	}
-	packedVideos, err := toVideoDTOs(videos, authors)
-	if err != nil {
-		return nil, 0, err
-	}
+	packedVideos := toVideoDTOs(videos, authors)
 	return packedVideos, nextTime, nil
 }
 
 // toVideoDTO
 // transform one videoproto.VideoInfo into one bizdto.Video with author information
-func toVideoDTO(v *videoproto.VideoInfo, author *userproto.UserInfo) (*bizdto.Video, error) {
+func toVideoDTO(v *videoproto.VideoInfo, author *userproto.UserInfo) *bizdto.Video {
 	if v == nil {
-		return nil, errors.New("VideoInfo is empty!")
+		return nil
 	}
 	return &bizdto.Video{
 		ID:           v.VideoId,
@@ -176,19 +167,15 @@ func toVideoDTO(v *videoproto.VideoInfo, author *userproto.UserInfo) (*bizdto.Vi
 		CommentCount: v.CommentCount,
 		IsFavorite:   v.IsFavorite,
 		Title:        v.VideoBaseInfo.Title,
-	}, nil
+	}
 }
 
 // toVideoDTOs
 // apply toVideoDTO to an array of videoproto.VideoInfo
-func toVideoDTOs(vs []*videoproto.VideoInfo, authors []*userproto.UserInfo) ([]*bizdto.Video, error) {
+func toVideoDTOs(vs []*videoproto.VideoInfo, authors []*userproto.UserInfo) []*bizdto.Video {
 	videos := make([]*bizdto.Video, len(vs))
-	var err error
 	for i, v := range vs {
-		videos[i], err = toVideoDTO(v, authors[i])
-		if err != nil {
-			return nil, err
-		}
+		videos[i] = toVideoDTO(v, authors[i])
 	}
-	return videos, nil
+	return videos
 }
