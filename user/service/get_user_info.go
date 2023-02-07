@@ -32,26 +32,6 @@ func (s *GetUserService) GetUserInfoByID(appUserId, userId int64) (*userproto.Us
 		return nil, err
 	}
 
-	/*
-		followCnt, err := dal.GetFollowCount(s.ctx, int64(user.UserID))
-		if err != nil {
-			return nil, err
-		}
-
-		fanCnt, err := dal.GetFanCount(s.ctx, int64(user.UserID))
-		if err != nil {
-			return nil, err
-		}
-
-		isFollow := false  // 默认为false
-		if appUserId > 0 { // 如果已登录则查询
-			isFollow, err = dal.IsFollow(s.ctx, appUserId, int64(user.UserID))
-			if err != nil {
-				return nil, err
-			}
-		}
-	*/
-
 	userInfo := &userproto.UserInfo{
 		UserId:        int64(user.ID),
 		Username:      user.Name,

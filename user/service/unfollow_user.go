@@ -18,6 +18,6 @@ func NewUnFollowUserService(ctx context.Context) *UnFollowUserService {
 }
 
 // UnFollowUser unFollow user by id
-func (s *FollowUserService) UnFollowUser(req *userproto.UnFollowUserReq) error {
+func (s *UnFollowUserService) UnFollowUser(req *userproto.UnFollowUserReq) error {
 	return dal.UnFollowUser(s.ctx, int64(req.FanUserId), int64(req.FollowedUserId))
 }
