@@ -1,7 +1,8 @@
 package cos
 
+import "douyin/common/conf"
+
 type CosVideo struct {
-	MachineId   uint16
 	VideoBucket string
 	CoverBucket string
 	SecretID    string
@@ -11,5 +12,10 @@ type CosVideo struct {
 var cosVideo CosVideo
 
 func Init() {
-
+	cosVideo = CosVideo{
+		VideoBucket: conf.COS.VideoBucket,
+		CoverBucket: conf.COS.CoverBucket,
+		SecretID:    conf.COS.SecretID,
+		SecretKey:   conf.COS.SecretKey,
+	}
 }
