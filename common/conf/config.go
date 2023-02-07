@@ -47,5 +47,6 @@ func InitConfig() {
 	vp.UnmarshalKey("Server", &Server)
 	vp.UnmarshalKey("Database", &Database)
 	vp.UnmarshalKey("JWT", &JWT)
+	vp.UnmarshalKey("COS", &COS)
 	JWT.Expires *= time.Hour
 }
