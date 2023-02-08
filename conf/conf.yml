@@ -1,6 +1,6 @@
 Server:
   RunMode: debug
-  HttpPort: :8080
+  HttpPort: :8070
   UserServiceAddr: 127.0.0.1:8081
   VideoServiceAddr: 127.0.0.1:8082
   CommentServiceAddr: 127.0.0.1:8083
@@ -24,8 +24,14 @@ JWT:
   Expires: 24 #hours
 
 COS:
-  SecretID: cos secretID
-  SecretKey: cos secretKey
-  VideoBucket: cos videobucket url
-  CoverBucket: cos coverbucket url
+  SecretID: AKIDDH8lALI1kcHiuwmRt8C5lDWbR3RZT8Zz
+  SecretKey: IPL7kCVipmZBaliR1OXVIsJYZO2TfdMt
+  VideoBucket: https://video-1302049000.cos.ap-guangzhou.myqcloud.com
+  CoverBucket: https://cover-1302049000.cos.ap-guangzhou.myqcloud.com
 
+Redis:
+  Address: 127.0.0.1:6379
+  MaxIdle: 100
+  MaxActive: 0
+  ExpireTime: 24 #hours
+  MaxRandAddTime: 1 #hours
