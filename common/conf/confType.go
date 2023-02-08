@@ -5,6 +5,7 @@ var (
 	COS      *COSConfig
 	Database *DatabaseConfig
 	JWT      *JWTConfig
+	Redis    *ReidsConfig
 )
 
 type ServerConfig struct {
@@ -35,4 +36,12 @@ type DatabaseConfig struct {
 	DBName    string
 	Charset   string
 	ParseTime string
+}
+
+type ReidsConfig struct {
+	Address        string
+	MaxIdle        int
+	MaxActive      int
+	ExpireTime     int
+	MaxRandAddTime int
 }
