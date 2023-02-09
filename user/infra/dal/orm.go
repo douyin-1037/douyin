@@ -44,6 +44,22 @@ func CreateUser(ctx context.Context, username string, password string) (int64, e
 	return int64(user.ID), nil
 }
 
+// IsFollowByID get appuser whether follow user or not
+func IsFollowByID(ctx context.Context, appUserID, userID int64) (bool, error) {
+	//var user model.User
+	//err := DB.WithContext(ctx).Table("relation").Where("to_user_id = ?", userID).Find(&followers).Error
+	var rel model.Relation
+	err := DB.WithContext(ctx).Table("relation").Where("user_id = ? AND to_user_id = ?", appUserID, userID).First(&rel).Error
+	if err != nil {
+		klog.Error("get user by id fail " + err.Error())
+		return false, err
+	}
+	if rel.UserId == appUserID && rel.ToUserId == userID {
+		return true, nil
+	}
+	return false, nil
+}
+
 // FollowUser perform <A Follow B> operation, based on the given user id
 func FollowUser(ctx context.Context, fanID, userID int64) error {
 	follow := model.Relation{
@@ -154,10 +170,12 @@ func GetFriendList(ctx context.Context, userID int64) ([]int64, error) {
 			return err
 		}
 		for _, follow := range follows {
-			err = tx.Table("relation").Where(&model.Relation{UserId: follow.ToUserId, ToUserId: userID}).First(&friend).Error
+			//err = tx.Table("relation").Where(&model.Relation{UserId: follow.ToUserId, ToUserId: userID}).First(&friend).Error
+			err = tx.Table("relation").Where("user_id = ? AND to_user_id = ?", follow.ToUserId, follow.UserId).First(&friend).Error
 			if err != nil {
 				klog.Error("find friend list in GetFriendList() fail " + err.Error())
-				return err
+				//return err
+				break
 			}
 			friends = append(friends, friend[0])
 		}
