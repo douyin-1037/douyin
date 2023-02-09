@@ -92,8 +92,9 @@ func TestAddUserInfo(t *testing.T) {
 func TestGetUserInfo(t *testing.T) {
 	testInit()
 
-	userinfo, err := GetUserInfo(1)
+	userinfo, err := GetUserInfo(4)
 	if err != nil {
+		fmt.Println("err:")
 		fmt.Println(err)
 	}
 	fmt.Println(userinfo)

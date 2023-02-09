@@ -24,10 +24,10 @@ JWT:
   Expires: 24 #hours
 
 COS:
-  SecretID: AKIDDH8lALI1kcHiuwmRt8C5lDWbR3RZT8Zz
-  SecretKey: IPL7kCVipmZBaliR1OXVIsJYZO2TfdMt
-  VideoBucket: https://video-1302049000.cos.ap-guangzhou.myqcloud.com
-  CoverBucket: https://cover-1302049000.cos.ap-guangzhou.myqcloud.com
+  SecretID: your secret id
+  SecretKey: your secret key
+  VideoBucket: cos video bucket
+  CoverBucket: cos cover bucket
 
 Redis:
   Address: 127.0.0.1:6379

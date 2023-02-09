@@ -52,8 +52,8 @@ func TestFollowUser(t *testing.T) {
 
 func TestUnFollowUser(t *testing.T) {
 	testInit()
-	var fanID int64 = 16
-	var userID int64 = 17
+	var fanID int64 = 21
+	var userID int64 = 19
 	err := UnFollowUser(context.Background(), fanID, userID)
 	if err != nil {
 		fmt.Println("********", err)
