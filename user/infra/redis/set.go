@@ -88,3 +88,51 @@ func AddUserInfo(userinfo model.UserRedis) error {
 
 	return nil
 }
+
+func AddFollowList(userId int64, FollowIdList []int64) error {
+	redisConn := redisPool.Get()
+	defer redisConn.Close()
+
+	key := "follow:" + strconv.FormatInt(userId, 10)
+
+	l := len(FollowIdList)
+
+	for i, followId := range FollowIdList {
+		_, err := redisConn.Do("zadd", key, l-i, followId)
+		if err != nil {
+			redisConn.Do("del", key)
+			return err
+		}
+	}
+
+	_, err := redisConn.Do("expire", key, expireTimeUtil.GetRandTime())
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func AddFanList(userId int64, FanIdList []int64) error {
+	redisConn := redisPool.Get()
+	defer redisConn.Close()
+
+	key := "fan:" + strconv.FormatInt(userId, 10)
+
+	l := len(FanIdList)
+
+	for i, fanId := range FanIdList {
+		_, err := redisConn.Do("zadd", key, l-i, fanId)
+		if err != nil {
+			redisConn.Do("del", key)
+			return err
+		}
+	}
+
+	_, err := redisConn.Do("expire", key, expireTimeUtil.GetRandTime())
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
