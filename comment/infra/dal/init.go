@@ -1,7 +1,10 @@
 package dal
 
+// @path: comment/infra/dal/init.go
+// @description: initialization of gorm.DB
+// @auth: wan-nan <wan_nan@foxmail.com>
 import (
-	"douyin/common/conf"
+	config "douyin/common/conf"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -9,10 +12,9 @@ import (
 
 var DB *gorm.DB
 
-// Init DB
 func Init() {
 	var err error
-	DB, err = gorm.Open(mysql.Open(conf.Database.DSN()),
+	DB, err = gorm.Open(mysql.Open(config.Database.DSN()),
 		&gorm.Config{
 			PrepareStmt:            true,
 			SkipDefaultTransaction: true,
