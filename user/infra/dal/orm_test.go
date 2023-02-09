@@ -93,7 +93,7 @@ func TestGetFollowList(t *testing.T) {
 
 func TestGetFriendList(t *testing.T) {
 	testInit()
-	var userID int64 = 26
+	var userID int64 = 27
 	list, err := GetFriendList(context.Background(), userID)
 	if err != nil {
 		fmt.Println("********", err)

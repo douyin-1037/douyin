@@ -39,9 +39,19 @@ func TestDeleteRelation(t *testing.T) {
 	}
 }
 
+func TestAddFollowList(t *testing.T) {
+	testInit()
+	followList := []int64{2, 3, 4, 5, 6}
+	err := AddFollowList(7, followList)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+}
+
 func TestGetFollowList(t *testing.T) {
 	testInit()
-	result, err := GetFollowList(1)
+	result, err := GetFollowList(7)
 	if err != nil {
 		fmt.Println(err)
 	}
