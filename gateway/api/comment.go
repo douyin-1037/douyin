@@ -39,7 +39,7 @@ func CommentAction(c *gin.Context) {
 		}
 		coredto.Send(c, resp)
 	case 2: // delete one comment
-		if err := application.CommentAppIns.DeleteComment(c, param.CommentId); err != nil {
+		if err := application.CommentAppIns.DeleteComment(c, param.CommentId, param.VideoId); err != nil {
 			coredto.Error(c, err)
 			return
 		}

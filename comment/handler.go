@@ -24,12 +24,13 @@ func (s *CommentServiceImpl) CreateComment(ctx context.Context, req *commentprot
 		return resp, nil
 	}
 
-	err = service.NewCreateCommentService(ctx).CreateComment(req)
+	commentInfo, err := service.NewCreateCommentService(ctx).CreateComment(req)
 	if err != nil {
 		resp.BaseResp = pack.BuildBaseResp(err)
 		return resp, nil
 	}
 	resp.BaseResp = pack.BuildBaseResp(code.Success)
+	resp.CommentInfo = commentInfo
 	return resp, nil
 }
 
@@ -37,7 +38,7 @@ func (s *CommentServiceImpl) CreateComment(ctx context.Context, req *commentprot
 func (s *CommentServiceImpl) DeleteComment(ctx context.Context, req *commentproto.DeleteCommentReq) (resp *commentproto.DeleteCommentResp, err error) {
 	resp = new(commentproto.DeleteCommentResp)
 
-	if req.CommentId < 0 { // ensure the ID > 0
+	if req.CommentId < 0 || req.VideoId < 0 { // ensure the ID > 0
 		resp.BaseResp = pack.BuildBaseResp(code.ParamErr)
 		return resp, nil
 	}
