@@ -2,6 +2,7 @@ package redis
 
 import (
 	"douyin/common/conf"
+	"douyin/common/util"
 	"douyin/user/infra/redis/model"
 	"fmt"
 	"github.com/gomodule/redigo/redis"
@@ -10,9 +11,9 @@ import (
 
 func testInit() {
 	conf.InitConfig()
-	expireTimeUtil = ExpireTimeUtil{
-		expireTime:     conf.Redis.ExpireTime,
-		maxRandAddTime: conf.Redis.MaxRandAddTime,
+	expireTimeUtil = util.ExpireTimeUtil{
+		ExpireTime:     conf.Redis.ExpireTime,
+		MaxRandAddTime: conf.Redis.MaxRandAddTime,
 	}
 	redisPool = &redis.Pool{
 		MaxIdle:   conf.Redis.MaxIdle,
@@ -25,7 +26,7 @@ func testInit() {
 
 func TestAddRelation(t *testing.T) {
 	testInit()
-	err := AddRelation(2, 3)
+	err := AddRelation(1, 3)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -33,7 +34,7 @@ func TestAddRelation(t *testing.T) {
 
 func TestDeleteRelation(t *testing.T) {
 	testInit()
-	err := DeleteRelation(2, 3)
+	err := DeleteRelation(1, 3)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -42,7 +43,7 @@ func TestDeleteRelation(t *testing.T) {
 func TestAddFollowList(t *testing.T) {
 	testInit()
 	followList := []int64{2, 3, 4, 5, 6}
-	err := AddFollowList(7, followList)
+	err := AddFollowList(1, followList)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -51,7 +52,7 @@ func TestAddFollowList(t *testing.T) {
 
 func TestGetFollowList(t *testing.T) {
 	testInit()
-	result, err := GetFollowList(7)
+	result, err := GetFollowList(1)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -108,4 +109,13 @@ func TestGetUserInfo(t *testing.T) {
 		fmt.Println(err)
 	}
 	fmt.Println(userinfo)
+}
+
+func TestIsFollowKeyExist(t *testing.T) {
+	testInit()
+	result, err := IsFollowKeyExist(1)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(result)
 }

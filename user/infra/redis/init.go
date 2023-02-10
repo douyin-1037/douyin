@@ -2,13 +2,13 @@ package redis
 
 import (
 	"douyin/common/conf"
-	"fmt"
+	"douyin/common/util"
 	"github.com/gomodule/redigo/redis"
 )
 
 var redisPool *redis.Pool
 
-var expireTimeUtil ExpireTimeUtil
+var expireTimeUtil util.ExpireTimeUtil
 
 func Init() {
 	redisPool = &redis.Pool{
@@ -18,9 +18,9 @@ func Init() {
 			return redis.Dial("tcp", conf.Redis.Address)
 		},
 	}
-	expireTimeUtil = ExpireTimeUtil{
-		expireTime:     conf.Redis.ExpireTime,
-		maxRandAddTime: conf.Redis.MaxRandAddTime,
+	expireTimeUtil = util.ExpireTimeUtil{
+		ExpireTime:     conf.Redis.ExpireTime,
+		MaxRandAddTime: conf.Redis.MaxRandAddTime,
 	}
-	fmt.Println(expireTimeUtil.maxRandAddTime)
+
 }
