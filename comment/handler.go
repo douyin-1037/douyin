@@ -24,12 +24,13 @@ func (s *CommentServiceImpl) CreateComment(ctx context.Context, req *commentprot
 		return resp, nil
 	}
 
-	err = service.NewCreateCommentService(ctx).CreateComment(req)
+	commentInfo, err := service.NewCreateCommentService(ctx).CreateComment(req)
 	if err != nil {
 		resp.BaseResp = pack.BuildBaseResp(err)
 		return resp, nil
 	}
 	resp.BaseResp = pack.BuildBaseResp(code.Success)
+	resp.CommentInfo = commentInfo
 	return resp, nil
 }
 

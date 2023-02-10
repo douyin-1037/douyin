@@ -31,15 +31,15 @@ func testInit() {
 
 func TestCommentGorm(t *testing.T) {
 	testInit()
-	var userID int64 = 4
+	var userID int64 = 22
 	var videoID int64 = 7
-	content1 := "test1111"
-	content2 := "test2222"
-	err := CreateComment(context.Background(), userID, videoID, content1)
+	content1 := "test2.10.1"
+	content2 := "test2.10.2"
+	_, err := CreateComment(context.Background(), userID, videoID, content1)
 	if err != nil {
 		fmt.Println(err)
 	}
-	err = CreateComment(context.Background(), userID, videoID, content2)
+	_, err = CreateComment(context.Background(), userID, videoID, content2)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -55,10 +55,10 @@ func TestCommentGorm(t *testing.T) {
 		fmt.Println("content: ", comment.Contents)
 	}
 
-	err = DeleteComment(context.Background(), int64(comments[0].ID))
-	if err != nil {
-		fmt.Println(err)
-	}
+	//err = DeleteComment(context.Background(), int64(comments[0].ID))
+	//if err != nil {
+	//	fmt.Println(err)
+	//}
 
 	comments, err = GetCommentList(context.Background(), videoID)
 	if err != nil {

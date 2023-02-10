@@ -70,7 +70,7 @@ func (c CommentAppService) GetCommentList(ctx context.Context, appUserID int64, 
 	for i := 0; i < n; i++ {
 		authorInfo, err := rpc.GetUser(ctx, &userproto.GetUserReq{
 			AppUserId: appUserID,
-			UserId:    commentInfos[i].UserId,
+			UserId:    commentInfos[i].UserId, //获取评论的作者id
 		})
 		if err != nil {
 			return nil, errors.Wrapf(err, "GetUser rpc failed, appUserID: %v, userID: %v", appUserID, commentInfos[i].UserId)
