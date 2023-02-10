@@ -47,9 +47,9 @@ func (c CommentAppService) CreateComment(ctx context.Context, appUserID int64, v
 
 // DeleteComment
 // delete a comment
-func (c CommentAppService) DeleteComment(ctx context.Context, commentID int64) (err error) {
+func (c CommentAppService) DeleteComment(ctx context.Context, commentID int64, videoID int64) (err error) {
 	//panic("implement me")
-	err = rpc.DeleteComment(ctx, &commentproto.DeleteCommentReq{CommentId: commentID})
+	err = rpc.DeleteComment(ctx, &commentproto.DeleteCommentReq{CommentId: commentID, VideoId: videoID})
 	if err != nil {
 		return errors.Wrapf(err, "DeleteComment rpc failed, commentID: %v", commentID)
 	}

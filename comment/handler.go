@@ -38,7 +38,7 @@ func (s *CommentServiceImpl) CreateComment(ctx context.Context, req *commentprot
 func (s *CommentServiceImpl) DeleteComment(ctx context.Context, req *commentproto.DeleteCommentReq) (resp *commentproto.DeleteCommentResp, err error) {
 	resp = new(commentproto.DeleteCommentResp)
 
-	if req.CommentId < 0 { // ensure the ID > 0
+	if req.CommentId < 0 || req.VideoId < 0 { // ensure the ID > 0
 		resp.BaseResp = pack.BuildBaseResp(code.ParamErr)
 		return resp, nil
 	}

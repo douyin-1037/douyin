@@ -33,43 +33,45 @@ func TestCommentGorm(t *testing.T) {
 	testInit()
 	var userID int64 = 22
 	var videoID int64 = 7
-	content1 := "test2.10.1"
-	content2 := "test2.10.2"
+	content1 := "12:02"
+	//content2 := "test2.10.2"
 	_, err := CreateComment(context.Background(), userID, videoID, content1)
 	if err != nil {
 		fmt.Println(err)
 	}
-	_, err = CreateComment(context.Background(), userID, videoID, content2)
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	comments, err := GetCommentList(context.Background(), videoID)
-	if err != nil {
-		fmt.Println(err)
-	}
-	for _, comment := range comments {
-		fmt.Println("commentID: ", comment.ID)
-		fmt.Println("userID: ", comment.UserId)
-		fmt.Println("videoID: ", comment.VideoId)
-		fmt.Println("content: ", comment.Contents)
-	}
-
-	//err = DeleteComment(context.Background(), int64(comments[0].ID))
+	//_, err = CreateComment(context.Background(), userID, videoID, content2)
 	//if err != nil {
 	//	fmt.Println(err)
 	//}
 
-	comments, err = GetCommentList(context.Background(), videoID)
-	if err != nil {
-		fmt.Println(err)
-	}
-	for _, comment := range comments {
-		fmt.Println("commentID: ", comment.ID)
-		fmt.Println("userID: ", comment.UserId)
-		fmt.Println("videoID: ", comment.VideoId)
-		fmt.Println("content: ", comment.Contents)
-	}
+	//comments, err := GetCommentList(context.Background(), videoID)
+	//if err != nil {
+	//	fmt.Println(err)
+	//}
+	//for _, comment := range comments {
+	//	fmt.Println("commentID: ", comment.ID)
+	//	fmt.Println("userID: ", comment.UserId)
+	//	fmt.Println("videoID: ", comment.VideoId)
+	//	fmt.Println("content: ", comment.Contents)
+	//	fmt.Println("publish time: ", time.Unix(comment.CreatedAt.Unix(), 0).Format("2006-01-02 15:04:05")+"\n")
+	//}
+	//
+	//err = DeleteComment(context.Background(), int64(comments[4].ID), comments[4].VideoId)
+	//if err != nil {
+	//	fmt.Println(err)
+	//}
+	//
+	//comments, err = GetCommentList(context.Background(), videoID)
+	//if err != nil {
+	//	fmt.Println(err)
+	//}
+	//for _, comment := range comments {
+	//	fmt.Println("commentID: ", comment.ID)
+	//	fmt.Println("userID: ", comment.UserId)
+	//	fmt.Println("videoID: ", comment.VideoId)
+	//	fmt.Println("content: ", comment.Contents)
+	//	fmt.Println("publish time: ", time.Unix(comment.CreatedAt.Unix(), 0).Format("2006-01-02 15:04:05")+"\n")
+	//}
 }
 
 //func TestCreateComment(t *testing.T) {
@@ -102,5 +104,6 @@ func TestCommentGorm(t *testing.T) {
 //		fmt.Println("userID: ", comment.UserId)
 //		fmt.Println("videoID: ", comment.VideoId)
 //		fmt.Println("content: ", comment.Contents)
+//		fmt.Println("publish time: ", time.Unix(comment.CreatedAt.Unix(), 0).Format("2006-01-02 15:04:05")+"\n")
 //	}
 //}
