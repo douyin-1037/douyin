@@ -112,7 +112,7 @@ func GetIsLikeById(userId int64, videoId int64) (bool, error) {
 	redisConn := redisPool.Get()
 	defer redisConn.Close()
 
-	key := constant.FollowRedisPrefix + strconv.FormatInt(userId, 10)
+	key := constant.LikeRedisPrefix + strconv.FormatInt(userId, 10)
 	likeKey := strconv.FormatInt(videoId, 10)
 	result, err := redisConn.Do("zscore", key, likeKey)
 	if err != nil {
