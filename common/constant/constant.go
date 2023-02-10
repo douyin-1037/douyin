@@ -7,3 +7,14 @@ const (
 	CommentDomainServiceName = "comment_domain_service"
 	MessageDomainServiceName = "message_domain_service"
 )
+
+const (
+	UserInfoRedisPrefix     = "user_info:"
+	FollowRedisPrefix       = "follow:"
+	FanRedisPrefix          = "fan:"
+	VideoInfoRedisPrefix    = "video_info:"
+	LikeRedisPrefix         = "like:"
+	PublishRedisPrefix      = "publish:"
+	CommentCountRedisPrefix = "comment_count:"
+	LikeCountRedisPrefix    = "like_count:"
+)
