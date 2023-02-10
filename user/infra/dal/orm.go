@@ -3,6 +3,7 @@ package dal
 import (
 	"context"
 	"douyin/user/infra/dal/model"
+	"errors"
 
 	"github.com/cloudwego/kitex/pkg/klog"
 	"gorm.io/gorm"
@@ -21,7 +22,8 @@ func GetUserByName(ctx context.Context, userName string) (*model.User, error) {
 // GetUserByID needs to query user information by name
 func GetUserByID(ctx context.Context, userID int64) (*model.User, error) {
 	var user model.User
-	if err := DB.WithContext(ctx).Where("id = ?", userID).First(&user).Error; err != nil {
+	err := DB.WithContext(ctx).Where("id = ?", userID).First(&user).Error
+	if err != nil {
 		klog.Error("get user by id fail " + err.Error())
 		return nil, err
 	}
@@ -50,14 +52,21 @@ func IsFollowByID(ctx context.Context, appUserID, userID int64) (bool, error) {
 	//err := DB.WithContext(ctx).Table("relation").Where("to_user_id = ?", userID).Find(&followers).Error
 	var rel model.Relation
 	err := DB.WithContext(ctx).Table("relation").Where("user_id = ? AND to_user_id = ?", appUserID, userID).First(&rel).Error
-	if err != nil {
+	/* if err != nil {
 		klog.Error("get user by id fail " + err.Error())
 		return false, err
 	}
 	if rel.UserId == appUserID && rel.ToUserId == userID {
 		return true, nil
 	}
-	return false, nil
+	return false, nil */
+	if err == nil {
+		return true, nil
+	}
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return false, nil
+	}
+	return false, err
 }
 
 // FollowUser perform <A Follow B> operation, based on the given user id
@@ -102,6 +111,14 @@ func UnFollowUser(ctx context.Context, fanID, userID int64) error {
 
 	err := DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		var err error
+		//var temp model.Relation
+		//err = tx.Table("relation").Where("user_id = ? AND to_user_id = ? AND deleted_at isnull", fanID, userID).First(&temp).Error	这行是昨晚尝试查询时间戳是否非空的一种方法，但是isnull似乎已经被弃用了
+		/*
+			err = tx.Table("relation").Where("user_id = ? AND to_user_id = ? AND deleted_at isnull", fanID, userID).First(&temp).Error
+			if err != nil {
+				return err
+			}
+		*/
 		err = tx.Table("relation").Where("user_id = ? AND to_user_id = ?", fanID, userID).Delete(&follow).Error
 		if err != nil {
 			klog.Error("delete relation record fail " + err.Error())
@@ -174,7 +191,6 @@ func GetFriendList(ctx context.Context, userID int64) ([]int64, error) {
 			err = tx.Table("relation").Where("user_id = ? AND to_user_id = ?", follow.ToUserId, follow.UserId).First(&friend).Error
 			if err != nil {
 				klog.Error("find friend list in GetFriendList() fail " + err.Error())
-				//return err
 				break
 			}
 			friends = append(friends, friend[0])
