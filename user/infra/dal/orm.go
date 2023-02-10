@@ -12,7 +12,8 @@ import (
 // GetUserByName needs to query user information by name
 func GetUserByName(ctx context.Context, userName string) (*model.User, error) {
 	var user model.User
-	if err := DB.WithContext(ctx).Where("name = ?", userName).First(&user).Error; err != nil {
+	err := DB.WithContext(ctx).Where("name = ?", userName).First(&user).Error
+	if err != nil {
 		klog.Error("get user by name fail " + err.Error())
 		return nil, err
 	}
@@ -71,11 +72,21 @@ func IsFollowByID(ctx context.Context, appUserID, userID int64) (bool, error) {
 
 // FollowUser perform <A Follow B> operation, based on the given user id
 func FollowUser(ctx context.Context, fanID, userID int64) error {
+	if fanID == userID {
+		return errors.New("you can't follow yourself")
+	}
 	follow := model.Relation{
 		UserId:   fanID,
 		ToUserId: userID,
 	}
-
+	var temp model.Relation
+	terr := DB.Table("relation").Where("user_id = ? AND to_user_id = ?", fanID, userID).First(&temp).Error
+	if temp.UserId == fanID && temp.ToUserId == userID {
+		return errors.New("you have followed the user")
+	}
+	if !errors.Is(terr, gorm.ErrRecordNotFound) {
+		return terr
+	}
 	err := DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		var err error
 		err = tx.Table("relation").Create(&follow).Error
@@ -104,21 +115,21 @@ func FollowUser(ctx context.Context, fanID, userID int64) error {
 
 // UnFollowUser perform <A UnFollow B> operation, based on the given user id
 func UnFollowUser(ctx context.Context, fanID, userID int64) error {
+	if fanID == userID {
+		return errors.New("you can't unfollow yourself")
+	}
 	follow := model.Relation{
 		UserId:   fanID,
 		ToUserId: userID,
 	}
+	var temp model.Relation
+	terr := DB.Table("relation").Where("user_id = ? AND to_user_id = ?", fanID, userID).First(&temp).Error
 
+	if errors.Is(terr, gorm.ErrRecordNotFound) {
+		return terr
+	}
 	err := DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		var err error
-		//var temp model.Relation
-		//err = tx.Table("relation").Where("user_id = ? AND to_user_id = ? AND deleted_at isnull", fanID, userID).First(&temp).Error	这行是昨晚尝试查询时间戳是否非空的一种方法，但是isnull似乎已经被弃用了
-		/*
-			err = tx.Table("relation").Where("user_id = ? AND to_user_id = ? AND deleted_at isnull", fanID, userID).First(&temp).Error
-			if err != nil {
-				return err
-			}
-		*/
 		err = tx.Table("relation").Where("user_id = ? AND to_user_id = ?", fanID, userID).Delete(&follow).Error
 		if err != nil {
 			klog.Error("delete relation record fail " + err.Error())
@@ -147,6 +158,10 @@ func UnFollowUser(ctx context.Context, fanID, userID int64) error {
 func GetFanList(ctx context.Context, userID int64) ([]int64, error) {
 	var followers []*model.Relation
 	err := DB.WithContext(ctx).Table("relation").Where("to_user_id = ?", userID).Find(&followers).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		klog.Error(err)
+		return nil, err
+	}
 	if err != nil {
 		klog.Error("find fan list fail " + err.Error())
 		return nil, err
@@ -162,6 +177,10 @@ func GetFanList(ctx context.Context, userID int64) ([]int64, error) {
 func GetFollowList(ctx context.Context, userID int64) ([]int64, error) {
 	var follows []*model.Relation
 	err := DB.WithContext(ctx).Table("relation").Where("user_id = ?", userID).Find(&follows).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		klog.Error(err)
+		return nil, err
+	}
 	if err != nil {
 		klog.Error("find follow list fail " + err.Error())
 		return nil, err
@@ -183,6 +202,10 @@ func GetFriendList(ctx context.Context, userID int64) ([]int64, error) {
 		var err error
 		err = tx.Table("relation").Where("user_id = ?", userID).Find(&follows).Error
 		if err != nil {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				klog.Error(err)
+				return err
+			}
 			klog.Error("find follow list in GetFriendList() fail " + err.Error())
 			return err
 		}

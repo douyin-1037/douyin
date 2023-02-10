@@ -4,6 +4,9 @@ import (
 	"context"
 	"douyin/code_gen/kitex_gen/userproto"
 	"douyin/user/infra/dal"
+	"douyin/user/infra/redis"
+
+	"github.com/cloudwego/kitex/pkg/klog"
 )
 
 type GetFanListService struct {
@@ -18,17 +21,45 @@ func (s *GetFanListService) GetFanList(req *userproto.GetFanListReq) ([]*userpro
 	appUserId := req.AppUserId
 	userId := req.UserId
 
+	users, rerr := redis.GetFollowList(userId)
+	if rerr != nil || users == nil {
+		klog.Error("get follow list Redis missed " + rerr.Error())
+	}
+	if users != nil {
+		return GetFanListMakeList(s, appUserId, users)
+	}
+
 	//查看当前用户的粉丝列表uids
 	uids, err := dal.GetFanList(s.ctx, userId)
 	if err != nil {
 		return nil, err
 	}
-	if len(uids) == 0 {
+	return GetFanListMakeList(s, appUserId, uids)
+	/*
+		if len(uids) == 0 {
+			return nil, nil
+		}
+		userInfos := make([]*userproto.UserInfo, len(uids))
+
+		for i, uid := range uids {
+			userInfo, err := NewGetUserService(s.ctx).GetUserInfoByID(appUserId, uid)
+			if err != nil {
+				return nil, err
+			}
+			userInfos[i] = userInfo
+		}
+
+		return userInfos, nil
+	*/
+}
+
+func GetFanListMakeList(s *GetFanListService, appUserId int64, usersId []int64) ([]*userproto.UserInfo, error) {
+	if len(usersId) == 0 {
 		return nil, nil
 	}
-	userInfos := make([]*userproto.UserInfo, len(uids))
+	userInfos := make([]*userproto.UserInfo, len(usersId))
 
-	for i, uid := range uids {
+	for i, uid := range usersId {
 		userInfo, err := NewGetUserService(s.ctx).GetUserInfoByID(appUserId, uid)
 		if err != nil {
 			return nil, err
