@@ -7,11 +7,11 @@ import (
 	"strconv"
 )
 
-func GetFollowList(userid int64) ([]int64, error) {
+func GetFollowList(userId int64) ([]int64, error) {
 	redisConn := redisPool.Get()
 	defer redisConn.Close()
 
-	key := "follow:" + strconv.FormatInt(userid, 10)
+	key := "follow:" + strconv.FormatInt(userId, 10)
 	result, err := redis.Int64s(redisConn.Do("zrevrange", key, 0, -1))
 	if err != nil {
 		return nil, err
@@ -20,11 +20,11 @@ func GetFollowList(userid int64) ([]int64, error) {
 
 }
 
-func GetFanList(userid int64) ([]int64, error) {
+func GetFanList(userId int64) ([]int64, error) {
 	redisConn := redisPool.Get()
 	defer redisConn.Close()
 
-	key := "fan:" + strconv.FormatInt(userid, 10)
+	key := "fan:" + strconv.FormatInt(userId, 10)
 	result, err := redis.Int64s(redisConn.Do("zrevrange", key, 0, -1))
 	if err != nil {
 		return nil, err
@@ -75,4 +75,32 @@ func GetUserInfo(userid int64) (*model.UserRedis, error) {
 		return nil, err
 	}
 	return userinfo, nil
+}
+
+func IsFollowKeyExist(userId int64) (bool, error) {
+	redisConn := redisPool.Get()
+	defer redisConn.Close()
+	key := "follow:" + strconv.FormatInt(userId, 10)
+	result, err := redis.Strings(redisConn.Do("keys", key))
+	if err != nil {
+		return false, err
+	}
+	if len(result) == 0 {
+		return false, nil
+	}
+	return true, nil
+}
+
+func IsFanKeyExist(userId int64) (bool, error) {
+	redisConn := redisPool.Get()
+	defer redisConn.Close()
+	key := "fan:" + strconv.FormatInt(userId, 10)
+	result, err := redis.Strings(redisConn.Do("keys", key))
+	if err != nil {
+		return false, err
+	}
+	if len(result) == 0 {
+		return false, nil
+	}
+	return true, nil
 }
