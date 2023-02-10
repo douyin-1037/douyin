@@ -47,9 +47,9 @@ func (c CommentAppService) CreateComment(ctx context.Context, appUserID int64, v
 
 // DeleteComment
 // delete a comment
-func (c CommentAppService) DeleteComment(ctx context.Context, commentID int64) (err error) {
+func (c CommentAppService) DeleteComment(ctx context.Context, commentID int64, videoID int64) (err error) {
 	//panic("implement me")
-	err = rpc.DeleteComment(ctx, &commentproto.DeleteCommentReq{CommentId: commentID})
+	err = rpc.DeleteComment(ctx, &commentproto.DeleteCommentReq{CommentId: commentID, VideoId: videoID})
 	if err != nil {
 		return errors.Wrapf(err, "DeleteComment rpc failed, commentID: %v", commentID)
 	}
@@ -70,7 +70,7 @@ func (c CommentAppService) GetCommentList(ctx context.Context, appUserID int64, 
 	for i := 0; i < n; i++ {
 		authorInfo, err := rpc.GetUser(ctx, &userproto.GetUserReq{
 			AppUserId: appUserID,
-			UserId:    commentInfos[i].UserId,
+			UserId:    commentInfos[i].UserId, //获取评论的作者id
 		})
 		if err != nil {
 			return nil, errors.Wrapf(err, "GetUser rpc failed, appUserID: %v, userID: %v", appUserID, commentInfos[i].UserId)

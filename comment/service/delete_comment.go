@@ -20,5 +20,5 @@ func NewDeleteCommentService(ctx context.Context) *DeleteCommentService {
 }
 
 func (s *DeleteCommentService) DeleteComment(req *commentproto.DeleteCommentReq) error {
-	return dal.DeleteComment(s.ctx, req.CommentId)
+	return dal.DeleteComment(s.ctx, req.CommentId, req.VideoId)
 }

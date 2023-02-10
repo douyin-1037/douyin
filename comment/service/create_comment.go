@@ -19,6 +19,6 @@ func NewCreateCommentService(ctx context.Context) *CreateCommentService {
 	}
 }
 
-func (s *CreateCommentService) CreateComment(req *commentproto.CreateCommentReq) error {
+func (s *CreateCommentService) CreateComment(req *commentproto.CreateCommentReq) (*commentproto.CommentInfo, error) {
 	return dal.CreateComment(s.ctx, req.UserId, req.VideoId, req.Content)
 }
