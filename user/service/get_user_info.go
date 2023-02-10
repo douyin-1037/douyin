@@ -33,6 +33,7 @@ func (s *GetUserService) GetUserInfoByID(appUserId, userId int64) (*userproto.Us
 	if ruser != nil {
 		isfollow, ierr := dal.IsFollowByID(s.ctx, appUserId, userId)
 		if ierr != nil {
+			klog.Error("get user info by id Redis missed " + ierr.Error())
 			return nil, ierr
 		}
 		userInfo := &userproto.UserInfo{
@@ -54,6 +55,7 @@ func (s *GetUserService) GetUserInfoByID(appUserId, userId int64) (*userproto.Us
 	}
 	isfollow, ierr := dal.IsFollowByID(s.ctx, appUserId, userId)
 	if ierr != nil {
+		klog.Error("get user info by id Redis error " + ierr.Error())
 		return nil, ierr
 	}
 	userInfo := &userproto.UserInfo{

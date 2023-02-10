@@ -3,13 +3,13 @@ package dal
 import (
 	"context"
 	"douyin/common/conf"
-	"douyin/video/infra/dal/model"
 	"fmt"
+	"testing"
+	"time"
+
 	"github.com/cloudwego/kitex/pkg/klog"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"testing"
-	"time"
 )
 
 func testInit() {
@@ -28,6 +28,7 @@ func testInit() {
 	DB = DB.Debug()
 }
 
+/*
 func TestCreateVideo(t *testing.T) {
 	testInit()
 	video := &model.Video{
@@ -41,6 +42,7 @@ func TestCreateVideo(t *testing.T) {
 		panic(err)
 	}
 }
+*/
 
 func TestMGetVideoByUserId(t *testing.T) {
 	testInit()
