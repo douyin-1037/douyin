@@ -23,15 +23,18 @@ SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `comment`;
 CREATE TABLE `comment` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `comment_uuid` bigint(20) unsigned NOT NULL DEFAULT '0',
   `user_id` bigint(20) unsigned NOT NULL DEFAULT '0',
   `video_id` bigint(20) unsigned NOT NULL DEFAULT '0',
   `contents` varchar(255) NOT NULL DEFAULT '' COMMENT '评论内容',
+  `create_time` bigint(20) unsigned NOT NULL DEFAULT '0',
   `created_at` timestamp NULL DEFAULT NULL COMMENT '创建时间',
   `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `deleted_at` timestamp NULL DEFAULT NULL COMMENT '删除时间',
   PRIMARY KEY (`id`),
   KEY `fk_user_comment` (`user_id`),
   KEY `fk_video_comment` (`video_id`),
+  KEY `fk_uuid_comment` (`comment_uuid`),
   CONSTRAINT `fk_user_comment` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
   CONSTRAINT `fk_video_comment` FOREIGN KEY (`video_id`) REFERENCES `video` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='评论表';
