@@ -1,5 +1,8 @@
 package service
 
+// @path: video/service/unlike_video.go
+// @description: UnLike service of video
+// @author: Chongzhi <dczdcz2001@aliyun.com>
 import (
 	"context"
 	"douyin/code_gen/kitex_gen/videoproto"

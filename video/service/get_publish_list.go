@@ -1,5 +1,8 @@
 package service
 
+// @path: video/service/get_publish_list.go
+// @description: GetVideoByUserId service of video
+// @author: Chongzhi <dczdcz2001@aliyun.com>
 import (
 	"context"
 	"douyin/code_gen/kitex_gen/videoproto"

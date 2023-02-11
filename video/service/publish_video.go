@@ -1,5 +1,8 @@
 package service
 
+// @path: video/service/publish_video.go
+// @description: CreateVideo service of video
+// @author: Chongzhi <dczdcz2001@aliyun.com>
 import (
 	"context"
 	"douyin/code_gen/kitex_gen/videoproto"

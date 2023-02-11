@@ -1,5 +1,8 @@
 package dal
 
+// @path: video/infra/dal/orm_test.go
+// @description: test of orm in video
+// @author: Chongzhi <dczdcz2001@aliyun.com>
 import (
 	"context"
 	"douyin/common/conf"
