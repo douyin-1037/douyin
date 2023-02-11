@@ -99,8 +99,8 @@ func TestMGetVideoByTime(t *testing.T) {
 
 func TestLikeVideo(t *testing.T) {
 	testInit()
-	userId := int64(1)
-	videoId := int64(11)
+	userId := int64(3)
+	videoId := int64(14)
 	if err := LikeVideo(context.Background(), userId, videoId); err != nil {
 		panic(err)
 	}
@@ -118,11 +118,9 @@ func TestUnLikeVideo(t *testing.T) {
 func TestMGetLikeList(t *testing.T) {
 	testInit()
 	userId := int64(1)
-	favorites, err := MGetLikeList(context.Background(), userId)
+	likeList, err := MGetLikeList(context.Background(), userId)
 	if err != nil {
 		panic(err)
 	}
-	for i := 0; i < len(favorites); i++ {
-		fmt.Printf("%#v\n", *favorites[i])
-	}
+	fmt.Println(likeList)
 }

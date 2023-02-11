@@ -101,21 +101,22 @@ func UnLikeVideo(ctx context.Context, userID int64, videoID int64) error {
 	return nil
 }
 
-// MGetLikeList 通过用户ID获取用户点赞的Favorite[]数组
-func MGetLikeList(ctx context.Context, userID int64) ([]*model.Favorite, error) {
+// MGetLikeList 通过用户ID获取用户点赞的视频ID数组
+func MGetLikeList(ctx context.Context, userID int64) ([]int64, error) {
 	var favorites []*model.Favorite
 	if err := DB.WithContext(ctx).Where("user_id = ?", userID).Find(&favorites).Error; err != nil {
 		return nil, err
 	}
-	return favorites, nil
+	var likeList []int64
+	for _, favorite := range favorites {
+		likeList = append(likeList, favorite.VideoId)
+	}
+	return likeList, nil
 }
 
-// MGetLikeVideo 通过Favorite[]数组中的视频ID查询得到model.Video信息
-func MGetLikeVideo(ctx context.Context, favorites []*model.Favorite) ([]*model.Video, error) {
-	length := len(favorites)
-	var videos = make([]*model.Video, length)
-	for i, like := range favorites {
-		DB.WithContext(ctx).Where("ID = ?", like.VideoId).First(&videos[i])
-	}
-	return videos, nil
+// MGetVideoInfo 通过视频ID查询得到model.Video信息
+func MGetVideoInfo(ctx context.Context, videoID int64) (*model.Video, error) {
+	var videoInfo *model.Video
+	DB.WithContext(ctx).Where("ID = ?", videoID).First(&videoInfo)
+	return videoInfo, nil
 }

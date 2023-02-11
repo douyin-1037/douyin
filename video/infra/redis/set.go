@@ -69,7 +69,7 @@ func AddLikeList(userId int64, likeList []int64) error {
 	redisConn := redisPool.Get()
 	defer redisConn.Close()
 
-	key := constant.FollowRedisPrefix + strconv.FormatInt(userId, 10)
+	key := constant.LikeRedisPrefix + strconv.FormatInt(userId, 10)
 
 	l := len(likeList)
 

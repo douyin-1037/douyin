@@ -80,3 +80,21 @@ func TestDelPublishList(t *testing.T) {
 		fmt.Println(err)
 	}
 }
+
+func TestAddLikeList(t *testing.T) {
+	testInit()
+	var likeList = []int64{11, 20}
+	err := AddLikeList(1, likeList)
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+
+func TestGetLikeList(t *testing.T) {
+	testInit()
+	likeList, err := GetLikeList(3)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(likeList)
+}
