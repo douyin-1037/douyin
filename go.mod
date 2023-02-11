@@ -12,6 +12,7 @@ require (
 	github.com/kitex-contrib/tracer-opentracing v0.0.2
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/pkg/errors v0.9.1
+	github.com/sony/sonyflake v1.1.0
 	github.com/spf13/viper v1.15.0
 	github.com/tencentyun/cos-go-sdk-v5 v0.7.41
 	github.com/uber/jaeger-client-go v2.29.1+incompatible

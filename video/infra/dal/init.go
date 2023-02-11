@@ -11,6 +11,7 @@ var DB *gorm.DB
 
 // Init DB
 func Init() {
+	conf.InitConfig()
 	var err error
 	DB, err = gorm.Open(mysql.Open(conf.Database.DSN()),
 		&gorm.Config{
