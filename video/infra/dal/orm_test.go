@@ -28,21 +28,13 @@ func testInit() {
 	DB = DB.Debug()
 }
 
-/*
 func TestCreateVideo(t *testing.T) {
 	testInit()
-	video := &model.Video{
-		UserId:   6,
-		Title:    "标题",
-		PlayUrl:  "123",
-		CoverUrl: "456",
-	}
-	err := CreateVideo(context.Background(), video)
+	err := CreateVideo(context.Background(), 3, "3_title", "3_playUrl", "3_coverUrl")
 	if err != nil {
 		panic(err)
 	}
 }
-*/
 
 func TestMGetVideoByUserId(t *testing.T) {
 	testInit()
@@ -119,14 +111,14 @@ func TestUnLikeVideo(t *testing.T) {
 	}
 }
 
-func TestMGetLikeVideo(t *testing.T) {
+func TestMGetLikeList(t *testing.T) {
 	testInit()
 	userId := int64(1)
-	videos, err := MGetLikeVideo(context.Background(), userId)
+	favorites, err := MGetLikeList(context.Background(), userId)
 	if err != nil {
 		panic(err)
 	}
-	for i := 0; i < len(videos); i++ {
-		fmt.Printf("%#v\n", *videos[i])
+	for i := 0; i < len(favorites); i++ {
+		fmt.Printf("%#v\n", *favorites[i])
 	}
 }

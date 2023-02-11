@@ -72,3 +72,11 @@ func TestGetPublishList(t *testing.T) {
 	videoList := *result
 	fmt.Println(videoList)
 }
+
+func TestDelPublishList(t *testing.T) {
+	testInit()
+	err := DelPublishList(5)
+	if err != nil {
+		fmt.Println(err)
+	}
+}
