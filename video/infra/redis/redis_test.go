@@ -69,8 +69,8 @@ func TestGetPublishList(t *testing.T) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	videoList := *result
-	fmt.Println(videoList)
+	videoList := result
+	fmt.Printf("%v\n", videoList)
 }
 
 func TestDelPublishList(t *testing.T) {

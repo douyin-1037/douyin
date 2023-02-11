@@ -10,7 +10,7 @@ import (
 	"strconv"
 )
 
-func GetPublishList(userId int64) (*[]model.Video, error) {
+func GetPublishList(userId int64) ([]*model.Video, error) {
 	redisConn := redisPool.Get()
 	defer redisConn.Close()
 
@@ -30,7 +30,7 @@ func GetPublishList(userId int64) (*[]model.Video, error) {
 		return nil, err
 	}
 	videoRedisList := *videoRedisListp
-	videoList := make([]model.Video, len(videoRedisList))
+	videoList := make([]*model.Video, len(videoRedisList))
 
 	for i := range videoRedisList {
 		videoId := videoRedisList[i].VideoId
@@ -54,7 +54,7 @@ func GetPublishList(userId int64) (*[]model.Video, error) {
 			return nil, err
 		}
 
-		videoList[i] = model.Video{
+		videoList[i] = &model.Video{
 			UserId:        videoRedisList[i].UserId,
 			Title:         videoRedisList[i].Title,
 			PlayUrl:       videoRedisList[i].PlayUrl,
@@ -64,7 +64,7 @@ func GetPublishList(userId int64) (*[]model.Video, error) {
 		}
 		videoList[i].ID = videoId
 	}
-	return &videoList, nil
+	return videoList, nil
 }
 
 func GetVideoInfo(videoId int64) (*model.Video, error) {

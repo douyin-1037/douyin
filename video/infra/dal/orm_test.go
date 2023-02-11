@@ -30,7 +30,11 @@ func testInit() {
 
 func TestCreateVideo(t *testing.T) {
 	testInit()
-	err := CreateVideo(context.Background(), 3, "3_title", "3_playUrl", "3_coverUrl")
+	userID := int64(3)
+	title := "3_title"
+	playUrl := "3_playUrl"
+	coverUrl := "3_coverUrl"
+	err := CreateVideo(context.Background(), userID, title, playUrl, coverUrl)
 	if err != nil {
 		panic(err)
 	}
