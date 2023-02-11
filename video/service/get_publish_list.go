@@ -36,9 +36,22 @@ func (s *MGetVideoByUserIdService) MGetVideo(req *videoproto.GetVideoListByUserI
 	videos := pack.Videos(videoModels) // 做类型转换：视频id、base_info、点赞数、评论数已经得到，还需要判断是否点赞
 	// 把视频的其他信息进行绑定
 	appUserID := req.AppUserId
+	isLikeKeyExist, err := redis.IsLikeKeyExist(appUserID)
+	if err != nil {
+		return nil, err
+	}
+	if isLikeKeyExist == false {
+		// 如果redis没有appUserID的记录，则去mysql查询一次点赞列表进行缓存
+		likeList, err := dal.MGetLikeList(s.ctx, appUserID)
+		if err != nil {
+			return nil, err
+		}
+		if err := redis.AddLikeList(appUserID, likeList); err != nil {
+			return nil, err
+		}
+	}
 	for i := 0; i < len(videos); i++ {
-		vid := videos[i].VideoId
-		isFavorite, err := dal.IsFavorite(s.ctx, vid, appUserID)
+		isFavorite, err := redis.GetIsLikeById(appUserID, videos[i].VideoId)
 		if err != nil {
 			return nil, err
 		}

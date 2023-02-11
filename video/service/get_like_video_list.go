@@ -21,11 +21,13 @@ func NewMGetLikeVideoService(ctx context.Context) *MGetLikeVideoService {
 func (s *MGetLikeVideoService) MGetLikeVideo(req *videoproto.GetLikeVideoListReq) ([]*videoproto.VideoInfo, error) {
 	userID := req.AppUserId
 	var likeList []int64
-	likeList, err := redis.GetLikeList(userID)
+	isLikeKeyExist, err := redis.IsLikeKeyExist(userID)
 	if err != nil {
 		return nil, err
 	}
-	if len(likeList) == 0 {
+	if isLikeKeyExist == true {
+		likeList, err = redis.GetLikeList(userID)
+	} else {
 		// 缓存未命中，去数据库查询，然后缓存到redis
 		likeList, err = dal.MGetLikeList(s.ctx, userID)
 		if err != nil {

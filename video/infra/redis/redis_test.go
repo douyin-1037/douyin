@@ -98,3 +98,12 @@ func TestGetLikeList(t *testing.T) {
 	}
 	fmt.Println(likeList)
 }
+
+func TestGetIsLikeById(t *testing.T) {
+	testInit()
+	isLikeById, err := GetIsLikeById(2, 13)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(isLikeById)
+}

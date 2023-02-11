@@ -18,6 +18,7 @@ func NewCreateVideoService(ctx context.Context) *CreateVideoService {
 func (s *CreateVideoService) CreateVideo(req *videoproto.CreateVideoReq) error {
 	// 投稿的时候，直接删除缓存里面的pulish:id
 	// 因为redis和数据库不一致，方便起见直接删除，下次获取投稿列表的时候再缓存
+	// 因为投稿是个低频操作，所以可以这样处理；点赞则不同
 	if err := redis.DelPublishList(req.VideoBaseInfo.UserId); err != nil {
 		return err
 	}
