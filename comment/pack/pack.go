@@ -11,10 +11,10 @@ import (
 
 func Comment(comment *model.Comment) *commentproto.CommentInfo {
 	return &commentproto.CommentInfo{
-		CommentId:  int64(comment.ID),
+		CommentId:  comment.CommentUUId,
 		UserId:     comment.UserId,
 		Content:    comment.Contents,
-		CreateDate: time.Unix(comment.CreatedAt.Unix(), 0).Format("01-02"),
+		CreateDate: time.Unix(comment.CreateTime, 0).Format("01-02"),
 	}
 }
 
