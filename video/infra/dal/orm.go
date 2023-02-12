@@ -73,6 +73,13 @@ func MGetVideoByTime(ctx context.Context, latestTime time.Time, count int64) ([]
 
 // LikeVideo 点赞视频
 func LikeVideo(ctx context.Context, userID int64, videoID int64) error {
+	isFavorite, err := IsFavorite(ctx, videoID, userID)
+	if err != nil {
+		return err
+	}
+	if isFavorite == true {
+		return nil
+	}
 	favorite := &model.Favorite{
 		UserId:  userID,
 		VideoId: videoID,
@@ -91,7 +98,14 @@ func LikeVideo(ctx context.Context, userID int64, videoID int64) error {
 
 // UnLikeVideo 取消点赞视频
 func UnLikeVideo(ctx context.Context, userID int64, videoID int64) error {
-	err := DB.WithContext(ctx).Where("user_id = ? AND video_id = ?", userID, videoID).Delete(&model.Favorite{}).Error
+	isFavorite, err := IsFavorite(ctx, videoID, userID)
+	if err != nil {
+		return err
+	}
+	if isFavorite == false {
+		return nil
+	}
+	err = DB.WithContext(ctx).Where("user_id = ? AND video_id = ?", userID, videoID).Delete(&model.Favorite{}).Error
 	if err != nil {
 		return err
 	}
