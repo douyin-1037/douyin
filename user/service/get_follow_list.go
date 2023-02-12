@@ -25,7 +25,7 @@ func (s *GetFollowListService) GetFollowList(req *userproto.GetFollowListReq) ([
 	if rerr != nil || users == nil {
 		klog.Error("get follow list Redis missed " + rerr.Error())
 	}
-	if users != nil {
+	if len(users) > 0 {
 		return GetFollowListMakeList(s, appUserId, users)
 	}
 
