@@ -21,15 +21,19 @@ func NewUnLikeVideoService(ctx context.Context) *UnLikeVideoService {
 func (s *UnLikeVideoService) UnLikeVideo(req *videoproto.UnLikeVideoReq) error {
 	userID := req.UserId
 	videoID := req.VideoId
-	if err := dal.UnLikeVideo(s.ctx, userID, videoID); err != nil {
-		return err
-	}
 	isLikeKeyExist, err := redis.IsLikeKeyExist(userID)
 	if err != nil {
 		return err
 	}
 	if isLikeKeyExist == true {
 		// 如果redis有这个userID的记录，则需要在redis中删去这条like记录，确保和mysql一致
+		isLikeById, err := redis.GetIsLikeById(userID, videoID)
+		if err != nil {
+			return err
+		}
+		if isLikeById == false {
+			return nil
+		}
 		if err := redis.DeleteLike(userID, videoID); err != nil {
 			return err
 		}
@@ -42,6 +46,19 @@ func (s *UnLikeVideoService) UnLikeVideo(req *videoproto.UnLikeVideoReq) error {
 		if err := redis.AddLikeList(userID, likeList); err != nil {
 			return err
 		}
+		isLikeById, err := redis.GetIsLikeById(userID, videoID)
+		if err != nil {
+			return err
+		}
+		if isLikeById == false {
+			return nil
+		}
+		if err := redis.DeleteLike(userID, videoID); err != nil {
+			return err
+		}
+	}
+	if err := dal.UnLikeVideo(s.ctx, userID, videoID); err != nil {
+		return err
 	}
 	return nil
 }
