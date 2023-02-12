@@ -78,15 +78,15 @@ func (s *CreateCommentService) CreateComment(req *commentproto.CreateCommentReq)
 	// 开启go协程 写数据库
 	errChannel := make(chan error)
 	go func(ch chan error, ctx context.Context, userID int64, videoId int64, content string, commentUUId int64, createTime int64) {
-		_, err := dal.CreateComment(s.ctx, req.UserId, req.VideoId, req.Content, int64(commentID), nowTime)
+		_, err := dal.CreateComment(ctx, userID, videoId, content, commentUUId, createTime)
 		if err != nil {
 			// 写数据库也失败，用channel返回错误
-			klog.Error("Database write comment failed " + err.Error())
+			klog.Error("Database create comment failed " + err.Error())
 		}
-		// 不论成功失败都需要将err写入channel，不然主协程可能会一直阻塞
+		// 不论成功失败都需要将err写入channel，【不然主协程可能会一直阻塞】
 		// 同时记得【在发送端】关闭channel
 		ch <- err
-		close(errChannel)
+		close(ch)
 		return
 	}(errChannel, s.ctx, req.UserId, req.VideoId, req.Content, int64(commentID), nowTime)
 
@@ -95,13 +95,13 @@ func (s *CreateCommentService) CreateComment(req *commentproto.CreateCommentReq)
 
 	// TODO 写入Redis和DB有出错的时候的一致性控制
 	if redisErr != nil {
-		klog.Error("Redis write comment failed " + err.Error())
+		klog.Error("Redis create comment failed " + err.Error())
 		// return nil, err
 		// 这里先不返回，而是去阻塞地等写数据库的结果；数据库也写失败再返回error
 		dbError := <-errChannel
 		if dbError != nil {
 			// 完蛋，数据库和缓存全都写失败了，抛出合并的error
-			klog.Error("DB and Redis write comment both failed " + err.Error())
+			klog.Error("DB and Redis create comment both failed " + err.Error())
 			return nil, multierror.Append(redisErr, dbError)
 		}
 	}
