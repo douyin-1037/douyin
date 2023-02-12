@@ -63,15 +63,18 @@ CREATE TABLE `favorite` (
 DROP TABLE IF EXISTS `message`;
 CREATE TABLE `message` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '消息id',
+  `message_uuid` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '全局uuid',
   `to_user_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '该消息接收者的id',
   `from_user_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '该消息发送者的id',
   `contents` varchar(255) NOT NULL DEFAULT '' COMMENT '消息内容',
+  `create_time` bigint(20) unsigned NOT NULL DEFAULT '0',
   `created_at` timestamp NULL DEFAULT NULL COMMENT '创建时间',
   `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `deleted_at` timestamp NULL DEFAULT NULL COMMENT '删除时间，可实现软删除',
   PRIMARY KEY (`id`),
   KEY `fk_user_message_to` (`to_user_id`),
   KEY `fk_user_message_from` (`from_user_id`),
+  KEY `fk_uuid_message` (`message_uuid`),
   CONSTRAINT `fk_user_message_from` FOREIGN KEY (`from_user_id`) REFERENCES `user` (`id`),
   CONSTRAINT `fk_user_message_to` FOREIGN KEY (`to_user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='消息表';
