@@ -1,5 +1,8 @@
 package dal
 
+// @path: video/infra/dal/orm_test.go
+// @description: test of orm in video
+// @author: Chongzhi <dczdcz2001@aliyun.com>
 import (
 	"context"
 	"douyin/common/conf"
@@ -28,21 +31,17 @@ func testInit() {
 	DB = DB.Debug()
 }
 
-/*
 func TestCreateVideo(t *testing.T) {
 	testInit()
-	video := &model.Video{
-		UserId:   6,
-		Title:    "标题",
-		PlayUrl:  "123",
-		CoverUrl: "456",
-	}
-	err := CreateVideo(context.Background(), video)
+	userID := int64(3)
+	title := "3_title"
+	playUrl := "3_playUrl"
+	coverUrl := "3_coverUrl"
+	err := CreateVideo(context.Background(), userID, title, playUrl, coverUrl)
 	if err != nil {
 		panic(err)
 	}
 }
-*/
 
 func TestMGetVideoByUserId(t *testing.T) {
 	testInit()
@@ -103,8 +102,8 @@ func TestMGetVideoByTime(t *testing.T) {
 
 func TestLikeVideo(t *testing.T) {
 	testInit()
-	userId := int64(1)
-	videoId := int64(11)
+	userId := int64(3)
+	videoId := int64(14)
 	if err := LikeVideo(context.Background(), userId, videoId); err != nil {
 		panic(err)
 	}
@@ -119,14 +118,12 @@ func TestUnLikeVideo(t *testing.T) {
 	}
 }
 
-func TestMGetLikeVideo(t *testing.T) {
+func TestMGetLikeList(t *testing.T) {
 	testInit()
 	userId := int64(1)
-	videos, err := MGetLikeVideo(context.Background(), userId)
+	likeList, err := MGetLikeList(context.Background(), userId)
 	if err != nil {
 		panic(err)
 	}
-	for i := 0; i < len(videos); i++ {
-		fmt.Printf("%#v\n", *videos[i])
-	}
+	fmt.Println(likeList)
 }

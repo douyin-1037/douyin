@@ -69,6 +69,41 @@ func TestGetPublishList(t *testing.T) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	videoList := *result
-	fmt.Println(videoList)
+	videoList := result
+	fmt.Printf("%v\n", videoList)
+}
+
+func TestDelPublishList(t *testing.T) {
+	testInit()
+	err := DelPublishList(5)
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+
+func TestAddLikeList(t *testing.T) {
+	testInit()
+	var likeList = []int64{11, 20}
+	err := AddLikeList(1, likeList)
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+
+func TestGetLikeList(t *testing.T) {
+	testInit()
+	likeList, err := GetLikeList(3)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(likeList)
+}
+
+func TestGetIsLikeById(t *testing.T) {
+	testInit()
+	isLikeById, err := GetIsLikeById(2, 13)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(isLikeById)
 }
