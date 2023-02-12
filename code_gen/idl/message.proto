@@ -14,8 +14,10 @@ message BaseResp {
 
 message MessageInfo {
   int64 message_id = 1;
-  string content = 3;
-  string create_time = 4;     // yyyy-MM-dd HH:MM:ss
+  int64 from_user_id = 2;
+  int64 to_user_id = 3;
+  string content = 4;
+  int64 create_time = 5;     // yyyy-MM-dd HH:MM:ss
 }
 
 message CreateMessageReq {

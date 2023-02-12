@@ -64,3 +64,22 @@ func GetCommentList(videoId int64) ([]redisModel.CommentRedis, error) {
 	}
 	return commentList, nil
 }
+
+func IsCommentKeyExist(videoId int64) (bool, error) {
+	redisConn := redisPool.Get()
+	defer redisConn.Close()
+	key := constant.CommentRedisPrefix + strconv.FormatInt(videoId, 10)
+	result, err := redis.Strings(redisConn.Do("keys", key))
+	if err != nil {
+		return false, err
+	}
+	if len(result) == 0 {
+		return false, nil
+	}
+	expireTime := expireTimeUtil.GetRandTime()
+	_, err = redisConn.Do("expire", key, expireTime)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}

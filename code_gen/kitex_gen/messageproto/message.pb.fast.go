@@ -54,6 +54,11 @@ func (x *MessageInfo) FastRead(buf []byte, _type int8, number int32) (offset int
 		if err != nil {
 			goto ReadFieldError
 		}
+	case 2:
+		offset, err = x.fastReadField2(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
 	case 3:
 		offset, err = x.fastReadField3(buf, _type)
 		if err != nil {
@@ -61,6 +66,11 @@ func (x *MessageInfo) FastRead(buf []byte, _type int8, number int32) (offset int
 		}
 	case 4:
 		offset, err = x.fastReadField4(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	case 5:
+		offset, err = x.fastReadField5(buf, _type)
 		if err != nil {
 			goto ReadFieldError
 		}
@@ -82,13 +92,23 @@ func (x *MessageInfo) fastReadField1(buf []byte, _type int8) (offset int, err er
 	return offset, err
 }
 
+func (x *MessageInfo) fastReadField2(buf []byte, _type int8) (offset int, err error) {
+	x.FromUserId, offset, err = fastpb.ReadInt64(buf, _type)
+	return offset, err
+}
+
 func (x *MessageInfo) fastReadField3(buf []byte, _type int8) (offset int, err error) {
-	x.Content, offset, err = fastpb.ReadString(buf, _type)
+	x.ToUserId, offset, err = fastpb.ReadInt64(buf, _type)
 	return offset, err
 }
 
 func (x *MessageInfo) fastReadField4(buf []byte, _type int8) (offset int, err error) {
-	x.CreateTime, offset, err = fastpb.ReadString(buf, _type)
+	x.Content, offset, err = fastpb.ReadString(buf, _type)
+	return offset, err
+}
+
+func (x *MessageInfo) fastReadField5(buf []byte, _type int8) (offset int, err error) {
+	x.CreateTime, offset, err = fastpb.ReadInt64(buf, _type)
 	return offset, err
 }
 
@@ -277,8 +297,10 @@ func (x *MessageInfo) FastWrite(buf []byte) (offset int) {
 		return offset
 	}
 	offset += x.fastWriteField1(buf[offset:])
+	offset += x.fastWriteField2(buf[offset:])
 	offset += x.fastWriteField3(buf[offset:])
 	offset += x.fastWriteField4(buf[offset:])
+	offset += x.fastWriteField5(buf[offset:])
 	return offset
 }
 
@@ -290,19 +312,35 @@ func (x *MessageInfo) fastWriteField1(buf []byte) (offset int) {
 	return offset
 }
 
-func (x *MessageInfo) fastWriteField3(buf []byte) (offset int) {
-	if x.Content == "" {
+func (x *MessageInfo) fastWriteField2(buf []byte) (offset int) {
+	if x.FromUserId == 0 {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 3, x.Content)
+	offset += fastpb.WriteInt64(buf[offset:], 2, x.FromUserId)
+	return offset
+}
+
+func (x *MessageInfo) fastWriteField3(buf []byte) (offset int) {
+	if x.ToUserId == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt64(buf[offset:], 3, x.ToUserId)
 	return offset
 }
 
 func (x *MessageInfo) fastWriteField4(buf []byte) (offset int) {
-	if x.CreateTime == "" {
+	if x.Content == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 4, x.CreateTime)
+	offset += fastpb.WriteString(buf[offset:], 4, x.Content)
+	return offset
+}
+
+func (x *MessageInfo) fastWriteField5(buf []byte) (offset int) {
+	if x.CreateTime == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt64(buf[offset:], 5, x.CreateTime)
 	return offset
 }
 
@@ -438,8 +476,10 @@ func (x *MessageInfo) Size() (n int) {
 		return n
 	}
 	n += x.sizeField1()
+	n += x.sizeField2()
 	n += x.sizeField3()
 	n += x.sizeField4()
+	n += x.sizeField5()
 	return n
 }
 
@@ -451,19 +491,35 @@ func (x *MessageInfo) sizeField1() (n int) {
 	return n
 }
 
-func (x *MessageInfo) sizeField3() (n int) {
-	if x.Content == "" {
+func (x *MessageInfo) sizeField2() (n int) {
+	if x.FromUserId == 0 {
 		return n
 	}
-	n += fastpb.SizeString(3, x.Content)
+	n += fastpb.SizeInt64(2, x.FromUserId)
+	return n
+}
+
+func (x *MessageInfo) sizeField3() (n int) {
+	if x.ToUserId == 0 {
+		return n
+	}
+	n += fastpb.SizeInt64(3, x.ToUserId)
 	return n
 }
 
 func (x *MessageInfo) sizeField4() (n int) {
-	if x.CreateTime == "" {
+	if x.Content == "" {
 		return n
 	}
-	n += fastpb.SizeString(4, x.CreateTime)
+	n += fastpb.SizeString(4, x.Content)
+	return n
+}
+
+func (x *MessageInfo) sizeField5() (n int) {
+	if x.CreateTime == 0 {
+		return n
+	}
+	n += fastpb.SizeInt64(5, x.CreateTime)
 	return n
 }
 
@@ -576,8 +632,10 @@ var fieldIDToName_BaseResp = map[int32]string{
 
 var fieldIDToName_MessageInfo = map[int32]string{
 	1: "MessageId",
-	3: "Content",
-	4: "CreateTime",
+	2: "FromUserId",
+	3: "ToUserId",
+	4: "Content",
+	5: "CreateTime",
 }
 
 var fieldIDToName_CreateMessageReq = map[int32]string{

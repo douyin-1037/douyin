@@ -23,9 +23,9 @@ func (s *GetFriendListService) GetFriendList(req *userproto.GetFriendListReq) ([
 
 	users, rerr := redis.GetFriendList(userId)
 	if rerr != nil || users == nil {
-		klog.Error("get follow list Redis missed " + rerr.Error())
+		klog.Error("get friend list Redis missed " + rerr.Error())
 	}
-	if users != nil {
+	if len(users) > 0 {
 		return GetFriendListMakeList(s, appUserId, users)
 	}
 

@@ -25,7 +25,7 @@ func (s *GetFanListService) GetFanList(req *userproto.GetFanListReq) ([]*userpro
 	if rerr != nil || users == nil {
 		klog.Error("get follow list Redis missed " + rerr.Error())
 	}
-	if users != nil {
+	if len(users) > 0 {
 		return GetFanListMakeList(s, appUserId, users)
 	}
 
