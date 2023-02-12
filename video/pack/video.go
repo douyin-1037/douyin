@@ -1,5 +1,8 @@
 package pack
 
+// @path: video/pack/video.go
+// @description: pack []*model.Video into []*videoproto.VideoInfo
+// @author: Chongzhi <dczdcz2001@aliyun.com>
 import (
 	"douyin/code_gen/kitex_gen/videoproto"
 	"douyin/video/infra/dal/model"

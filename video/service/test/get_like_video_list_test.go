@@ -1,5 +1,8 @@
 package test
 
+// @path: video/service/test/get_like_video_list_test.go
+// @description: GetLikeVideo service test
+// @author: Chongzhi <dczdcz2001@aliyun.com>
 import (
 	"context"
 	"douyin/code_gen/kitex_gen/videoproto"

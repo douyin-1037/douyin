@@ -1,5 +1,8 @@
 package service
 
+// @path: video/service/get_like_video_list.go
+// @description: GetLikeVideo service of video
+// @author: Chongzhi <dczdcz2001@aliyun.com>
 import (
 	"context"
 	"douyin/code_gen/kitex_gen/videoproto"
@@ -27,6 +30,9 @@ func (s *MGetLikeVideoService) MGetLikeVideo(req *videoproto.GetLikeVideoListReq
 	}
 	if isLikeKeyExist == true {
 		likeList, err = redis.GetLikeList(userID)
+		if err != nil {
+			return nil, err
+		}
 	} else {
 		// 缓存未命中，去数据库查询，然后缓存到redis
 		likeList, err = dal.MGetLikeList(s.ctx, userID)

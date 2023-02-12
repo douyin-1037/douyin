@@ -1,5 +1,8 @@
 package api
 
+// @path: gateway/api/like.go
+// @description: api layer of like
+// @author: Chongzhi <dczdcz2001@aliyun.com>
 import (
 	"github.com/gin-gonic/gin"
 

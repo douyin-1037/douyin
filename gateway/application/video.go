@@ -1,5 +1,8 @@
 package application
 
+// @path: gateway/application/video.go
+// @description: application layer of video
+// @author: Chongzhi <dczdcz2001@aliyun.com>
 import (
 	"context"
 	"github.com/pkg/errors"
