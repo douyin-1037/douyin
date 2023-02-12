@@ -37,6 +37,7 @@ func AddRelation(userId int64, toUserId int64) error {
 	if err != nil {
 		return err
 	}
+
 	userInfoKey := constant.UserInfoRedisPrefix + strconv.FormatInt(userId, 10)
 	redisConn.Do("del", userInfoKey)
 	userInfoKey = constant.UserInfoRedisPrefix + strconv.FormatInt(toUserId, 10)
@@ -71,6 +72,7 @@ func DeleteRelation(userId int64, toUserId int64) error {
 	if err != nil {
 		return err
 	}
+
 	userInfoKey := constant.UserInfoRedisPrefix + strconv.FormatInt(userId, 10)
 	redisConn.Do("del", userInfoKey)
 	userInfoKey = constant.UserInfoRedisPrefix + strconv.FormatInt(toUserId, 10)
