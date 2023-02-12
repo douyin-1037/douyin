@@ -95,14 +95,13 @@ func (s *CreateCommentService) CreateComment(req *commentproto.CreateCommentReq)
 
 	// TODO 写入Redis和DB有出错的时候的一致性控制
 	if redisErr != nil {
-		klog.Error("Redis create comment failed " + err.Error())
-		// return nil, err
+		klog.Error("Redis create comment failed " + redisErr.Error())
 		// 这里先不返回，而是去阻塞地等写数据库的结果；数据库也写失败再返回error
-		dbError := <-errChannel
-		if dbError != nil {
+		dbErr := <-errChannel
+		if dbErr != nil {
 			// 完蛋，数据库和缓存全都写失败了，抛出合并的error
-			klog.Error("DB and Redis create comment both failed " + err.Error())
-			return nil, multierror.Append(redisErr, dbError)
+			klog.Error("DB and Redis create comment both failed " + dbErr.Error())
+			return nil, multierror.Append(redisErr, dbErr)
 		}
 	}
 	// 只要Redis和DB有一个正确写入，这里就正确返回评论信息
