@@ -113,7 +113,7 @@ func AddLike(userId int64, videoId int64) error {
 	LikeCountKey := constant.LikeCountRedisPrefix + strconv.FormatInt(int64(videoId), 10)
 	count, cnterr := GetLikeCountById(videoId)
 	if cnterr != nil {
-		if errors.Is(err, redis.ErrNil) {
+		if errors.Is(cnterr, redis.ErrNil) {
 			return nil
 		}
 		return cnterr

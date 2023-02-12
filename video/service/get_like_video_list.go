@@ -10,6 +10,8 @@ import (
 	"douyin/video/infra/dal/model"
 	"douyin/video/infra/redis"
 	"douyin/video/pack"
+	goredis "github.com/gomodule/redigo/redis"
+	"github.com/pkg/errors"
 )
 
 type MGetLikeVideoService struct {
@@ -47,6 +49,9 @@ func (s *MGetLikeVideoService) MGetLikeVideo(req *videoproto.GetLikeVideoListReq
 	for i, videoID := range likeList {
 		videoModels[i], err = redis.GetVideoInfo(videoID)
 		if err != nil {
+			if errors.Is(err, goredis.ErrNil) == false {
+				return nil, err
+			}
 			// 缓存未命中，去数据库查询，然后缓存到redis
 			videoModels[i], err = dal.MGetVideoInfo(s.ctx, videoID)
 			if err != nil {
