@@ -6,8 +6,10 @@ import (
 
 type Message struct {
 	ID         int64  `json:"id"`          // 消息id
+	UserID     int64  `json:"from_user_id"`
+	ToUserId   int64  `json:"to_user_id"`
 	Content    string `json:"content"`     // 消息内容
-	CreateTime string `json:"create_time"` // 消息发送时间，格式 yyyy-MM-dd HH:MM:ss
+	CreateTime int64 `json:"create_time"` // 消息发送时间，格式 yyyy-MM-dd HH:MM:ss
 }
 
 // 消息操作
