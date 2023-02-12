@@ -1,5 +1,8 @@
 package dal
 
+// @path: video/infra/dal/orm.go
+// @description: DAL of video
+// @author: Chongzhi <dczdcz2001@aliyun.com>
 import (
 	"context"
 	"douyin/video/infra/dal/model"

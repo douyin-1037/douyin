@@ -1,5 +1,8 @@
 package dal
 
+// @path: video/infra/dal/init.go
+// @description: initialization of gorm.DB
+// @author: Chongzhi <dczdcz2001@aliyun.com>
 import (
 	"douyin/common/conf"
 	"github.com/cloudwego/kitex/pkg/klog"

@@ -1,5 +1,8 @@
 package service
 
+// @path: video/service/like_video.go
+// @description: LikeVideo service of video
+// @author: Chongzhi <dczdcz2001@aliyun.com>
 import (
 	"context"
 	"douyin/code_gen/kitex_gen/videoproto"

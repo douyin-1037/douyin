@@ -1,5 +1,8 @@
 package test
 
+// @path: video/service/test/publish_video_test.go
+// @description: CreateVideo service test
+// @author: Chongzhi <dczdcz2001@aliyun.com>
 import (
 	"context"
 	"douyin/code_gen/kitex_gen/videoproto"

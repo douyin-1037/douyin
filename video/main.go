@@ -1,5 +1,8 @@
 package main
 
+// @path: video/main.go
+// @description: set config and Run() server of video service
+// @author: Chongzhi <dczdcz2001@aliyun.com>
 import (
 	videoproto "douyin/code_gen/kitex_gen/videoproto/videoservice"
 	"douyin/common/conf"

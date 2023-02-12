@@ -1,5 +1,8 @@
 package main
 
+// @path: video/handler.go
+// @description: the handler of service layer of video
+// @author: Chongzhi <dczdcz2001@aliyun.com>
 import (
 	"context"
 	"douyin/code_gen/kitex_gen/videoproto"
