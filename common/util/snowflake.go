@@ -5,11 +5,9 @@ import (
 	"github.com/sony/sonyflake"
 )
 
-type GenSnowFlake struct{}
-
 var sf *sonyflake.Sonyflake
 
-func (*GenSnowFlake) GenSnowFlake(machineId uint16) (uint64, error) {
+func GenSnowFlake(machineId uint16) (uint64, error) {
 	var st sonyflake.Settings
 	st.MachineID = func() (uint16, error) {
 		return machineId, nil
