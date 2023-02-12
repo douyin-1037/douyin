@@ -5,7 +5,6 @@ import (
 	"douyin/code_gen/kitex_gen/userproto"
 	"douyin/user/infra/dal"
 	"douyin/user/infra/redis"
-
 	"github.com/cloudwego/kitex/pkg/klog"
 )
 
@@ -17,46 +16,31 @@ func NewGetFollowListService(ctx context.Context) *GetFollowListService {
 	return &GetFollowListService{ctx: ctx}
 }
 
-func (s *GetFollowListService) GetFollowList(req *userproto.GetFollowListReq) ([]*userproto.UserInfo, error) {
-	appUserId := req.AppUserId
-	userId := req.UserId
+func (s *GetFollowListService) GetFollowList(appUserId int64, userId int64) ([]*userproto.UserInfo, error) {
 
-	users, rerr := redis.GetFollowList(userId)
-	if rerr != nil || users == nil {
-		klog.Error("get follow list Redis missed " + rerr.Error())
-	}
-	if len(users) > 0 {
-		return GetFollowListMakeList(s, appUserId, users)
+	followIdList, redisErr := redis.GetFollowList(userId)
+
+	if redisErr != nil || followIdList == nil || len(followIdList) <= 0 {
+		klog.Error("get follow list Redis missed ", redisErr)
+	} else {
+		return GetFollowListMakeList(s, appUserId, followIdList)
 	}
 
-	//查看当前用户的关注列表
-	uids, err := dal.GetFollowList(s.ctx, userId)
+	followIdDalList, err := dal.GetFollowList(s.ctx, userId)
 	if err != nil {
 		return nil, err
 	}
-	return GetFollowListMakeList(s, appUserId, uids)
 
-	/*
-		if len(uids) == 0 {
-			return nil, nil
-		}
-		userInfos := make([]*userproto.UserInfo, len(uids))
+	go func() {
+		redis.AddFollowList(userId, followIdDalList)
+	}()
 
-		for i, uid := range uids {
-			userInfo, err := NewGetUserService(s.ctx).GetUserInfoByID(appUserId, uid)
-			if err != nil {
-				return nil, err
-			}
-			userInfos[i] = userInfo
-		}
-
-		return userInfos, nil
-	*/
+	return GetFollowListMakeList(s, appUserId, followIdDalList)
 }
 
 func GetFollowListMakeList(s *GetFollowListService, appUserId int64, usersId []int64) ([]*userproto.UserInfo, error) {
 	if len(usersId) == 0 {
-		return nil, nil
+		return make([]*userproto.UserInfo, 0), nil
 	}
 	userInfos := make([]*userproto.UserInfo, len(usersId))
 
@@ -67,6 +51,5 @@ func GetFollowListMakeList(s *GetFollowListService, appUserId int64, usersId []i
 		}
 		userInfos[i] = userInfo
 	}
-
 	return userInfos, nil
 }

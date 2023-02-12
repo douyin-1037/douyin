@@ -160,7 +160,7 @@ func GetFanList(ctx context.Context, userID int64) ([]int64, error) {
 	err := DB.WithContext(ctx).Table("relation").Where("to_user_id = ?", userID).Find(&followers).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		klog.Error(err)
-		return nil, err
+		return make([]int64, 0), err
 	}
 	if err != nil {
 		klog.Error("find fan list fail " + err.Error())
@@ -179,7 +179,7 @@ func GetFollowList(ctx context.Context, userID int64) ([]int64, error) {
 	err := DB.WithContext(ctx).Table("relation").Where("user_id = ?", userID).Find(&follows).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		klog.Error(err)
-		return nil, err
+		return make([]int64, 0), err
 	}
 	if err != nil {
 		klog.Error("find follow list fail " + err.Error())
@@ -220,6 +220,10 @@ func GetFriendList(ctx context.Context, userID int64) ([]int64, error) {
 		}
 		return nil
 	})
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		klog.Error(err)
+		return make([]int64, 0), err
+	}
 	if err != nil {
 		klog.Error("find friend list fail " + err.Error())
 		return nil, err

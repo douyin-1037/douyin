@@ -113,7 +113,7 @@ func (s *UserServiceImpl) GetFollowList(ctx context.Context, req *userproto.GetF
 		return resp, nil
 	}
 
-	follows, err := service.NewGetFollowListService(ctx).GetFollowList(req)
+	follows, err := service.NewGetFollowListService(ctx).GetFollowList(req.AppUserId, req.UserId)
 	if err != nil {
 		resp.BaseResp = pack.BuildBaseResp(err)
 		return resp, nil
@@ -133,7 +133,7 @@ func (s *UserServiceImpl) GetFanList(ctx context.Context, req *userproto.GetFanL
 		return resp, nil
 	}
 
-	fans, err := service.NewGetFanListService(ctx).GetFanList(req)
+	fans, err := service.NewGetFanListService(ctx).GetFanList(req.AppUserId, req.UserId)
 	if err != nil {
 		resp.BaseResp = pack.BuildBaseResp(err)
 		return resp, nil
@@ -153,7 +153,7 @@ func (s *UserServiceImpl) GetFriendList(ctx context.Context, req *userproto.GetF
 		return resp, nil
 	}
 
-	fans, err := service.NewGetFriendListService(ctx).GetFriendList(req)
+	fans, err := service.NewGetFriendListService(ctx).GetFriendList(req.AppUserId, req.UserId)
 	if err != nil {
 		resp.BaseResp = pack.BuildBaseResp(err)
 		return resp, nil

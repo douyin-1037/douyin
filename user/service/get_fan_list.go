@@ -17,45 +17,30 @@ func NewGetFanListService(ctx context.Context) *GetFanListService {
 	return &GetFanListService{ctx: ctx}
 }
 
-func (s *GetFanListService) GetFanList(req *userproto.GetFanListReq) ([]*userproto.UserInfo, error) {
-	appUserId := req.AppUserId
-	userId := req.UserId
+func (s *GetFanListService) GetFanList(appUserId int64, userId int64) ([]*userproto.UserInfo, error) {
 
-	users, rerr := redis.GetFollowList(userId)
-	if rerr != nil || users == nil {
-		klog.Error("get follow list Redis missed " + rerr.Error())
-	}
-	if len(users) > 0 {
-		return GetFanListMakeList(s, appUserId, users)
+	fanIdList, redisErr := redis.GetFollowList(userId)
+	if redisErr != nil || fanIdList == nil || len(fanIdList) <= 0 {
+		klog.Error("get fan list Redis missed " + redisErr.Error())
+	} else {
+		return GetFanListMakeList(s, appUserId, fanIdList)
 	}
 
-	//查看当前用户的粉丝列表uids
-	uids, err := dal.GetFanList(s.ctx, userId)
+	fanIdDalList, err := dal.GetFanList(s.ctx, userId)
 	if err != nil {
 		return nil, err
 	}
-	return GetFanListMakeList(s, appUserId, uids)
-	/*
-		if len(uids) == 0 {
-			return nil, nil
-		}
-		userInfos := make([]*userproto.UserInfo, len(uids))
 
-		for i, uid := range uids {
-			userInfo, err := NewGetUserService(s.ctx).GetUserInfoByID(appUserId, uid)
-			if err != nil {
-				return nil, err
-			}
-			userInfos[i] = userInfo
-		}
+	go func() {
+		redis.AddFanList(userId, fanIdDalList)
+	}()
 
-		return userInfos, nil
-	*/
+	return GetFanListMakeList(s, appUserId, fanIdDalList)
 }
 
 func GetFanListMakeList(s *GetFanListService, appUserId int64, usersId []int64) ([]*userproto.UserInfo, error) {
 	if len(usersId) == 0 {
-		return nil, nil
+		return make([]*userproto.UserInfo, 0), nil
 	}
 	userInfos := make([]*userproto.UserInfo, len(usersId))
 
