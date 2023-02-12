@@ -19,4 +19,5 @@ const (
 	LikeCountRedisPrefix    = "like_count:"
 	CommentRedisPrefix      = "comment:"
 	CommentInfoRedisPrefix  = "commentInfo:"
+	MessageRedisPrefix      = "message:"
 )
