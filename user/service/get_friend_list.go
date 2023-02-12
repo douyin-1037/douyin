@@ -17,46 +17,31 @@ func NewGetFriendListService(ctx context.Context) *GetFriendListService {
 	return &GetFriendListService{ctx: ctx}
 }
 
-func (s *GetFriendListService) GetFriendList(req *userproto.GetFriendListReq) ([]*userproto.UserInfo, error) {
-	appUserId := req.AppUserId
-	userId := req.UserId
+func (s *GetFriendListService) GetFriendList(appUserId int64, userId int64) ([]*userproto.UserInfo, error) {
 
-	users, rerr := redis.GetFriendList(userId)
-	if rerr != nil || users == nil {
-		klog.Error("get friend list Redis missed " + rerr.Error())
-	}
-	if len(users) > 0 {
-		return GetFriendListMakeList(s, appUserId, users)
+	friendIdList, redisErr := redis.GetFollowList(userId)
+	if redisErr != nil || friendIdList == nil || len(friendIdList) <= 0 {
+		klog.Error("get fan list Redis missed " + redisErr.Error())
+	} else {
+		return GetFriendListMakeList(s, appUserId, friendIdList)
 	}
 
-	//查看当前用户的好友列表
 	uids, err := dal.GetFriendList(s.ctx, userId)
 	if err != nil {
 		return nil, err
 	}
+	go func() {
+		followIds, _ := dal.GetFollowList(s.ctx, userId)
+		redis.AddFollowList(userId, followIds)
+		fanIds, _ := dal.GetFanList(s.ctx, userId)
+		redis.AddFanList(userId, fanIds)
+	}()
 	return GetFriendListMakeList(s, appUserId, uids)
-
-	/*
-		if len(uids) == 0 {
-			return nil, nil
-		}
-		userInfos := make([]*userproto.UserInfo, len(uids))
-
-		for i, uid := range uids {
-			userInfo, err := NewGetUserService(s.ctx).GetUserInfoByID(appUserId, uid)
-			if err != nil {
-				return nil, err
-			}
-			userInfos[i] = userInfo
-		}
-
-		return userInfos, nil
-	*/
 }
 
 func GetFriendListMakeList(s *GetFriendListService, appUserId int64, usersId []int64) ([]*userproto.UserInfo, error) {
 	if len(usersId) == 0 {
-		return nil, nil
+		return make([]*userproto.UserInfo, 0), nil
 	}
 	userInfos := make([]*userproto.UserInfo, len(usersId))
 

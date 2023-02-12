@@ -52,13 +52,11 @@ func TestAddFollowList(t *testing.T) {
 
 func TestGetFollowList(t *testing.T) {
 	testInit()
-	result, err := GetFollowList(1)
+	result, err := GetFollowList(38)
 	if err != nil {
 		fmt.Println(err)
 	}
-
 	fmt.Println(result)
-
 }
 
 func TestGetFanList(t *testing.T) {

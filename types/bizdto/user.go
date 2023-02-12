@@ -14,7 +14,7 @@ type User struct {
 
 // 获取用户信息
 type UserQueryReq struct {
-	UserId int64 `form:"user_id" json:"user_id" binding:"required,max=32"`
+	UserId int64 `form:"user_id" json:"user_id" binding:"required"`
 }
 
 type UserQueryResp struct {
@@ -48,13 +48,13 @@ type UserLoginResp struct {
 
 // 关注操作
 type FollowOperationReq struct {
-	ToUserId   int64 `form:"to_user_id" json:"to_user_id" binding:"required,max=32"`
+	ToUserId   int64 `form:"to_user_id" json:"to_user_id" binding:"required"`
 	ActionType int   `form:"action_type" json:"action_type" binding:"required" msg:"1-关注，2-取消关注"`
 }
 
 // 关注列表
 type FollowListReq struct {
-	UserId int64 `form:"user_id" json:"user_id" binding:"required,max=32"`
+	UserId int64 `form:"user_id" json:"user_id" binding:"required"`
 }
 
 type FollowListResp struct {
@@ -64,7 +64,7 @@ type FollowListResp struct {
 
 // 粉丝列表
 type FanListReq struct {
-	UserId int64 `form:"user_id" json:"user_id" binding:"required,max=32"`
+	UserId int64 `form:"user_id" json:"user_id" binding:"required"`
 }
 
 type FanListResp struct {
@@ -74,7 +74,7 @@ type FanListResp struct {
 
 // 好友列表
 type FriendListReq struct {
-	UserId int64 `form:"user_id" json:"user_id" binding:"required,max=32"`
+	UserId int64 `form:"user_id" json:"user_id" binding:"required"`
 }
 
 type FriendListResp struct {
