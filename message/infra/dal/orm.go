@@ -18,11 +18,11 @@ func CreateMessage(ctx context.Context, userID int64, toUserID int64, content st
 	}
 
 	message := model.Message{
-		FromUserId: userID,
-		ToUserId:   toUserID,
-		Contents:   content,
+		FromUserId:  userID,
+		ToUserId:    toUserID,
+		Contents:    content,
 		MessageUUId: int64(uuid),
-		CreateTime: time.Now().Unix(),
+		CreateTime:  time.Now().Unix(),
 	}
 	err = DB.WithContext(ctx).Create(&message).Error
 	if err != nil {
