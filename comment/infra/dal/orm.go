@@ -51,7 +51,8 @@ func DeleteComment(ctx context.Context, commentID int64, videoID int64) error {
 	// 删除评论 和 comment_count-1 要在一个Transaction事务中完成
 	// 且使用事务的返回值
 	err := DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
-		err := tx.Delete(&model.Comment{}, commentID).Error
+		err := tx.Where("comment_uuid = ?", commentID).Delete(&model.Comment{}).Error
+		// UPDATE `comment` SET `deleted_at`='\now' WHERE comment_uuid = commentID AND `comment`.`deleted_at` IS NULL
 		if err != nil {
 			klog.Error("delete comment fail: " + err.Error())
 			return err

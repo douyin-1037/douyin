@@ -11,6 +11,7 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"testing"
+	"time"
 )
 
 func testInit() {
@@ -33,9 +34,11 @@ func TestCommentGorm(t *testing.T) {
 	testInit()
 	var userID int64 = 22
 	var videoID int64 = 7
-	content1 := "12:02"
+	content1 := "2023年2月13日13:59:41"
 	//content2 := "test2.10.2"
-	_, err := CreateComment(context.Background(), userID, videoID, content1)
+	var commentUUID int64 = 61
+	createTime := time.Now().Unix()
+	_, err := CreateComment(context.Background(), userID, videoID, content1, commentUUID, createTime)
 	if err != nil {
 		fmt.Println(err)
 	}

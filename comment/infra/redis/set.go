@@ -61,7 +61,7 @@ func DeleteComment(commentId int64, videoId int64) error {
 
 	key := constant.CommentRedisPrefix + strconv.FormatInt(videoId, 10)
 
-	_, err := redisConn.Do("zrem", key, videoId)
+	_, err := redisConn.Do("zrem", key, commentId)
 	if err != nil {
 		redisConn.Do("del", key)
 		return err
