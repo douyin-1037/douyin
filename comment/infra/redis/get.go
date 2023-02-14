@@ -9,7 +9,7 @@ import (
 	"strconv"
 )
 
-func GetCommentCountById(videoId int64) (int64, error) {
+func getCommentCountById(videoId int64) (int64, error) {
 	redisConn := redisPool.Get()
 	defer redisConn.Close()
 

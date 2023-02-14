@@ -9,8 +9,8 @@ import (
 func Message(message *model.Message) *messageproto.MessageInfo {
 	return &messageproto.MessageInfo{
 		MessageId:  int64(message.ID),
-		FromUserId: int64(message.FromUserId),
-		ToUserId:   int64(message.ToUserId),
+		FromUserId: message.FromUserId,
+		ToUserId:   message.ToUserId,
 		Content:    message.Contents,
 		CreateTime: message.CreateTime,
 	}

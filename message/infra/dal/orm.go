@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	"douyin/message/infra/dal/model"
 	"douyin/common/util"
+	"douyin/message/infra/dal/model"
 
 	"github.com/cloudwego/kitex/pkg/klog"
 )

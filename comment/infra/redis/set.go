@@ -39,7 +39,7 @@ func AddComment(commentRedis redisModel.CommentRedis) error {
 	}
 
 	commentCountKey := constant.CommentCountRedisPrefix + strconv.FormatInt(int64(commentRedis.VideoId), 10)
-	count, cnterr := GetCommentCountById(commentRedis.VideoId)
+	count, cnterr := getCommentCountById(commentRedis.VideoId)
 	if cnterr != nil {
 		if errors.Is(err, redis.ErrNil) {
 			return nil
@@ -61,7 +61,7 @@ func DeleteComment(commentId int64, videoId int64) error {
 
 	key := constant.CommentRedisPrefix + strconv.FormatInt(videoId, 10)
 
-	_, err := redisConn.Do("zrem", key, videoId)
+	_, err := redisConn.Do("zrem", key, commentId)
 	if err != nil {
 		redisConn.Do("del", key)
 		return err
@@ -77,7 +77,7 @@ func DeleteComment(commentId int64, videoId int64) error {
 	}
 
 	commentCountKey := constant.CommentCountRedisPrefix + strconv.FormatInt(int64(videoId), 10)
-	count, cnterr := GetCommentCountById(videoId)
+	count, cnterr := getCommentCountById(videoId)
 	if cnterr != nil {
 		if errors.Is(err, redis.ErrNil) {
 			return nil

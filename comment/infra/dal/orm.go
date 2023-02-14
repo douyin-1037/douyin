@@ -15,11 +15,13 @@ import (
 // CreateComment
 // create a comment by (userID, videoId, content)
 // userID is the ID of the *author* of this comment
-func CreateComment(ctx context.Context, userID int64, videoId int64, content string) (*commentproto.CommentInfo, error) {
+func CreateComment(ctx context.Context, userID int64, videoId int64, content string, commentUUId int64, createTime int64) (*commentproto.CommentInfo, error) {
 	comment := model.Comment{
-		UserId:   userID,
-		VideoId:  videoId,
-		Contents: content,
+		UserId:      userID,
+		VideoId:     videoId,
+		Contents:    content,
+		CommentUUId: commentUUId,
+		CreateTime:  createTime,
 	}
 	// 创建评论 和 comment_count+1 要在一个Transaction事务中完成
 	// 且使用事务的返回值
@@ -49,7 +51,8 @@ func DeleteComment(ctx context.Context, commentID int64, videoID int64) error {
 	// 删除评论 和 comment_count-1 要在一个Transaction事务中完成
 	// 且使用事务的返回值
 	err := DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
-		err := tx.Delete(&model.Comment{}, commentID).Error
+		err := tx.Where("comment_uuid = ?", commentID).Delete(&model.Comment{}).Error
+		// UPDATE `comment` SET `deleted_at`='\now' WHERE comment_uuid = commentID AND `comment`.`deleted_at` IS NULL
 		if err != nil {
 			klog.Error("delete comment fail: " + err.Error())
 			return err
