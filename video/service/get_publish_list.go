@@ -10,6 +10,8 @@ import (
 	"douyin/video/infra/dal/model"
 	"douyin/video/infra/redis"
 	"douyin/video/pack"
+	goredis "github.com/gomodule/redigo/redis"
+	"github.com/pkg/errors"
 )
 
 type MGetVideoByUserIdService struct {
@@ -27,6 +29,9 @@ func (s *MGetVideoByUserIdService) MGetVideo(req *videoproto.GetVideoListByUserI
 	var videoModels []*model.Video
 	videoModels, err := redis.GetPublishList(userID)
 	if err != nil {
+		if errors.Is(err, goredis.ErrNil) == false {
+			return nil, err
+		}
 		// 缓存未命中，去数据库查询，然后缓存到redis
 		videoModels, err = dal.MGetVideoByUserID(s.ctx, userID)
 		if err != nil {
@@ -35,6 +40,7 @@ func (s *MGetVideoByUserIdService) MGetVideo(req *videoproto.GetVideoListByUserI
 		if err := redis.AddPublishList(videoModels, userID); err != nil {
 			return nil, err
 		}
+
 	}
 	videos := pack.Videos(videoModels) // 做类型转换：视频id、base_info、点赞数、评论数已经得到，还需要判断是否点赞
 	// 把视频的其他信息进行绑定

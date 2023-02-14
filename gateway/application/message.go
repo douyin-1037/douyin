@@ -4,10 +4,8 @@ import (
 	"context"
 	"douyin/code_gen/kitex_gen/messageproto"
 	"douyin/gateway/rpc"
-	"github.com/pkg/errors"
-	"time"
-
 	"douyin/types/bizdto"
+	"github.com/pkg/errors"
 )
 
 var MessageAppIns *MessageAppService
@@ -48,10 +46,9 @@ func toMessageDTO(message *messageproto.MessageInfo) *bizdto.Message {
 		return nil
 	}
 	return &bizdto.Message{
-		ID:      message.MessageId,
-		Content: message.Content,
-		//CreateTime: message.CreateTime,
-		CreateTime: time.Unix(message.CreateTime, 0).Format("2006-01-02 15:04:05"),
+		ID:         message.MessageId,
+		Content:    message.Content,
+		CreateTime: message.CreateTime,
 	}
 }
 

@@ -21,15 +21,19 @@ func NewLikeVideoService(ctx context.Context) *LikeVideoService {
 func (s *LikeVideoService) LikeVideo(req *videoproto.LikeVideoReq) error {
 	userID := req.UserId
 	videoID := req.VideoId
-	if err := dal.LikeVideo(s.ctx, userID, videoID); err != nil {
-		return err
-	}
 	isLikeKeyExist, err := redis.IsLikeKeyExist(userID)
 	if err != nil {
 		return err
 	}
 	if isLikeKeyExist == true {
 		// 如果redis有这个userID的记录，则需要在redis中再加入这条新的点赞的操作，确保和mysql一致
+		isLikeById, err := redis.GetIsLikeById(userID, videoID)
+		if err != nil {
+			return err
+		}
+		if isLikeById == true {
+			return nil
+		}
 		if err := redis.AddLike(userID, videoID); err != nil {
 			return err
 		}
@@ -42,6 +46,19 @@ func (s *LikeVideoService) LikeVideo(req *videoproto.LikeVideoReq) error {
 		if err := redis.AddLikeList(userID, likeList); err != nil {
 			return err
 		}
+		isLikeById, err := redis.GetIsLikeById(userID, videoID)
+		if err != nil {
+			return err
+		}
+		if isLikeById == true {
+			return nil
+		}
+		if err := redis.AddLike(userID, videoID); err != nil {
+			return err
+		}
+	}
+	if err := dal.LikeVideo(s.ctx, userID, videoID); err != nil {
+		return err
 	}
 	return nil
 }

@@ -2,17 +2,29 @@ package dal
 
 import (
 	"context"
+	"time"
+
+	"douyin/common/util"
 	"douyin/message/infra/dal/model"
+
 	"github.com/cloudwego/kitex/pkg/klog"
 )
 
 func CreateMessage(ctx context.Context, userID int64, toUserID int64, content string) error {
-	message := model.Message{
-		FromUserId: userID,
-		ToUserId:   toUserID,
-		Contents:   content,
+	uuid, err := util.GenSnowFlake(0)
+	if err != nil {
+		klog.Error("Failed to generate UUID" + err.Error())
+		return err
 	}
-	err := DB.WithContext(ctx).Create(&message).Error
+
+	message := model.Message{
+		FromUserId:  userID,
+		ToUserId:    toUserID,
+		Contents:    content,
+		MessageUUId: int64(uuid),
+		CreateTime:  time.Now().Unix(),
+	}
+	err = DB.WithContext(ctx).Create(&message).Error
 	if err != nil {
 		klog.Error("create message fail " + err.Error())
 		return err

@@ -7,10 +7,11 @@ import (
 
 func Message(message *model.Message) *messageproto.MessageInfo {
 	return &messageproto.MessageInfo{
-		MessageId: int64(message.ID),
-		Content:   message.Contents,
-		//CreateTime: time.Unix(message.CreatedAt.Unix(), 0).Format("2006-01-02 15:04:05"),
-		CreateTime: message.CreatedAt.Unix(),
+		MessageId:  int64(message.ID),
+		FromUserId: message.FromUserId,
+		ToUserId:   message.ToUserId,
+		Content:    message.Contents,
+		CreateTime: message.CreateTime,
 	}
 }
 
