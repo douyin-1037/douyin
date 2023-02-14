@@ -3,6 +3,7 @@ package pack
 import (
 	"douyin/code_gen/kitex_gen/messageproto"
 	"douyin/message/infra/dal/model"
+	redisModel "douyin/message/infra/redis/model"
 )
 
 func Message(message *model.Message) *messageproto.MessageInfo {
@@ -21,4 +22,14 @@ func Messages(messages []*model.Message) []*messageproto.MessageInfo {
 		messageInfos[i] = Message(message)
 	}
 	return messageInfos
+}
+
+func MessageFromRedisModel(message *redisModel.MessageRedis) *model.Message {
+	return &model.Message{
+		FromUserId:  message.FromUserId,
+		ToUserId:    message.ToUserId,
+		Contents:    message.Content,
+		MessageUUId: message.MessageId,
+		CreateTime:  message.CreateTime,
+	}
 }
