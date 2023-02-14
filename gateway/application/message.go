@@ -4,9 +4,8 @@ import (
 	"context"
 	"douyin/code_gen/kitex_gen/messageproto"
 	"douyin/gateway/rpc"
-	"github.com/pkg/errors"
-
 	"douyin/types/bizdto"
+	"github.com/pkg/errors"
 )
 
 var MessageAppIns *MessageAppService
