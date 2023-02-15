@@ -30,11 +30,11 @@ func CreateMessage(ctx context.Context, userID int64, toUserID int64, content st
 	return nil
 }
 
-func GetMessageList(ctx context.Context, userID int64, toUserID int64) ([]*model.Message, error) {
+func GetMessageList(ctx context.Context, userID int64, toUserID int64, latestTime int64) ([]*model.Message, error) {
 	var messages []*model.Message
-	err := DB.WithContext(ctx).Where("from_user_id = ? AND to_user_id = ?", userID, toUserID).Or(
-		"from_user_id = ? AND to_user_id = ?", toUserID, userID,
-	).Find(&messages).Error
+	err := DB.WithContext(ctx).Where("from_user_id = ? AND to_user_id = ? AND create_time >= ?",
+		userID, toUserID, latestTime).Or("from_user_id = ? AND to_user_id = ? AND create_time >= ?",
+		toUserID, userID, latestTime).Find(&messages).Error
 	if err != nil {
 		return nil, err
 	}

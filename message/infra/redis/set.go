@@ -74,3 +74,12 @@ func AddMessageList(userId int64, toUserId int64, messageListp []*model.Message)
 
 	return nil
 }
+
+func AddMessageLatestTime(userId int64, toUserId int64, latestTime int64) error {
+	redisConn := redisPool.Get()
+	defer redisConn.Close()
+
+	key := constant.MessageLatestTimeRedisPrefix + strconv.FormatInt(userId, 10)
+	_, err := redisConn.Do("hset", key, toUserId, latestTime)
+	return err
+}

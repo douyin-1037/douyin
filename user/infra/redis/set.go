@@ -133,6 +133,10 @@ func AddFollowList(userId int64, FollowIdList []int64) error {
 	redisConn := redisPool.Get()
 	defer redisConn.Close()
 
+	if FollowIdList == nil || len(FollowIdList) == 0 {
+		return nil
+	}
+
 	key := constant.FollowRedisPrefix + strconv.FormatInt(userId, 10)
 
 	l := len(FollowIdList) //用于计分倒序
@@ -158,6 +162,10 @@ func AddFollowList(userId int64, FollowIdList []int64) error {
 func AddFanList(userId int64, FanIdList []int64) error {
 	redisConn := redisPool.Get()
 	defer redisConn.Close()
+
+	if FanIdList == nil || len(FanIdList) == 0 {
+		return nil
+	}
 
 	key := constant.FanRedisPrefix + strconv.FormatInt(userId, 10)
 
@@ -190,6 +198,15 @@ func AddBloomKey(prefix string, keyId int64) error {
 		return err
 	}
 	return nil
+}
+
+func DeleteMessageLatestTime(userId int64) error {
+	redisConn := redisPool.Get()
+	defer redisConn.Close()
+
+	key := constant.MessageLatestTimeRedisPrefix + strconv.FormatInt(userId, 10)
+	_, err := redisConn.Do("del", key)
+	return err
 }
 
 func incrCount(redisConn redis.Conn, cntKey string, filed string, v int, expireTime int) error {

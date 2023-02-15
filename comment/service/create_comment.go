@@ -35,7 +35,6 @@ func (s *CreateCommentService) CreateComment(userId int64, videoId int64, conten
 	isKeyExist, err := redis.IsCommentKeyExist(videoId)
 	if err != nil {
 		klog.Error("IsCommentKeyExist() failed, " + err.Error())
-		return nil, err
 	}
 	// 若缓存中不存在comment:VideoID，说明缓存中没有这个key
 	// 有2种情况
@@ -44,8 +43,6 @@ func (s *CreateCommentService) CreateComment(userId int64, videoId int64, conten
 	// 需要先从数据库中读取videoID的评论列表，用这个列表刷新缓存
 	if isKeyExist == false {
 		// 从数据库中 获取 评论列表
-		//TODO todo
-		//并发控制
 		comments, err := dal.GetCommentList(s.ctx, videoId)
 		if err != nil {
 			klog.Error("dal.GetCommentList() failed, " + err.Error())
@@ -55,7 +52,6 @@ func (s *CreateCommentService) CreateComment(userId int64, videoId int64, conten
 		err = redis.AddCommentList(comments)
 		if err != nil {
 			klog.Error("redis.AddCommentList() failed, " + err.Error())
-			return nil, err
 		}
 	}
 	// 开始创建新评论
@@ -78,12 +74,14 @@ func (s *CreateCommentService) CreateComment(userId int64, videoId int64, conten
 	}
 	// 开启go协程 写数据库
 	errChannel := make(chan error)
-	go func(ch chan error, ctx context.Context, userID int64, videoId int64, content string, commentUUId int64, createTime int64) {
+	go func(ch chan error, ctx context.Context,
+		userID int64, videoId int64, content string, commentUUId int64, createTime int64) {
 		// 很笨的方法 context替代消息队列
 		//TODO MQ
 		subCtx, cancel := context.WithCancel(context.Background())
 		defer cancel()
-		go func(subCtx context.Context, ch chan error, ctx context.Context, userID int64, videoId int64, content string, commentUUId int64, createTime int64) {
+		go func(subCtx context.Context, ch chan error, ctx context.Context,
+			userID int64, videoId int64, content string, commentUUId int64, createTime int64) {
 			_, err := dal.CreateComment(ctx, userID, videoId, content, commentUUId, createTime)
 			if err != nil {
 				// 写数据库也失败，用channel返回错误
@@ -108,7 +106,7 @@ func (s *CreateCommentService) CreateComment(userId int64, videoId int64, conten
 		// 这里先不返回，而是去阻塞地等写数据库的结果；数据库也写失败再返回error
 		dbErr := <-errChannel
 		if dbErr != nil {
-			// 完蛋，数据库和缓存全都写失败了，抛出合并的error
+			// 数据库和缓存全都写失败了，抛出合并的error
 			klog.Error("DB and Redis create comment both failed, " + dbErr.Error())
 			return nil, multierror.Append(redisErr, dbErr)
 		}
