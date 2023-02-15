@@ -196,3 +196,18 @@ func GetCommentCountById(videoId int64) (int64, error) {
 	}
 	return result, err
 }
+
+func IsKeyExistByBloom(prefix string, keyId int64) (bool, error) {
+	redisConn := redisPool.Get()
+	defer redisConn.Close()
+	return true, nil
+
+	result, err := redis.Int(redisConn.Do("bf.exists", prefix, keyId))
+	if err != nil {
+		return true, err
+	}
+	if result == 0 {
+		return false, nil
+	}
+	return true, nil
+}

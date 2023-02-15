@@ -73,6 +73,10 @@ func AddLikeList(userId int64, likeList []int64) error {
 	redisConn := redisPool.Get()
 	defer redisConn.Close()
 
+	if likeList == nil || len(likeList) == 0 {
+		return nil
+	}
+
 	key := constant.LikeRedisPrefix + strconv.FormatInt(userId, 10)
 
 	l := len(likeList)
@@ -220,6 +224,17 @@ func incrCount(redisConn redis.Conn, cntKey string, filed string, v int, expireT
 	_, err = redisConn.Do("expire", cntKey, expireTime)
 	if err != nil {
 		klog.Error(err)
+	}
+	return nil
+}
+
+func AddBloomKey(prefix string, keyId int64) error {
+	redisConn := redisPool.Get()
+	defer redisConn.Close()
+	_, err := redisConn.Do("bf.add", prefix, keyId)
+	if err != nil {
+		klog.Error(err)
+		return err
 	}
 	return nil
 }

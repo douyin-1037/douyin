@@ -8,6 +8,7 @@ import (
 	"douyin/code_gen/kitex_gen/videoproto"
 	"douyin/video/infra/dal"
 	"douyin/video/infra/redis"
+	"github.com/cloudwego/kitex/pkg/klog"
 )
 
 type LikeVideoService struct {
@@ -23,38 +24,39 @@ func (s *LikeVideoService) LikeVideo(req *videoproto.LikeVideoReq) error {
 	videoID := req.VideoId
 	isLikeKeyExist, err := redis.IsLikeKeyExist(userID)
 	if err != nil {
-		return err
+		klog.Error(err)
 	}
 	if isLikeKeyExist == true {
 		// 如果redis有这个userID的记录，则需要在redis中再加入这条新的点赞的操作，确保和mysql一致
 		isLikeById, err := redis.GetIsLikeById(userID, videoID)
 		if err != nil {
-			return err
+			klog.Error(err)
 		}
 		if isLikeById == true {
 			return nil
 		}
 		if err := redis.AddLike(userID, videoID); err != nil {
-			return err
+			klog.Error(err)
 		}
 	} else {
 		// 如果redis没有这个userID的记录，则去mysql查询一次点赞列表进行缓存
 		likeList, err := dal.MGetLikeList(s.ctx, userID)
 		if err != nil {
-			return err
+			klog.Error(err)
 		}
 		if err := redis.AddLikeList(userID, likeList); err != nil {
+			klog.Error(err)
 			return err
 		}
 		isLikeById, err := redis.GetIsLikeById(userID, videoID)
 		if err != nil {
-			return err
+			klog.Error(err)
 		}
 		if isLikeById == true {
 			return nil
 		}
 		if err := redis.AddLike(userID, videoID); err != nil {
-			return err
+			klog.Error(err)
 		}
 	}
 	if err := dal.LikeVideo(s.ctx, userID, videoID); err != nil {
