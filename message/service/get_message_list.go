@@ -30,12 +30,18 @@ func (s *GetMessageListService) GetMessageList(req *messageproto.GetMessageListR
 	}
 	userId := req.UserId
 	toUserId := req.ToUserId
+
+	// 从缓存中获取上次获取消息列表的时间
 	latestTime, err := redis.GetMessageLatestTime(userId, toUserId)
 	if err != nil {
 		latestTime = 0
 	}
-
 	nowTime := time.Now().Unix()
+
+	// 如果间隔超过3秒，认为是退出了重进，则重新获取列表
+	if nowTime-latestTime > 3 {
+		latestTime = 0
+	}
 	defer redis.AddMessageLatestTime(userId, toUserId, nowTime)
 
 	if exists {
