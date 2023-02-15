@@ -16,6 +16,10 @@ func AddPublishList(videoListp []*model.Video, userId int64) error {
 	redisConn := redisPool.Get()
 	defer redisConn.Close()
 
+	if videoListp == nil || len(videoListp) == 0 {
+		return nil
+	}
+
 	var videoList []redismodel.VideoRedis
 
 	for i := range videoListp {

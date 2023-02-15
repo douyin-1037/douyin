@@ -80,7 +80,9 @@ func DeleteComment(commentId int64, videoId int64) error {
 func AddCommentList(commentListp []*model.Comment) error {
 	redisConn := redisPool.Get()
 	defer redisConn.Close()
-
+	if commentListp == nil || len(commentListp) == 0 {
+		return nil
+	}
 	var key string
 	expireTime := expireTimeUtil.GetRandTime()
 

@@ -133,6 +133,10 @@ func AddFollowList(userId int64, FollowIdList []int64) error {
 	redisConn := redisPool.Get()
 	defer redisConn.Close()
 
+	if FollowIdList == nil || len(FollowIdList) == 0 {
+		return nil
+	}
+
 	key := constant.FollowRedisPrefix + strconv.FormatInt(userId, 10)
 
 	l := len(FollowIdList) //用于计分倒序
@@ -158,6 +162,10 @@ func AddFollowList(userId int64, FollowIdList []int64) error {
 func AddFanList(userId int64, FanIdList []int64) error {
 	redisConn := redisPool.Get()
 	defer redisConn.Close()
+
+	if FanIdList == nil || len(FanIdList) == 0 {
+		return nil
+	}
 
 	key := constant.FanRedisPrefix + strconv.FormatInt(userId, 10)
 
