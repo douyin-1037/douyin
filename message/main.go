@@ -5,6 +5,7 @@ import (
 	config "douyin/common/conf"
 	"douyin/common/constant"
 	"douyin/message/infra/dal"
+	"douyin/message/infra/redis"
 	"douyin/pkg/middleware"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/limit"
@@ -17,6 +18,7 @@ import (
 
 func Init() {
 	config.InitConfig()
+	redis.Init()
 	dal.Init()
 }
 

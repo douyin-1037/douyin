@@ -200,6 +200,15 @@ func AddBloomKey(prefix string, keyId int64) error {
 	return nil
 }
 
+func DeleteMessageLatestTime(userId int64) error {
+	redisConn := redisPool.Get()
+	defer redisConn.Close()
+
+	key := constant.MessageLatestTimeRedisPrefix + strconv.FormatInt(userId, 10)
+	_, err := redisConn.Do("del", key)
+	return err
+}
+
 func incrCount(redisConn redis.Conn, cntKey string, filed string, v int, expireTime int) error {
 	result, err := redis.Strings(redisConn.Do("keys", cntKey))
 	if err != nil {
