@@ -34,7 +34,7 @@ type LikeOperationReq struct {
 
 // 点赞列表
 type LikeListReq struct {
-	UserId int64 `form:"user_id" json:"user_id" binding:"required,max=32"`
+	UserId int64 `form:"user_id" json:"user_id" binding:"required"`
 }
 
 type LikeListResp struct {
@@ -49,7 +49,7 @@ type VideoUploadReq struct {
 
 // 发布列表
 type VideoListReq struct {
-	UserId int64 `form:"user_id" json:"user_id" binding:"required,max=32"`
+	UserId int64 `form:"user_id" json:"user_id" binding:"required"`
 }
 
 type VideoListResp struct {

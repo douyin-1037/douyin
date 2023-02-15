@@ -3,9 +3,11 @@ package service
 import (
 	"context"
 	"douyin/code_gen/kitex_gen/userproto"
+	"douyin/common/constant"
 	"douyin/user/infra/dal"
 	"douyin/user/infra/redis"
 	"github.com/cloudwego/kitex/pkg/klog"
+	"gorm.io/gorm"
 )
 
 type GetFollowListService struct {
@@ -26,6 +28,10 @@ func (s *GetFollowListService) GetFollowList(appUserId int64, userId int64) ([]*
 		return GetFollowListMakeList(s, appUserId, followIdList)
 	}
 
+	isExist, _ := redis.IsKeyExistByBloom(constant.FollowRedisPrefix, userId)
+	if isExist == false {
+		return nil, gorm.ErrRecordNotFound
+	}
 	followIdDalList, err := dal.GetFollowList(s.ctx, userId)
 	if err != nil {
 		return nil, err

@@ -14,14 +14,14 @@ type Message struct {
 
 // 消息操作
 type MessageOperationReq struct {
-	ToUserId   int64  `form:"to_user_id" json:"to_user_id" binding:"required,max=32"`
+	ToUserId   int64  `form:"to_user_id" json:"to_user_id" binding:"required"`
 	ActionType int    `form:"action_type" json:"action_type" binding:"required" msg:"1-发送消息"`
 	Content    string `form:"content" json:"content" msg:"action_type==1时使用"`
 }
 
 // 评论列表
 type MessageListReq struct {
-	ToUserId int64 `form:"to_user_id" json:"to_user_id" binding:"required,max=32"`
+	ToUserId int64 `form:"to_user_id" json:"to_user_id" binding:"required"`
 }
 
 type MessageListResp struct {

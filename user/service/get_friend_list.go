@@ -3,8 +3,10 @@ package service
 import (
 	"context"
 	"douyin/code_gen/kitex_gen/userproto"
+	"douyin/common/constant"
 	"douyin/user/infra/dal"
 	"douyin/user/infra/redis"
+	"gorm.io/gorm"
 
 	"github.com/cloudwego/kitex/pkg/klog"
 )
@@ -26,6 +28,10 @@ func (s *GetFriendListService) GetFriendList(appUserId int64, userId int64) ([]*
 		return GetFriendListMakeList(s, appUserId, friendIdList)
 	}
 
+	isExist, _ := redis.IsKeyExistByBloom(constant.FollowRedisPrefix, userId)
+	if isExist == false {
+		return nil, gorm.ErrRecordNotFound
+	}
 	uids, err := dal.GetFriendList(s.ctx, userId)
 	if err != nil {
 		return nil, err

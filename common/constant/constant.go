@@ -10,14 +10,18 @@ const (
 
 const (
 	UserInfoRedisPrefix     = "user_info:"
+	UserInfoCntRedisPrefix  = "user_info_cnt:"
+	FollowCountRedisPrefix  = "follow_cnt:"
+	FanCountRedisPrefix     = "fan_cnt:"
 	FollowRedisPrefix       = "follow:"
 	FanRedisPrefix          = "fan:"
 	VideoInfoRedisPrefix    = "video_info:"
 	LikeRedisPrefix         = "like:"
 	PublishRedisPrefix      = "publish:"
+	VideoInfoCntRedisPrefix = "video_info_cnt:"
 	CommentCountRedisPrefix = "comment_count:"
 	LikeCountRedisPrefix    = "like_count:"
 	CommentRedisPrefix      = "comment:"
-	CommentInfoRedisPrefix  = "commentInfo:"
+	CommentInfoRedisPrefix  = "comment_info:"
 	MessageRedisPrefix      = "message:"
 )

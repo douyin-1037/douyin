@@ -13,8 +13,8 @@ func PackUserRedis(userRedis *redisModel.UserRedis) *userproto.UserInfo {
 	return &userproto.UserInfo{
 		UserId:        userRedis.UserId,
 		Username:      userRedis.UserName,
-		FollowCount:   userRedis.FollowCount,
-		FollowerCount: userRedis.FollowerCount,
+		FollowCount:   userRedis.FollowCnt,
+		FollowerCount: userRedis.FanCnt,
 	}
 }
 
