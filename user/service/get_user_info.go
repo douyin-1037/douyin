@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"douyin/code_gen/kitex_gen/userproto"
+	"douyin/common/constant"
 	"douyin/pkg/code"
 	"douyin/user/infra/dal"
 	"douyin/user/infra/redis"
@@ -33,6 +34,10 @@ func (s *GetUserService) GetUserInfoByID(appUserId, userId int64) (*userproto.Us
 	userInfoRedis, redisErr := redis.GetUserInfo(userId)
 	if redisErr != nil || userInfoRedis == nil {
 		klog.Error("get user info by id Redis missed " + redisErr.Error())
+		isExist, _ := redis.IsKeyExistByBloom(constant.UserInfoRedisPrefix, userId)
+		if isExist == false {
+			return nil, gorm.ErrRecordNotFound
+		}
 		userInfoDal, err := dal.GetUserByID(s.ctx, userId)
 		if err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) { // 如果没找到
@@ -41,11 +46,12 @@ func (s *GetUserService) GetUserInfoByID(appUserId, userId int64) (*userproto.Us
 			return nil, err
 		}
 		go func() {
-			redis.AddUserInfo(redisModel.UserRedis{
-				UserId:        int64(userInfoDal.ID),
-				UserName:      userInfoDal.Name,
-				FollowCount:   userInfoDal.FollowCount,
-				FollowerCount: userInfoDal.FollowerCount,
+			redis.AddUserInfo(redisModel.UserInfoRedis{
+				UserId:   int64(userInfoDal.ID),
+				UserName: userInfoDal.Name,
+			}, redisModel.UserCntRedis{
+				FollowCnt: userInfoDal.FollowCount,
+				FanCnt:    userInfoDal.FollowerCount,
 			})
 		}()
 		userInfo = pack.PackUserDal(userInfoDal)

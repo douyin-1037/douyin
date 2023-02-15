@@ -10,6 +10,7 @@ import (
 	"douyin/pkg/middleware"
 	"douyin/pkg/tracer"
 	"douyin/video/infra/dal"
+	"douyin/video/infra/redis"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/limit"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
@@ -22,6 +23,7 @@ import (
 func Init() {
 	conf.InitConfig()
 	dal.Init()
+	redis.Init()
 	tracer.InitJaeger(constant.VideoDomainServiceName)
 }
 

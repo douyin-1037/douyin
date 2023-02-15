@@ -10,6 +10,7 @@ import (
 	"douyin/video/infra/dal/model"
 	"douyin/video/infra/redis"
 	"douyin/video/pack"
+	"github.com/cloudwego/kitex/pkg/klog"
 	goredis "github.com/gomodule/redigo/redis"
 	"github.com/pkg/errors"
 )
@@ -24,11 +25,12 @@ func NewMGetLikeVideoService(ctx context.Context) *MGetLikeVideoService {
 
 // MGetLikeVideo 通过用户ID从DAO层获取喜欢视频的基本信息，并查出当前用户是否点赞，组装后返回
 func (s *MGetLikeVideoService) MGetLikeVideo(req *videoproto.GetLikeVideoListReq) ([]*videoproto.VideoInfo, error) {
-	userID := req.AppUserId
+	appUserId := req.AppUserId
+	userID := req.UserId
 	var likeList []int64
 	isLikeKeyExist, err := redis.IsLikeKeyExist(userID)
 	if err != nil {
-		return nil, err
+		klog.Error(err)
 	}
 	if isLikeKeyExist == true {
 		likeList, err = redis.GetLikeList(userID)
@@ -42,7 +44,7 @@ func (s *MGetLikeVideoService) MGetLikeVideo(req *videoproto.GetLikeVideoListReq
 			return nil, err
 		}
 		if err := redis.AddLikeList(userID, likeList); err != nil {
-			return nil, err
+			klog.Error(err)
 		}
 	}
 	var videoModels = make([]*model.Video, len(likeList))
@@ -58,14 +60,31 @@ func (s *MGetLikeVideoService) MGetLikeVideo(req *videoproto.GetLikeVideoListReq
 				return nil, err
 			}
 			if err := redis.AddVideoInfo(*videoModels[i]); err != nil {
-				return nil, err
+				klog.Error(err)
 			}
 		}
 	}
 	videos := pack.Videos(videoModels) // 做类型转换：视频id、base_info、点赞数、评论数已经得到，还需要判断是否点赞
 	// 把视频的其他信息进行绑定
+	isLikeKeyExist, err = redis.IsLikeKeyExist(appUserId)
+	if err != nil {
+		klog.Error(err)
+	}
+	if isLikeKeyExist == false {
+		likeList, err = dal.MGetLikeList(s.ctx, userID)
+		if err != nil {
+			return nil, err
+		}
+		if err := redis.AddLikeList(userID, likeList); err != nil {
+			klog.Error(err)
+		}
+	}
 	for i := 0; i < len(videos); i++ {
-		videos[i].IsFavorite = true // 返回的视频都是已经点赞的
+		isLike, err := redis.GetIsLikeById(appUserId, videos[i].VideoId)
+		if err != nil {
+			isLike, _ = dal.IsFavorite(s.ctx, videos[i].VideoId, appUserId)
+		}
+		videos[i].IsFavorite = isLike // 返回的视频都是已经点赞的
 	}
 	return videos, nil
 }

@@ -62,6 +62,13 @@ func TestAddPublishList(t *testing.T) {
 		fmt.Println(err)
 	}
 }
+func TestDeletePublishList(t *testing.T) {
+	testInit()
+	err := DelPublishList(1234)
+	if err != nil {
+		fmt.Println(err)
+	}
+}
 
 func TestGetPublishList(t *testing.T) {
 	testInit()
@@ -70,7 +77,9 @@ func TestGetPublishList(t *testing.T) {
 		fmt.Println(err)
 	}
 	videoList := result
-	fmt.Printf("%v\n", videoList)
+	for _, v := range videoList {
+		fmt.Println(v)
+	}
 }
 
 func TestDelPublishList(t *testing.T) {
@@ -106,4 +115,30 @@ func TestGetIsLikeById(t *testing.T) {
 		fmt.Println(err)
 	}
 	fmt.Println(isLikeById)
+}
+
+func TestAddVideoInfo(t *testing.T) {
+	testInit()
+	v1 := model.Video{
+		UserId:        5,
+		Title:         "tst",
+		PlayUrl:       "123",
+		CoverUrl:      "123",
+		FavoriteCount: 3,
+		CommentCount:  2,
+	}
+	v1.ID = 9
+	err := AddVideoInfo(v1)
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+
+func TestGetVideoInfo(t *testing.T) {
+	testInit()
+	videoInfo, err := GetVideoInfo(9)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(videoInfo)
 }
