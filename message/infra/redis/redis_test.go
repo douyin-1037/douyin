@@ -70,10 +70,26 @@ func TestAddMessageList(t *testing.T) {
 
 func TestGetMessageList(t *testing.T) {
 	testInit()
-	result, err := GetMessageList(3, 4)
+	nowTime := time.Now().Unix()
+	result, err := GetMessageList(38, 40, 0, nowTime)
 	if err != nil {
 		fmt.Println(err)
 	}
 	messageList := result
 	fmt.Printf("%v\n", messageList)
+}
+
+func TestAddMessageLatestTime(t *testing.T) {
+	testInit()
+	err := AddMessageLatestTime(1, 2, 10)
+	fmt.Println(err)
+}
+
+func TestGetMessageLatestTime(t *testing.T) {
+	testInit()
+	result, err := GetMessageLatestTime(1, 3)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(result)
 }

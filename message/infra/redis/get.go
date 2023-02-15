@@ -5,10 +5,11 @@ import (
 	redisModel "douyin/message/infra/redis/model"
 	"encoding/json"
 	"github.com/gomodule/redigo/redis"
+	"github.com/pkg/errors"
 	"strconv"
 )
 
-func GetMessageList(userId int64, toUserId int64) ([]redisModel.MessageRedis, error) {
+func GetMessageList(userId int64, toUserId int64, latestTime int64, nowTime int64) ([]redisModel.MessageRedis, error) {
 	redisConn := redisPool.Get()
 	defer redisConn.Close()
 
@@ -19,12 +20,12 @@ func GetMessageList(userId int64, toUserId int64) ([]redisModel.MessageRedis, er
 		key = constant.MessageRedisPrefix + strconv.FormatInt(toUserId, 10) + ":" + strconv.FormatInt(userId, 10)
 	}
 
-	result, err := redis.Strings(redisConn.Do("zrevrange", key, 0, -1))
+	result, err := redis.Strings(redisConn.Do("zrangebyscore", key, latestTime, nowTime))
 	if err != nil {
+		if errors.Is(err, redis.ErrNil) {
+			return make([]redisModel.MessageRedis, 0), nil
+		}
 		return nil, err
-	}
-	if len(result) <= 0 {
-		return nil, redis.ErrNil
 	}
 
 	messageList := make([]redisModel.MessageRedis, len(result))
@@ -69,4 +70,19 @@ func IsMessageKeyExist(userId int64, toUserId int64) (bool, error) {
 		return false, err
 	}
 	return true, nil
+}
+
+func GetMessageLatestTime(userId int64, toUserId int64) (int64, error) {
+	redisConn := redisPool.Get()
+	defer redisConn.Close()
+
+	key := constant.MessageLatestTimeRedisPrefix + strconv.FormatInt(userId, 10)
+	result, err := redis.Int64(redisConn.Do("hget", key, toUserId))
+	if err != nil {
+		if errors.Is(err, redis.ErrNil) {
+			return 0, nil
+		}
+		return 0, err
+	}
+	return result, nil
 }

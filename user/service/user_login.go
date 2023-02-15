@@ -5,6 +5,7 @@ import (
 	"douyin/code_gen/kitex_gen/userproto"
 	"douyin/pkg/code"
 	"douyin/user/infra/dal"
+	"douyin/user/infra/redis"
 	"errors"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
@@ -30,5 +31,6 @@ func (s *CheckUserService) CheckUser(req *userproto.CheckUserReq) (int64, error)
 	if err != nil {
 		return 0, code.LoginErr
 	}
+	redis.DeleteMessageLatestTime(int64(user.ID))
 	return int64(user.ID), nil
 }

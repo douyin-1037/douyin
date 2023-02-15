@@ -31,7 +31,7 @@ func (s *CreateMessageService) CreateMessage(req *messageproto.CreateMessageReq)
 
 	if !exists {
 		// fetch messagelist into cache if not exists
-		messages, err := dal.GetMessageList(s.ctx, req.UserId, req.ToUserId)
+		messages, err := dal.GetMessageList(s.ctx, req.UserId, req.ToUserId, 0)
 		if err != nil {
 			return err
 		}
