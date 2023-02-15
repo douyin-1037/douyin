@@ -2,8 +2,8 @@ package redis
 
 import (
 	"douyin/common/conf"
+	"douyin/common/constant"
 	"douyin/common/util"
-	"douyin/user/infra/redis/model"
 	"fmt"
 	"github.com/gomodule/redigo/redis"
 	"testing"
@@ -26,6 +26,8 @@ func testInit() {
 
 func TestAddRelation(t *testing.T) {
 	testInit()
+	//ctrl := gomock.NewController(t)
+
 	err := AddRelation(1, 3)
 	if err != nil {
 		fmt.Println(err)
@@ -88,14 +90,7 @@ func TestGetIsFollowById(t *testing.T) {
 
 func TestAddUserInfo(t *testing.T) {
 	testInit()
-	userinfo := model.UserRedis{
-		UserId:   1,
-		UserName: "yuirito",
-	}
-	err := AddUserInfo(userinfo)
-	if err != nil {
-		fmt.Println(err)
-	}
+
 }
 
 func TestGetUserInfo(t *testing.T) {
@@ -112,6 +107,23 @@ func TestGetUserInfo(t *testing.T) {
 func TestIsFollowKeyExist(t *testing.T) {
 	testInit()
 	result, err := IsFollowKeyExist(1)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(result)
+}
+
+func TestAddBloomKey(t *testing.T) {
+	testInit()
+	err := AddBloomKey(constant.UserInfoRedisPrefix, 1)
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+
+func TestIsKeyExistByBloom(t *testing.T) {
+	testInit()
+	result, err := IsKeyExistByBloom(constant.UserInfoRedisPrefix, 2)
 	if err != nil {
 		fmt.Println(err)
 	}

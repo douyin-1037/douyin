@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"douyin/code_gen/kitex_gen/userproto"
+	"douyin/common/constant"
 	"douyin/user/infra/dal"
 	"douyin/user/infra/redis"
 	"github.com/pkg/errors"
@@ -50,5 +51,7 @@ func (s *FollowUserService) FollowUser(req *userproto.FollowUserReq) error {
 	go func() {
 		dal.FollowUser(s.ctx, userId, followId)
 	}()
+	redis.AddBloomKey(constant.FollowRedisPrefix, userId)
+	redis.AddBloomKey(constant.FanRedisPrefix, followId)
 	return nil
 }

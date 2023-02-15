@@ -48,6 +48,7 @@ func AddMessageList(userId int64, toUserId int64, messageListp []*model.Message)
 		key = constant.MessageRedisPrefix + strconv.FormatInt(toUserId, 10) + ":" + strconv.FormatInt(userId, 10)
 	}
 
+	redisConn.Send("multi")
 	for i := range messageListp {
 		messageRedis := redisModel.MessageRedis{
 			MessageId:  messageListp[i].MessageUUId,
@@ -56,19 +57,17 @@ func AddMessageList(userId int64, toUserId int64, messageListp []*model.Message)
 			Content:    messageListp[i].Contents,
 			CreateTime: messageListp[i].CreateTime,
 		}
-		ub, err := json.Marshal(messageRedis)
-		if err != nil {
-			return err
-		}
-		_, err = redisConn.Do("zadd", key, messageRedis.CreateTime, ub)
-		if err != nil {
-			redisConn.Do("del", key)
-			return err
-		}
+		ub, _ := json.Marshal(messageRedis)
+		redisConn.Send("zadd", key, messageRedis.CreateTime, ub)
+	}
+	_, err := redisConn.Do("exec")
+	if err != nil {
+		redisConn.Do("del", key)
+		return err
 	}
 
 	expireTime := expireTimeUtil.GetRandTime()
-	_, err := redisConn.Do("expire", key, expireTime)
+	_, err = redisConn.Do("expire", key, expireTime)
 	if err != nil {
 		return err
 	}

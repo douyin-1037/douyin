@@ -26,7 +26,7 @@ func NewCreateMessageService(ctx context.Context) *CreateMessageService {
 func (s *CreateMessageService) CreateMessage(req *messageproto.CreateMessageReq) error {
 	exists, err := redis.IsMessageKeyExist(req.UserId, req.ToUserId)
 	if err != nil {
-		return err
+		klog.Error(err)
 	}
 
 	if !exists {
@@ -47,14 +47,16 @@ func (s *CreateMessageService) CreateMessage(req *messageproto.CreateMessageReq)
 		return err
 	}
 
+	createTime := time.Now().Unix()
+
 	message := model.MessageRedis{
 		FromUserId: req.UserId,
 		ToUserId:   req.ToUserId,
 		Content:    req.Content,
 		MessageId:  int64(uuid),
-		CreateTime: time.Now().Unix(),
+		CreateTime: createTime,
 	}
 	err = redis.AddMessage(req.UserId, req.ToUserId, message)
-	go dal.CreateMessage(s.ctx, req.UserId, req.ToUserId, req.Content)
+	go dal.CreateMessage(s.ctx, req.UserId, req.ToUserId, req.Content, createTime)
 	return err
 }

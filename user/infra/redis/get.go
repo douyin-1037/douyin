@@ -4,6 +4,7 @@ import (
 	"douyin/common/constant"
 	"douyin/user/infra/redis/model"
 	"encoding/json"
+	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/gomodule/redigo/redis"
 	"strconv"
 )
@@ -103,8 +104,8 @@ func GetUserInfo(userId int64) (*model.UserRedis, error) {
 	if err != nil {
 		return nil, err
 	}
-	userinfo := new(model.UserRedis)
-	err = json.Unmarshal(result, userinfo)
+	userInfo := new(model.UserInfoRedis)
+	err = json.Unmarshal(result, userInfo)
 	if err != nil {
 		return nil, err
 	}
@@ -112,9 +113,27 @@ func GetUserInfo(userId int64) (*model.UserRedis, error) {
 	expireTime := expireTimeUtil.GetRandTime()
 	_, err = redisConn.Do("expire", key, expireTime)
 	if err != nil {
-		return userinfo, err
+		klog.Error(err)
 	}
-	return userinfo, nil
+
+	cntKey := constant.UserInfoCntRedisPrefix + strconv.FormatInt(userId, 10)
+	cnt, cntErr := redis.Int64s(redisConn.Do("hmget",
+		cntKey, constant.FollowCountRedisPrefix, constant.FanCountRedisPrefix))
+	if cntErr != nil {
+		return nil, cntErr
+	}
+	if cnt == nil || len(cnt) == 0 {
+		return nil, redis.ErrNil
+	}
+	user := &model.UserRedis{
+		UserId:    userId,
+		UserName:  userInfo.UserName,
+		FollowCnt: cnt[0],
+		FanCnt:    cnt[1],
+	}
+	redisConn.Do("expire", cntKey, expireTime)
+
+	return user, nil
 }
 
 func IsFollowKeyExist(userId int64) (bool, error) {
@@ -162,6 +181,21 @@ func IsFanKeyExist(userId int64) (bool, error) {
 	_, err = redisConn.Do("expire", key, expireTime)
 	if err != nil {
 		return true, err
+	}
+	return true, nil
+}
+
+func IsKeyExistByBloom(prefix string, keyId int64) (bool, error) {
+	redisConn := redisPool.Get()
+	defer redisConn.Close()
+	return true, nil
+
+	result, err := redis.Int(redisConn.Do("bf.exists", prefix, keyId))
+	if err != nil {
+		return true, err
+	}
+	if result == 0 {
+		return false, nil
 	}
 	return true, nil
 }

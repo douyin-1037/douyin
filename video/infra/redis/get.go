@@ -5,6 +5,7 @@ import (
 	"douyin/video/infra/dal/model"
 	redismodel "douyin/video/infra/redis/model"
 	"encoding/json"
+	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/gomodule/redigo/redis"
 	"github.com/pkg/errors"
 	"strconv"
@@ -19,51 +20,42 @@ func GetPublishList(userId int64) ([]*model.Video, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	videoRedisListp := new([]redismodel.VideoRedis)
 	err = json.Unmarshal(result, videoRedisListp)
 	if err != nil {
 		return nil, err
 	}
+
 	expireTime := expireTimeUtil.GetRandTime()
 	_, err = redisConn.Do("expire", key, expireTime)
 	if err != nil {
 		return nil, err
 	}
+
 	videoRedisList := *videoRedisListp
 	videoList := make([]*model.Video, len(videoRedisList))
 
 	for i := range videoRedisList {
 		videoId := videoRedisList[i].VideoId
-		likeCntKey := constant.LikeCountRedisPrefix + strconv.FormatInt(int64(videoId), 10)
-		likeCnt, likeCntErr := redis.Int64(redisConn.Do("get", likeCntKey))
-		if likeCntErr != nil {
-			return nil, likeCntErr
+		cntKey := constant.VideoInfoCntRedisPrefix + strconv.FormatInt(int64(videoId), 10)
+		cnt, cntErr := redis.Int64s(redisConn.Do("hmget",
+			cntKey, constant.LikeCountRedisPrefix, constant.CommentCountRedisPrefix))
+		if cntErr != nil {
+			return nil, cntErr
 		}
-		_, err = redisConn.Do("expire", likeCntKey, expireTime)
-		if err != nil {
-			return nil, err
-		}
-
-		commentCntKey := constant.CommentCountRedisPrefix + strconv.FormatInt(int64(videoId), 10)
-		commentCnt, commentCntErr := redis.Int64(redisConn.Do("get", commentCntKey))
-		if commentCntErr != nil {
-			return nil, commentCntErr
-		}
-		_, err = redisConn.Do("expire", commentCntKey, expireTime)
-		if err != nil {
-			return nil, err
-		}
-
 		videoList[i] = &model.Video{
 			UserId:        videoRedisList[i].UserId,
 			Title:         videoRedisList[i].Title,
 			PlayUrl:       videoRedisList[i].PlayUrl,
 			CoverUrl:      videoRedisList[i].CoverUrl,
-			FavoriteCount: likeCnt,
-			CommentCount:  commentCnt,
+			FavoriteCount: cnt[0],
+			CommentCount:  cnt[1],
 		}
-		videoList[i].ID = videoId
+		videoList[i].ID = videoRedisList[i].VideoId
+		redisConn.Do("expire", cntKey, expireTime)
 	}
+
 	return videoList, nil
 }
 
@@ -85,8 +77,25 @@ func GetVideoInfo(videoId int64) (*model.Video, error) {
 	expireTime := expireTimeUtil.GetRandTime()
 	_, err = redisConn.Do("expire", key, expireTime)
 	if err != nil {
-		return nil, err
+		klog.Error(err)
 	}
+
+	cntKey := constant.VideoInfoCntRedisPrefix + strconv.FormatInt(int64(videoId), 10)
+	cnt, cntErr := redis.Int64s(redisConn.Do("hmget",
+		cntKey, constant.LikeCountRedisPrefix, constant.CommentCountRedisPrefix))
+	if cntErr != nil {
+		return nil, cntErr
+	}
+	if cnt == nil || len(cnt) == 0 {
+		return nil, redis.ErrNil
+	}
+	videoInfo.FavoriteCount = cnt[0]
+	videoInfo.CommentCount = cnt[1]
+	_, err = redisConn.Do("expire", cntKey, expireTime)
+	if err != nil {
+		klog.Error(err)
+	}
+
 	return videoInfo, nil
 }
 
