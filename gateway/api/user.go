@@ -40,19 +40,19 @@ func GetUserInfo(c *gin.Context) {
 func Create(c *gin.Context) {
 	param := new(bizdto.UserRegisterReq)
 	if err := c.ShouldBind(param); err != nil {
-		respond.Error(c, err)
+		respond.Send(c, &bizdto.UserRegisterResp{BaseResp: respond.ErrorBaseResp(err)})
 		return
 	}
 
 	userID, err := application.UserAppIns.CreateUser(c, param.Username, param.Password)
 	if err != nil {
-		respond.Error(c, err)
+		respond.Send(c, &bizdto.UserRegisterResp{BaseResp: respond.ErrorBaseResp(err)})
 		return
 	}
 
 	token, err := auth.GenerateToken(userID)
 	if err != nil {
-		respond.Error(c, err)
+		respond.Send(c, &bizdto.UserRegisterResp{BaseResp: respond.ErrorBaseResp(err)})
 		return
 	}
 	resp := &bizdto.UserRegisterResp{

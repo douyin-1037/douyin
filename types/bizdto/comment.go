@@ -31,5 +31,5 @@ type CommentListReq struct {
 
 type CommentListResp struct {
 	coredto.BaseResp
-	CommentList []*Comment `json:"comment_list,omitempty"`
+	CommentList []*Comment `json:"comment_list"`
 }

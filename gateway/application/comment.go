@@ -94,7 +94,7 @@ func toCommentDTO(commentInfo *commentproto.CommentInfo, user *bizdto.User) *biz
 
 func toCommentDTOs(commentInfos []*commentproto.CommentInfo, authors []*bizdto.User) []*bizdto.Comment {
 	n := len(commentInfos)
-	comments := make([]*bizdto.Comment, 0, n)
+	comments := make([]*bizdto.Comment, n)
 	for i := 0; i < n; i++ {
 		comments[i] = &bizdto.Comment{
 			ID:         commentInfos[i].CommentId,

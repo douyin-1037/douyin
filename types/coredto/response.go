@@ -26,6 +26,13 @@ func Error(c *gin.Context, err error) {
 	})
 }
 
+func ErrorBaseResp(err error) BaseResp {
+	return BaseResp{
+		Code: int64(code.HTTPCoder(statuserr.Code(err))),
+		Msg:  err.Error(),
+	}
+}
+
 func Send(c *gin.Context, resp interface{}) {
 	c.JSON(http.StatusOK, resp)
 }
