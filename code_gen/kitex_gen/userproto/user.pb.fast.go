@@ -74,6 +74,16 @@ func (x *UserInfo) FastRead(buf []byte, _type int8, number int32) (offset int, e
 		if err != nil {
 			goto ReadFieldError
 		}
+	case 6:
+		offset, err = x.fastReadField6(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	case 7:
+		offset, err = x.fastReadField7(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
 	default:
 		offset, err = fastpb.Skip(buf, _type, number)
 		if err != nil {
@@ -109,6 +119,16 @@ func (x *UserInfo) fastReadField4(buf []byte, _type int8) (offset int, err error
 
 func (x *UserInfo) fastReadField5(buf []byte, _type int8) (offset int, err error) {
 	x.IsFollow, offset, err = fastpb.ReadBool(buf, _type)
+	return offset, err
+}
+
+func (x *UserInfo) fastReadField6(buf []byte, _type int8) (offset int, err error) {
+	x.WorkCount, offset, err = fastpb.ReadInt64(buf, _type)
+	return offset, err
+}
+
+func (x *UserInfo) fastReadField7(buf []byte, _type int8) (offset int, err error) {
+	x.FavoriteCount, offset, err = fastpb.ReadInt64(buf, _type)
 	return offset, err
 }
 
@@ -771,6 +791,8 @@ func (x *UserInfo) FastWrite(buf []byte) (offset int) {
 	offset += x.fastWriteField3(buf[offset:])
 	offset += x.fastWriteField4(buf[offset:])
 	offset += x.fastWriteField5(buf[offset:])
+	offset += x.fastWriteField6(buf[offset:])
+	offset += x.fastWriteField7(buf[offset:])
 	return offset
 }
 
@@ -811,6 +833,22 @@ func (x *UserInfo) fastWriteField5(buf []byte) (offset int) {
 		return offset
 	}
 	offset += fastpb.WriteBool(buf[offset:], 5, x.IsFollow)
+	return offset
+}
+
+func (x *UserInfo) fastWriteField6(buf []byte) (offset int) {
+	if x.WorkCount == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt64(buf[offset:], 6, x.WorkCount)
+	return offset
+}
+
+func (x *UserInfo) fastWriteField7(buf []byte) (offset int) {
+	if x.FavoriteCount == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt64(buf[offset:], 7, x.FavoriteCount)
 	return offset
 }
 
@@ -1243,6 +1281,8 @@ func (x *UserInfo) Size() (n int) {
 	n += x.sizeField3()
 	n += x.sizeField4()
 	n += x.sizeField5()
+	n += x.sizeField6()
+	n += x.sizeField7()
 	return n
 }
 
@@ -1283,6 +1323,22 @@ func (x *UserInfo) sizeField5() (n int) {
 		return n
 	}
 	n += fastpb.SizeBool(5, x.IsFollow)
+	return n
+}
+
+func (x *UserInfo) sizeField6() (n int) {
+	if x.WorkCount == 0 {
+		return n
+	}
+	n += fastpb.SizeInt64(6, x.WorkCount)
+	return n
+}
+
+func (x *UserInfo) sizeField7() (n int) {
+	if x.FavoriteCount == 0 {
+		return n
+	}
+	n += fastpb.SizeInt64(7, x.FavoriteCount)
 	return n
 }
 
@@ -1692,6 +1748,8 @@ var fieldIDToName_UserInfo = map[int32]string{
 	3: "FollowCount",
 	4: "FollowerCount",
 	5: "IsFollow",
+	6: "WorkCount",
+	7: "FavoriteCount",
 }
 
 var fieldIDToName_UserAccount = map[int32]string{

@@ -23,6 +23,8 @@ message UserInfo {
   int64 follow_count = 3;
   int64 follower_count = 4;
   bool is_follow = 5; // 默认false
+  int64 work_count = 6;
+  int64 favorite_count = 7;
 }
 
 message UserAccount {

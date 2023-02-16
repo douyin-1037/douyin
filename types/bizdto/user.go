@@ -9,7 +9,9 @@ type User struct {
 	Name          string `json:"name"`
 	FollowCount   int64  `json:"follow_count"`   // 关注总数
 	FollowerCount int64  `json:"follower_count"` // 粉丝总数
-	IsFollow      bool   `json:"is_follow"`      // true-已关注，false-未关注
+	WorkCount     int64  `json:"work_count"`
+	FavoriteCount int64  `json:"favorite_count"`
+	IsFollow      bool   `json:"is_follow"` // true-已关注，false-未关注
 }
 
 // 获取用户信息

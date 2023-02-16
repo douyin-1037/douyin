@@ -130,6 +130,12 @@ func AddLike(userId int64, videoId int64) error {
 		klog.Error(err)
 	}
 
+	cntKey = constant.UserInfoCntRedisPrefix + strconv.FormatInt(userId, 10)
+	err = incrCount(redisConn, cntKey, constant.FavoriteCountRedisPrefix, 1, expireTime)
+	if err != nil {
+		klog.Error(err)
+	}
+
 	return nil
 }
 
@@ -159,6 +165,13 @@ func DeleteLike(userId int64, videoId int64) error {
 	if err != nil {
 		klog.Error(err)
 	}
+
+	cntKey = constant.UserInfoCntRedisPrefix + strconv.FormatInt(userId, 10)
+	err = incrCount(redisConn, cntKey, constant.FavoriteCountRedisPrefix, -1, expireTime)
+	if err != nil {
+		klog.Error(err)
+	}
+
 	return nil
 }
 

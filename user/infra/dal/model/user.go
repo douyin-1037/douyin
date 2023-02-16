@@ -11,6 +11,8 @@ type User struct {
 	Password      string `gorm:"column:password;type:varchar(255);not null"`
 	FollowCount   int64  `gorm:"column:follow_count;default:0"`
 	FollowerCount int64  `gorm:"column:follower_count;default:0"`
+	WorkCount     int64  `gorm:"column:work_count;default:0"`
+	FavoriteCount int64  `gorm:"column:favorite_count;default:0"`
 }
 
 func (User) TableName() string {
