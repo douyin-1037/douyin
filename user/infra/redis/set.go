@@ -118,7 +118,9 @@ func AddUserInfo(userInfo redisModel.UserInfoRedis, userCntInfo redisModel.UserC
 	countKey := constant.UserInfoCntRedisPrefix + strconv.FormatInt(userInfo.UserId, 10)
 	_, err = redisConn.Do("hset", countKey,
 		constant.FollowCountRedisPrefix, userCntInfo.FollowCnt,
-		constant.FanCountRedisPrefix, userCntInfo.FanCnt)
+		constant.FanCountRedisPrefix, userCntInfo.FanCnt,
+		constant.WorkCountRedisPrefix, userCntInfo.WorkCnt,
+		constant.FavoriteCountRedisPrefix, userCntInfo.FavoriteCnt)
 	if err != nil {
 		return err
 	}

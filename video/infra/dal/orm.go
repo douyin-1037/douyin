@@ -6,6 +6,8 @@ package dal
 import (
 	"context"
 	"douyin/video/infra/dal/model"
+	"github.com/cloudwego/kitex/pkg/klog"
+	"gorm.io/gorm"
 	"math"
 	"time"
 )
@@ -18,7 +20,20 @@ func CreateVideo(ctx context.Context, userID int64, title string, playUrl string
 		PlayUrl:  playUrl,
 		CoverUrl: coverUrl,
 	}
-	return DB.WithContext(ctx).Create(&video).Error
+	err := DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		err := tx.Create(&video).Error // 通过数据的指针来创建，所以要用&comment
+		if err != nil {
+			klog.Error("create comment fail " + err.Error())
+			return err
+		}
+		err = tx.Table("user").Where("id = ?", userID).Update("work_count", gorm.Expr("work_count + ?", 1)).Error
+		if err != nil {
+			klog.Error("Add user work count error " + err.Error())
+			return err
+		}
+		return nil
+	})
+	return err
 }
 
 // MGetVideoByUserID 根据用户id查视频
@@ -73,49 +88,62 @@ func MGetVideoByTime(ctx context.Context, latestTime time.Time, count int64) ([]
 
 // LikeVideo 点赞视频
 func LikeVideo(ctx context.Context, userID int64, videoID int64) error {
-	isFavorite, err := IsFavorite(ctx, videoID, userID)
-	if err != nil {
-		return err
-	}
-	if isFavorite == true {
-		return nil
-	}
+
 	favorite := &model.Favorite{
 		UserId:  userID,
 		VideoId: videoID,
 	}
-	if err := DB.WithContext(ctx).Create(&favorite).Error; err != nil {
+
+	err := DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		err := tx.Create(&favorite).Error // 通过数据的指针来创建，所以要用&comment
+		if err != nil {
+			klog.Error("create favorite fail " + err.Error())
+			return err
+		}
+		// 这里需要指定Table("video")，因为没有model，无法自动确认表名
+		err = tx.Table("video").Where("id = ?", videoID).Update("favorite_count", gorm.Expr("favorite_count + ?", 1)).Error
+		if err != nil {
+			klog.Error("Add video favorite count error " + err.Error())
+			return err
+		}
+
+		err = tx.Table("user").Where("id = ?", userID).Update("favorite_count", gorm.Expr("favorite_count + ?", 1)).Error
+		if err != nil {
+			klog.Error("Add user favorite count error " + err.Error())
+			return err
+		}
+		return nil
+	})
+	if err != nil {
 		return err
 	}
-	var video model.Video
-	if err := DB.WithContext(ctx).Where("ID = ?", videoID).First(&video).Error; err != nil {
-		return err
-	}
-	video.FavoriteCount++
-	DB.WithContext(ctx).Save(&video)
 	return nil
 }
 
 // UnLikeVideo 取消点赞视频
 func UnLikeVideo(ctx context.Context, userID int64, videoID int64) error {
-	isFavorite, err := IsFavorite(ctx, videoID, userID)
-	if err != nil {
-		return err
-	}
-	if isFavorite == false {
+
+	err := DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		err := tx.Table("favorite").Where("user_id = ? AND video_id = ?", userID, videoID).Delete(&model.Favorite{}).Error
+		if err != nil {
+			klog.Error("delete favorite fail: " + err.Error())
+			return err
+		}
+		// 这里需要指定Table("video")，因为没有model，无法自动确认表名
+		err = tx.Table("video").Where("id = ?", videoID).Update("favorite_count", gorm.Expr("comment_count - ?", 1)).Error
+		if err != nil {
+			klog.Error("Sub video favorite count error " + err.Error())
+			return err
+		}
+
+		err = tx.Table("user").Where("id = ?", userID).Update("favorite_count", gorm.Expr("favorite_count - ?", 1)).Error
+		if err != nil {
+			klog.Error("Sub user favorite count error " + err.Error())
+			return err
+		}
 		return nil
-	}
-	err = DB.WithContext(ctx).Where("user_id = ? AND video_id = ?", userID, videoID).Delete(&model.Favorite{}).Error
-	if err != nil {
-		return err
-	}
-	var video model.Video
-	if err := DB.WithContext(ctx).Where("ID = ?", videoID).First(&video).Error; err != nil {
-		return err
-	}
-	video.FavoriteCount--
-	DB.WithContext(ctx).Save(&video)
-	return nil
+	})
+	return err
 }
 
 // MGetLikeList 通过用户ID获取用户点赞的视频ID数组

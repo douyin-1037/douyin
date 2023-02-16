@@ -107,6 +107,8 @@ CREATE TABLE `user` (
   `password` varchar(255) NOT NULL DEFAULT '' COMMENT '密码，已加密',
   `follow_count` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '关注人数',
   `follower_count` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '粉丝人数',
+  `work_count` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '作品数',
+  `favorite_count` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '点赞视频数',
   `created_at` timestamp NULL DEFAULT NULL COMMENT '创建时间',
   `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `deleted_at` timestamp NULL DEFAULT NULL COMMENT '删除时间',
