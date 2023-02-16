@@ -17,11 +17,6 @@ func GetUserInfo(c *gin.Context) {
 		respond.Error(c, err)
 		return
 	}
-	//req := &userproto.GetUserReq{
-	//	AppUserId: appUserID,
-	//	UserId:    param.UserId,
-	//}
-	//user, err := rpc.GetUser(c, req)
 
 	//调用app层接口
 	user, err := application.UserAppIns.GetUser(c, appUserID, param.UserId)
@@ -33,6 +28,8 @@ func GetUserInfo(c *gin.Context) {
 		BaseResp: respond.Success,
 		User:     user,
 	}
+	resp.User.WorkCount = 1
+	resp.User.FavoriteCount = 2
 	respond.Send(c, resp)
 }
 

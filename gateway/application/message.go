@@ -47,6 +47,8 @@ func toMessageDTO(message *messageproto.MessageInfo) *bizdto.Message {
 	}
 	return &bizdto.Message{
 		ID:         message.MessageId,
+		UserID:     message.FromUserId,
+		ToUserId:   message.ToUserId,
 		Content:    message.Content,
 		CreateTime: message.CreateTime,
 	}

@@ -118,7 +118,8 @@ func GetUserInfo(userId int64) (*model.UserRedis, error) {
 
 	cntKey := constant.UserInfoCntRedisPrefix + strconv.FormatInt(userId, 10)
 	cnt, cntErr := redis.Int64s(redisConn.Do("hmget",
-		cntKey, constant.FollowCountRedisPrefix, constant.FanCountRedisPrefix))
+		cntKey, constant.FollowCountRedisPrefix, constant.FanCountRedisPrefix,
+		constant.WorkCountRedisPrefix, constant.FavoriteCountRedisPrefix))
 	if cntErr != nil {
 		return nil, cntErr
 	}
@@ -126,10 +127,12 @@ func GetUserInfo(userId int64) (*model.UserRedis, error) {
 		return nil, redis.ErrNil
 	}
 	user := &model.UserRedis{
-		UserId:    userId,
-		UserName:  userInfo.UserName,
-		FollowCnt: cnt[0],
-		FanCnt:    cnt[1],
+		UserId:      userId,
+		UserName:    userInfo.UserName,
+		FollowCnt:   cnt[0],
+		FanCnt:      cnt[1],
+		WorkCnt:     cnt[2],
+		FavoriteCnt: cnt[3],
 	}
 	redisConn.Do("expire", cntKey, expireTime)
 

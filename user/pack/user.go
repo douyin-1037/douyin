@@ -15,6 +15,8 @@ func PackUserRedis(userRedis *redisModel.UserRedis) *userproto.UserInfo {
 		Username:      userRedis.UserName,
 		FollowCount:   userRedis.FollowCnt,
 		FollowerCount: userRedis.FanCnt,
+		WorkCount:     userRedis.WorkCnt,
+		FavoriteCount: userRedis.FavoriteCnt,
 	}
 }
 
@@ -27,5 +29,7 @@ func PackUserDal(user *model.User) *userproto.UserInfo {
 		Username:      user.Name,
 		FollowCount:   user.FollowCount,
 		FollowerCount: user.FollowerCount,
+		WorkCount:     user.WorkCount,
+		FavoriteCount: user.FavoriteCount,
 	}
 }

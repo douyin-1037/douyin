@@ -50,8 +50,10 @@ func (s *GetUserService) GetUserInfoByID(appUserId, userId int64) (*userproto.Us
 				UserId:   int64(userInfoDal.ID),
 				UserName: userInfoDal.Name,
 			}, redisModel.UserCntRedis{
-				FollowCnt: userInfoDal.FollowCount,
-				FanCnt:    userInfoDal.FollowerCount,
+				FollowCnt:   userInfoDal.FollowCount,
+				FanCnt:      userInfoDal.FollowerCount,
+				WorkCnt:     userInfoDal.WorkCount,
+				FavoriteCnt: userInfoDal.FavoriteCount,
 			})
 		}()
 		userInfo = pack.PackUserDal(userInfoDal)

@@ -2,7 +2,7 @@
 package userservice
 
 import (
-	"douyin/code_gen/kitex_gen/userproto"
+	userproto "douyin/code_gen/kitex_gen/userproto"
 	server "github.com/cloudwego/kitex/server"
 )
 
