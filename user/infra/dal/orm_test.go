@@ -30,7 +30,7 @@ func testInit() {
 
 func TestCreateUser(t *testing.T) {
 	testInit()
-	userName := "cdx9"
+	userName := "test_user_2"
 	encPassword := "123456"
 	userID, err := CreateUser(context.Background(), userName, encPassword)
 	if err != nil {
@@ -52,8 +52,8 @@ func TestIsFollowByID(t *testing.T) {
 
 func TestFollowUser(t *testing.T) {
 	testInit()
-	var fanID int64 = 34
-	var userID int64 = 36
+	var fanID int64 = 3
+	var userID int64 = 4
 	err := FollowUser(context.Background(), fanID, userID)
 	if err != nil {
 		fmt.Println("********", err)
@@ -63,8 +63,8 @@ func TestFollowUser(t *testing.T) {
 
 func TestUnFollowUser(t *testing.T) {
 	testInit()
-	var fanID int64 = 27
-	var userID int64 = 26
+	var fanID int64 = 3
+	var userID int64 = 4
 	err := UnFollowUser(context.Background(), fanID, userID)
 	if err != nil {
 		fmt.Println("********", err)
