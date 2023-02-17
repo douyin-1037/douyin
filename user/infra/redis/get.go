@@ -191,7 +191,10 @@ func IsFanKeyExist(userId int64) (bool, error) {
 func IsKeyExistByBloom(prefix string, keyId int64) (bool, error) {
 	redisConn := redisPool.Get()
 	defer redisConn.Close()
-	return true, nil
+
+	if bloomKeyOpen == false {
+		return true, nil
+	}
 
 	result, err := redis.Int(redisConn.Do("bf.exists", prefix, keyId))
 	if err != nil {
