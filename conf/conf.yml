@@ -1,37 +1,37 @@
 Server:
   RunMode: debug
-  HttpPort: :8070
+  HttpPort: :8080
   UserServiceAddr: 127.0.0.1:8081
   VideoServiceAddr: 127.0.0.1:8082
   CommentServiceAddr: 127.0.0.1:8083
   MessageServiceAddr: 127.0.0.1:8084
-  RedisAddr: 127.0.0.1:6379
   Timeout: 86400 #seconds
   EtcdAddress: 127.0.0.1:2379
   FeedCount: 5
 
 Database:
   DBType: mysql
-  UserName: dev
-  Password: R6Wafw5FH2WC
-  Host: 43.139.147.169:3306
+  UserName: your username
+  Password: your password
+  Host: host address
   DBName: douyin
   Charset: utf8mb4
   ParseTime: True
 
 JWT:
-  Secret: MHcCAQEEIP0dt4lJhJYy6zC+5Zf8jn+DrttPkkggZFlwsX6mD3uloAoGCCqGSM49AwEHoUQDQgAEFvxY1slOtW9KrBy48aJuQN+zlAZu31Hob1KEUhtSnKp8FkNuLGdERmUYhBp2kFU8qhbEg5lMGDKPV55UcmZsGw==
+  Secret: jwt secret
   Expires: 24 #hours
 
 COS:
   SecretID: your secret id
   SecretKey: your secret key
-  VideoBucket: cos video bucket
-  CoverBucket: cos cover bucket
+  VideoBucket: cos video bucket address
+  CoverBucket: cos cover bucket address
 
 Redis:
-  Address: 127.0.0.1:6379
+  Address: redis address
   MaxIdle: 100
   MaxActive: 0
   ExpireTime: 24 #hours
   MaxRandAddTime: 1 #hours
+  BloomOpen: false
