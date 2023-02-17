@@ -111,8 +111,8 @@ func TestLikeVideo(t *testing.T) {
 
 func TestUnLikeVideo(t *testing.T) {
 	testInit()
-	userId := int64(23)
-	videoId := int64(10)
+	userId := int64(3)
+	videoId := int64(14)
 	if err := UnLikeVideo(context.Background(), userId, videoId); err != nil {
 		panic(err)
 	}

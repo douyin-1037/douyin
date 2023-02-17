@@ -130,7 +130,7 @@ func UnLikeVideo(ctx context.Context, userID int64, videoID int64) error {
 			return err
 		}
 		// 这里需要指定Table("video")，因为没有model，无法自动确认表名
-		err = tx.Table("video").Where("id = ?", videoID).Update("favorite_count", gorm.Expr("comment_count - ?", 1)).Error
+		err = tx.Table("video").Where("id = ?", videoID).Update("favorite_count", gorm.Expr("favorite_count - ?", 1)).Error
 		if err != nil {
 			klog.Error("Sub video favorite count error " + err.Error())
 			return err
