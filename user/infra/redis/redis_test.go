@@ -24,7 +24,7 @@ func testInit() {
 			return redis.Dial("tcp", conf.Redis.Address)
 		},
 	}
-	bloomKeyOpen = true
+	bloomOpen = true
 }
 
 func TestAddRelation(t *testing.T) {
