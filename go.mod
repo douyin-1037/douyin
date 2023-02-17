@@ -4,7 +4,6 @@ go 1.19
 
 require (
 	github.com/appleboy/gin-jwt/v2 v2.9.1
-	github.com/bytedance/mockey v1.1.1
 	github.com/cloudwego/fastpb v0.0.3
 	github.com/cloudwego/kitex v0.4.4
 	github.com/gin-gonic/gin v1.8.2
@@ -14,6 +13,7 @@ require (
 	github.com/kitex-contrib/tracer-opentracing v0.0.2
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/pkg/errors v0.9.1
+	github.com/smartystreets/goconvey v1.6.4
 	github.com/sony/sonyflake v1.1.0
 	github.com/spf13/viper v1.15.0
 	github.com/tencentyun/cos-go-sdk-v5 v0.7.41
@@ -23,6 +23,7 @@ require (
 	google.golang.org/protobuf v1.28.1
 	gorm.io/driver/mysql v1.4.5
 	gorm.io/gorm v1.24.5
+	gorm.io/plugin/soft_delete v1.2.0
 )
 
 require (
@@ -67,7 +68,6 @@ require (
 	github.com/oleiade/lane v1.0.1 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.6 // indirect
 	github.com/smartystreets/assertions v0.0.0-20180927180507-b2de0cb4f26d // indirect
-	github.com/smartystreets/goconvey v1.6.4 // indirect
 	github.com/spf13/afero v1.9.3 // indirect
 	github.com/spf13/cast v1.5.0 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
