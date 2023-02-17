@@ -4,8 +4,10 @@ import (
 	"douyin/common/conf"
 	"douyin/common/constant"
 	"douyin/common/util"
-	"fmt"
+	"douyin/user/infra/redis/model"
 	"github.com/gomodule/redigo/redis"
+	. "github.com/smartystreets/goconvey/convey"
+	"strconv"
 	"testing"
 )
 
@@ -22,110 +24,186 @@ func testInit() {
 			return redis.Dial("tcp", conf.Redis.Address)
 		},
 	}
+	bloomKeyOpen = true
 }
 
 func TestAddRelation(t *testing.T) {
 	testInit()
-	//ctrl := gomock.NewController(t)
-
-	err := AddRelation(1, 3)
-	if err != nil {
-		fmt.Println(err)
-	}
+	Convey("TestAddRelation", t, func() {
+		So(AddRelation(1, 3), ShouldBeNil)
+	})
 }
 
 func TestDeleteRelation(t *testing.T) {
 	testInit()
-	err := DeleteRelation(1, 3)
-	if err != nil {
-		fmt.Println(err)
-	}
+	Convey("TestDeleteRelation", t, func() {
+		So(DeleteRelation(1, 3), ShouldBeNil)
+	})
 }
 
 func TestAddFollowList(t *testing.T) {
 	testInit()
-	followList := []int64{2, 3, 4, 5, 6}
-	err := AddFollowList(1, followList)
-	if err != nil {
-		fmt.Println(err)
-	}
-
+	Convey("TestAddFollowList", t, func() {
+		followList := []int64{2, 3, 4, 5, 6}
+		So(AddFollowList(1, followList), ShouldBeNil)
+	})
 }
 
 func TestGetFollowList(t *testing.T) {
 	testInit()
-	result, err := GetFollowList(38)
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println(result)
+
+	Convey("TestGetFollowList", t, func() {
+		err := deleteTestKey(1, constant.FollowRedisPrefix)
+		So(err, ShouldBeNil)
+		followList := []int64{2, 3, 4, 5, 6}
+		So(AddFollowList(1, followList), ShouldBeNil)
+		result, err := GetFollowList(1)
+		So(err, ShouldBeNil)
+		So(result, ShouldResemble, followList)
+		err = deleteTestKey(1, constant.FollowRedisPrefix)
+		So(err, ShouldBeNil)
+		result, err = GetFollowList(1)
+		So(err, ShouldBeNil)
+		So(result, ShouldBeEmpty)
+	})
 }
 
 func TestGetFanList(t *testing.T) {
 	testInit()
-	result, err := GetFanList(1)
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println(result)
+	Convey("TestGetFanList", t, func() {
+		err := deleteTestKey(1, constant.FanRedisPrefix)
+		So(err, ShouldBeNil)
+		fanList := []int64{2, 3, 4, 5, 6}
+		So(AddFanList(1, fanList), ShouldBeNil)
+		result, err := GetFanList(1)
+		So(err, ShouldBeNil)
+		So(result, ShouldResemble, fanList)
+		err = deleteTestKey(1, constant.FanRedisPrefix)
+		So(err, ShouldBeNil)
+		result, err = GetFanList(1)
+		So(err, ShouldBeNil)
+		So(result, ShouldBeEmpty)
+	})
 }
 
 func TestGetFriendList(t *testing.T) {
 	testInit()
-	result, err := GetFriendList(2)
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println(result)
+	Convey("TestGetFriendList", t, func() {
+		err := deleteTestKey(1, constant.FollowRedisPrefix)
+		So(err, ShouldBeNil)
+		err = deleteTestKey(1, constant.FanRedisPrefix)
+		So(err, ShouldBeNil)
+		followList := []int64{3, 4, 5, 6}
+		So(AddFollowList(1, followList), ShouldBeNil)
+		fanList := []int64{2, 3, 4, 5}
+		So(AddFanList(1, fanList), ShouldBeNil)
+		result, err := GetFriendList(1)
+		So(err, ShouldBeNil)
+		So(result, ShouldResemble, []int64{5, 4, 3})
+		err = deleteTestKey(1, constant.FollowRedisPrefix)
+		So(err, ShouldBeNil)
+		err = deleteTestKey(1, constant.FanRedisPrefix)
+		So(err, ShouldBeNil)
+		result, err = GetFriendList(1)
+		So(err, ShouldBeNil)
+		So(result, ShouldBeEmpty)
+	})
 }
 
 func TestGetIsFollowById(t *testing.T) {
 	testInit()
-	result, err := GetIsFollowById(2, 1)
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println(result)
+	Convey("TestGetIsFollowById", t, func() {
+		So(AddRelation(1, 3), ShouldBeNil)
+		result, err := GetIsFollowById(1, 3)
+		So(err, ShouldBeNil)
+		So(result, ShouldBeTrue)
+		So(DeleteRelation(1, 3), ShouldBeNil)
+		result, err = GetIsFollowById(1, 3)
+		So(err, ShouldBeNil)
+		So(result, ShouldBeFalse)
+	})
 }
 
 func TestAddUserInfo(t *testing.T) {
 	testInit()
-
+	Convey("TestAddUserInfo", t, func() {
+		So(AddUserInfo(model.UserInfoRedis{
+			UserId:   1,
+			UserName: "test_name",
+		}, model.UserCntRedis{
+			FollowCnt:   1,
+			FanCnt:      2,
+			WorkCnt:     3,
+			FavoriteCnt: 4,
+		}), ShouldBeNil)
+	})
 }
 
 func TestGetUserInfo(t *testing.T) {
 	testInit()
-
-	userinfo, err := GetUserInfo(4)
-	if err != nil {
-		fmt.Println("err:")
-		fmt.Println(err)
-	}
-	fmt.Println(userinfo)
+	Convey("TestGetUserInfo", t, func() {
+		So(AddUserInfo(model.UserInfoRedis{
+			UserId:   1,
+			UserName: "test_name",
+		}, model.UserCntRedis{
+			FollowCnt:   1,
+			FanCnt:      2,
+			WorkCnt:     3,
+			FavoriteCnt: 4,
+		}), ShouldBeNil)
+		result, err := GetUserInfo(1)
+		So(err, ShouldBeNil)
+		So(result, ShouldResemble, &model.UserRedis{
+			UserId:      1,
+			UserName:    "test_name",
+			FollowCnt:   1,
+			FanCnt:      2,
+			WorkCnt:     3,
+			FavoriteCnt: 4,
+		})
+		err = deleteTestKey(1, constant.UserInfoRedisPrefix)
+		So(err, ShouldBeNil)
+		result, err = GetUserInfo(1)
+		So(err, ShouldNotBeNil)
+	})
 }
 
 func TestIsFollowKeyExist(t *testing.T) {
 	testInit()
-	result, err := IsFollowKeyExist(1)
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println(result)
+	Convey("TestIsFollowKeyExist", t, func() {
+		So(deleteTestKey(1, constant.FollowRedisPrefix), ShouldBeNil)
+		result, err := IsFollowKeyExist(1)
+		So(err, ShouldBeNil)
+		So(result, ShouldBeFalse)
+		So(AddRelation(1, 3), ShouldBeNil)
+		result, err = IsFollowKeyExist(1)
+		So(err, ShouldBeNil)
+		So(result, ShouldBeTrue)
+		So(deleteTestKey(1, constant.FollowRedisPrefix), ShouldBeNil)
+	})
 }
 
 func TestAddBloomKey(t *testing.T) {
 	testInit()
-	err := AddBloomKey(constant.UserInfoRedisPrefix, 1)
-	if err != nil {
-		fmt.Println(err)
-	}
+	Convey("TestAddBloomKey", t, func() {
+		So(AddBloomKey(constant.UserInfoRedisPrefix, 1), ShouldBeNil)
+	})
 }
 
 func TestIsKeyExistByBloom(t *testing.T) {
 	testInit()
-	result, err := IsKeyExistByBloom(constant.UserInfoRedisPrefix, 2)
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println(result)
+	Convey("TestIsKeyExistByBloom", t, func() {
+		So(AddBloomKey(constant.UserInfoRedisPrefix, 1), ShouldBeNil)
+		result, err := IsKeyExistByBloom(constant.UserInfoRedisPrefix, 1)
+		So(err, ShouldBeNil)
+		So(result, ShouldBeTrue)
+	})
+}
+
+func deleteTestKey(keyId int64, prefix string) error {
+	redisConn := redisPool.Get()
+	defer redisConn.Close()
+	key := prefix + strconv.FormatInt(keyId, 10)
+	_, err := redisConn.Do("del", key)
+	return err
 }
