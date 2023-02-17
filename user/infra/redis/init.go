@@ -9,7 +9,7 @@ import (
 var redisPool *redis.Pool
 
 var expireTimeUtil util.ExpireTimeUtil
-var bloomKeyOpen bool
+var bloomOpen bool
 
 func Init() {
 	redisPool = &redis.Pool{
@@ -24,6 +24,6 @@ func Init() {
 		MaxRandAddTime: conf.Redis.MaxRandAddTime,
 	}
 
-	bloomKeyOpen = false
+	bloomOpen = conf.Redis.BloomOpen
 
 }

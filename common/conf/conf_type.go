@@ -11,7 +11,6 @@ var (
 type ServerConfig struct {
 	RunMode            string
 	HttpPort           string
-	RedisAddress       string
 	UserServiceAddr    string
 	VideoServiceAddr   string
 	CommentServiceAddr string
@@ -44,4 +43,5 @@ type ReidsConfig struct {
 	MaxActive      int
 	ExpireTime     int
 	MaxRandAddTime int
+	BloomOpen      bool
 }

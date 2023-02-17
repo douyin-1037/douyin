@@ -192,7 +192,7 @@ func IsKeyExistByBloom(prefix string, keyId int64) (bool, error) {
 	redisConn := redisPool.Get()
 	defer redisConn.Close()
 
-	if bloomKeyOpen == false {
+	if bloomOpen == false {
 		return true, nil
 	}
 
