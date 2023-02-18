@@ -14,7 +14,7 @@ func TestLikeVideo(t *testing.T) {
 	testInit()
 	req := &videoproto.LikeVideoReq{
 		UserId:  int64(1),
-		VideoId: int64(8),
+		VideoId: int64(10),
 	}
 	err := service.NewLikeVideoService(context.Background()).LikeVideo(req)
 	if err != nil {

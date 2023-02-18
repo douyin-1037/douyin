@@ -51,7 +51,7 @@ func AddMessageList(userId int64, toUserId int64, messageListp []*model.Message)
 	redisConn.Send("multi")
 	for i := range messageListp {
 		messageRedis := redisModel.MessageRedis{
-			MessageId:  messageListp[i].MessageUUId,
+			MessageId:  messageListp[i].MessageUUID,
 			FromUserId: messageListp[i].FromUserId,
 			ToUserId:   messageListp[i].ToUserId,
 			Content:    messageListp[i].Contents,

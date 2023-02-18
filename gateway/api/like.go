@@ -23,13 +23,13 @@ func LikeAction(c *gin.Context) {
 		return
 	}
 	switch param.ActionType {
-	case 1: // 点赞
+	case constant.LikeVideo: // 点赞
 		if err := application.VideoAppIns.LikeVideo(c, appUserID, param.VideoId); err != nil {
 			coredto.Error(c, err)
 			return
 		}
 		coredto.OK(c)
-	case 2: // 取消点赞
+	case constant.UnLikeVideo: // 取消点赞
 		if err := application.VideoAppIns.UnLikeVideo(c, appUserID, param.VideoId); err != nil {
 			coredto.Error(c, err)
 			return

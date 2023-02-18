@@ -5,6 +5,7 @@ import (
 	config "douyin/common/conf"
 	"douyin/common/constant"
 	"douyin/message/infra/dal"
+	"douyin/message/infra/pulsar"
 	"douyin/message/infra/redis"
 	"douyin/pkg/middleware"
 	"github.com/cloudwego/kitex/pkg/klog"
@@ -20,6 +21,7 @@ func Init() {
 	config.InitConfig()
 	redis.Init()
 	dal.Init()
+	pulsar.Init()
 }
 
 func main() {

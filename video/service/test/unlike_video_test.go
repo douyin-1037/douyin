@@ -13,8 +13,8 @@ import (
 func TestUnLikeVideo(t *testing.T) {
 	testInit()
 	req := &videoproto.UnLikeVideoReq{
-		UserId:  int64(1),
-		VideoId: int64(8),
+		UserId:  int64(41),
+		VideoId: int64(16),
 	}
 	err := service.NewUnLikeVideoService(context.Background()).UnLikeVideo(req)
 	if err != nil {

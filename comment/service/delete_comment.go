@@ -6,9 +6,9 @@ package service
 import (
 	"context"
 	"douyin/comment/infra/dal"
+	"douyin/comment/infra/pulsar"
 	"douyin/comment/infra/redis"
 	"github.com/cloudwego/kitex/pkg/klog"
-	"github.com/hashicorp/go-multierror"
 )
 
 type DeleteCommentService struct {
@@ -39,7 +39,6 @@ func (s *DeleteCommentService) DeleteComment(commentId int64, videoId int64) err
 	// key不存在，刷新缓存
 	if isKeyExist == false {
 		// 从数据库中 获取 评论列表
-		//TODO todo
 		//并发控制
 		comments, err := dal.GetCommentList(s.ctx, videoId)
 		if err != nil {
@@ -55,35 +54,33 @@ func (s *DeleteCommentService) DeleteComment(commentId int64, videoId int64) err
 	}
 	// ——————————————————————————————————————————————————————————————
 	// 开启go协程 写数据库
-	errChannel := make(chan error)
-	go func(ch chan error, ctx context.Context, videoId int64, commentUUId int64) {
-		err := dal.DeleteComment(ctx, commentUUId, videoId)
-		if err != nil {
-			// 写数据库也失败，用channel返回错误
-			klog.Error("Database delete comment failed, " + err.Error())
-		}
-		// 不论成功失败都需要将err写入channel，【不然主协程可能会一直阻塞】
-		// 同时记得【在发送端】关闭channel
-		ch <- err
-		close(ch)
-		return
-	}(errChannel, s.ctx, videoId, commentId)
+	//errChannel := make(chan error)
+	//go func(ch chan error, ctx context.Context, videoId int64, commentUUID int64) {
+	//	err := dal.DeleteComment(ctx, commentUUID, videoId)
+	//	if err != nil {
+	//		// 写数据库也失败，用channel返回错误
+	//		klog.Error("Database delete comment failed, " + err.Error())
+	//	}
+	//	// 不论成功失败都需要将err写入channel，【不然主协程可能会一直阻塞】
+	//	// 同时记得【在发送端】关闭channel
+	//	ch <- err
+	//	close(ch)
+	//	return
+	//}(errChannel, s.ctx, videoId, commentId)
 
 	// 在主协程中 写Redis
 	redisErr := redis.DeleteComment(commentId, videoId)
 
-	//TODO todo
-	//写入Redis和DB有出错的时候的一致性控制
+	//写入Redis错误处理
 	if redisErr != nil {
 		klog.Error("Redis delete comment failed, " + redisErr.Error())
-		// 这里先不返回，而是去阻塞地等写数据库的结果；数据库也写失败再返回error
-		dbErr := <-errChannel
-		if dbErr != nil {
-			// 完蛋，数据库和缓存全都写失败了，抛出合并的error
-			klog.Error("DB and Redis delete comment both failed, " + dbErr.Error())
-			return multierror.Append(redisErr, dbErr)
-		}
 	}
-	// 只要Redis和DB有一个正确写入，这里就返回空的error
+
+	//通过pulsar消息队列异步写入到数据库中
+	if err := pulsar.DeleteCommentProduce(s.ctx, commentId, videoId); err != nil {
+		klog.Error("pulsar send comment delete action failed," + err.Error())
+		return err
+	}
+
 	return nil
 }

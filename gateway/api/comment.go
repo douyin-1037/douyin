@@ -22,7 +22,7 @@ func CommentAction(c *gin.Context) {
 		return
 	}
 	switch param.ActionType {
-	case 1: // create comment on a video
+	case constant.CreateComment: // create comment on a video
 		comment, err := application.CommentAppIns.CreateComment(c, appUserID, param.VideoId, param.CommentText)
 		if err != nil {
 			coredto.Error(c, err)
@@ -38,7 +38,7 @@ func CommentAction(c *gin.Context) {
 			Comment:  comment,
 		}
 		coredto.Send(c, resp)
-	case 2: // delete one comment
+	case constant.DeleteComment: // delete one comment
 		if err := application.CommentAppIns.DeleteComment(c, param.CommentId, param.VideoId); err != nil {
 			coredto.Error(c, err)
 			return

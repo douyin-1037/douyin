@@ -29,7 +29,7 @@ func MessageFromRedisModel(message *redisModel.MessageRedis) *model.Message {
 		FromUserId:  message.FromUserId,
 		ToUserId:    message.ToUserId,
 		Contents:    message.Content,
-		MessageUUId: message.MessageId,
+		MessageUUID: message.MessageId,
 		CreateTime:  message.CreateTime,
 	}
 }

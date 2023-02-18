@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"douyin/message/infra/pulsar"
 	"time"
 
 	"douyin/code_gen/kitex_gen/messageproto"
@@ -57,6 +58,8 @@ func (s *CreateMessageService) CreateMessage(req *messageproto.CreateMessageReq)
 		CreateTime: createTime,
 	}
 	err = redis.AddMessage(req.UserId, req.ToUserId, message)
-	go dal.CreateMessage(s.ctx, req.UserId, req.ToUserId, req.Content, createTime)
+	if err := pulsar.CreateMessageProduce(s.ctx, req.UserId, req.ToUserId, req.Content, createTime); err != nil {
+		return err
+	}
 	return err
 }

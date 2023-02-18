@@ -40,7 +40,7 @@ func (c CommentAppService) CreateComment(ctx context.Context, appUserID int64, v
 		UserId:    commentInfo.UserId,
 	})
 	if err != nil {
-		return nil, errors.Wrapf(err, "GetUser rpc failed, appUserID: %v, userID: %v", appUserID, commentInfo.UserId)
+		return nil, errors.Wrapf(err, "GetUser rpc failed, appUserID: %v, userId: %v", appUserID, commentInfo.UserId)
 	}
 	return toCommentDTO(commentInfo, toUserDTO(author)), nil
 }
@@ -73,7 +73,7 @@ func (c CommentAppService) GetCommentList(ctx context.Context, appUserID int64, 
 			UserId:    commentInfos[i].UserId, //获取评论的作者id
 		})
 		if err != nil {
-			return nil, errors.Wrapf(err, "GetUser rpc failed, appUserID: %v, userID: %v", appUserID, commentInfos[i].UserId)
+			return nil, errors.Wrapf(err, "GetUser rpc failed, appUserID: %v, userId: %v", appUserID, commentInfos[i].UserId)
 		}
 		authors[i] = toUserDTO(authorInfo)
 	}

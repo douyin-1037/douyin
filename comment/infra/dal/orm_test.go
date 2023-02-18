@@ -32,17 +32,17 @@ func testInit() {
 
 func TestCommentGorm(t *testing.T) {
 	testInit()
-	var userID int64 = 22
+	var userId int64 = 22
 	var videoID int64 = 7
 	content1 := "2023年2月13日13:59:41"
 	//content2 := "test2.10.2"
 	var commentUUID int64 = 61
 	createTime := time.Now().Unix()
-	_, err := CreateComment(context.Background(), userID, videoID, content1, commentUUID, createTime)
+	_, err := CreateComment(context.Background(), userId, videoID, content1, commentUUID, createTime)
 	if err != nil {
 		fmt.Println(err)
 	}
-	//_, err = CreateComment(context.Background(), userID, videoID, content2)
+	//_, err = CreateComment(context.Background(), userId, videoID, content2)
 	//if err != nil {
 	//	fmt.Println(err)
 	//}
@@ -53,7 +53,7 @@ func TestCommentGorm(t *testing.T) {
 	//}
 	//for _, comment := range comments {
 	//	fmt.Println("commentID: ", comment.ID)
-	//	fmt.Println("userID: ", comment.UserId)
+	//	fmt.Println("userId: ", comment.UserId)
 	//	fmt.Println("videoID: ", comment.VideoId)
 	//	fmt.Println("content: ", comment.Contents)
 	//	fmt.Println("publish time: ", time.Unix(comment.CreatedAt.Unix(), 0).Format("2006-01-02 15:04:05")+"\n")
@@ -70,7 +70,7 @@ func TestCommentGorm(t *testing.T) {
 	//}
 	//for _, comment := range comments {
 	//	fmt.Println("commentID: ", comment.ID)
-	//	fmt.Println("userID: ", comment.UserId)
+	//	fmt.Println("userId: ", comment.UserId)
 	//	fmt.Println("videoID: ", comment.VideoId)
 	//	fmt.Println("content: ", comment.Contents)
 	//	fmt.Println("publish time: ", time.Unix(comment.CreatedAt.Unix(), 0).Format("2006-01-02 15:04:05")+"\n")
@@ -79,10 +79,10 @@ func TestCommentGorm(t *testing.T) {
 
 //	func TestCreateComment(t *testing.T) {
 //		testInit()
-//		var userID int64 = 1
+//		var userId int64 = 1
 //		var videoID int64 = 666
 //		content := "test"
-//		err := CreateComment(context.Background(), userID, videoID, content)
+//		err := CreateComment(context.Background(), userId, videoID, content)
 //		if err != nil {
 //			fmt.Println(err)
 //		}
@@ -105,7 +105,7 @@ func TestGetCommentList(t *testing.T) {
 	}
 	for _, comment := range comments {
 		fmt.Println("commentID: ", comment.ID)
-		fmt.Println("userID: ", comment.UserId)
+		fmt.Println("userId: ", comment.UserId)
 		fmt.Println("videoID: ", comment.VideoId)
 		fmt.Println("content: ", comment.Contents)
 		fmt.Println("publish time: ", time.Unix(comment.CreatedAt.Unix(), 0).Format("2006-01-02 15:04:05")+"\n")

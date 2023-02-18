@@ -77,14 +77,14 @@ func (v VideoAppService) UnLikeVideo(ctx context.Context, appUserID int64, video
 	return nil
 }
 
-func (v VideoAppService) GetVideoList(ctx context.Context, appUserID int64, userID int64) (videoList []*bizdto.Video, err error) {
+func (v VideoAppService) GetVideoList(ctx context.Context, appUserID int64, userId int64) (videoList []*bizdto.Video, err error) {
 	req := &videoproto.GetVideoListByUserIdReq{
 		AppUserId: appUserID,
-		UserId:    userID,
+		UserId:    userId,
 	}
 	videos, err := rpc.GetVideoListByUserId(ctx, req)
 	if err != nil {
-		return nil, errors.Wrapf(err, "GetVideoListByUserId rpc failed, appUserID: %v, userID: %v", appUserID, userID)
+		return nil, errors.Wrapf(err, "GetVideoListByUserId rpc failed, appUserID: %v, userId: %v", appUserID, userId)
 	}
 	// get authors
 	n := len(videos)
@@ -96,7 +96,7 @@ func (v VideoAppService) GetVideoList(ctx context.Context, appUserID int64, user
 		}
 		authors[i], err = rpc.GetUser(ctx, subReq)
 		if err != nil {
-			return nil, errors.Wrapf(err, "GetUser rpc failed, appUserID: %v, userID: %v", appUserID, videos[i].VideoBaseInfo.UserId)
+			return nil, errors.Wrapf(err, "GetUser rpc failed, appUserID: %v, userId: %v", appUserID, videos[i].VideoBaseInfo.UserId)
 		}
 	}
 	// pack videos and authors
@@ -104,14 +104,14 @@ func (v VideoAppService) GetVideoList(ctx context.Context, appUserID int64, user
 	return packedVideos, nil
 }
 
-func (v VideoAppService) GetLikeVideoList(ctx context.Context, appUserID int64, userID int64) (userList []*bizdto.Video, err error) {
+func (v VideoAppService) GetLikeVideoList(ctx context.Context, appUserID int64, userId int64) (userList []*bizdto.Video, err error) {
 	req := &videoproto.GetLikeVideoListReq{
 		AppUserId: appUserID,
-		UserId:    userID,
+		UserId:    userId,
 	}
 	videos, err := rpc.GetLikeVideoList(ctx, req)
 	if err != nil {
-		return nil, errors.Wrapf(err, "GetLikeVideoList rpc failed, appUserID: %v, userID: %v", appUserID, userID)
+		return nil, errors.Wrapf(err, "GetLikeVideoList rpc failed, appUserID: %v, userId: %v", appUserID, userId)
 	}
 	n := len(videos)
 	authors := make([]*userproto.UserInfo, n)
@@ -122,7 +122,7 @@ func (v VideoAppService) GetLikeVideoList(ctx context.Context, appUserID int64, 
 		}
 		authors[i], err = rpc.GetUser(ctx, subReq)
 		if err != nil {
-			return nil, errors.Wrapf(err, "GetUser rpc failed, appUserID: %v, userID: %v", appUserID, videos[i].VideoBaseInfo.UserId)
+			return nil, errors.Wrapf(err, "GetUser rpc failed, appUserID: %v, userId: %v", appUserID, videos[i].VideoBaseInfo.UserId)
 		}
 	}
 	packedVideos := toVideoDTOs(videos, authors)
@@ -148,7 +148,7 @@ func (v VideoAppService) Feed(ctx context.Context, appUserID int64, latestTime i
 		}
 		authors[i], err = rpc.GetUser(ctx, subReq)
 		if err != nil {
-			return nil, 0, errors.Wrapf(err, "GetUser rpc failed, appUserID: %v, userID: %v", appUserID, videos[i].VideoBaseInfo.UserId)
+			return nil, 0, errors.Wrapf(err, "GetUser rpc failed, appUserID: %v, userId: %v", appUserID, videos[i].VideoBaseInfo.UserId)
 		}
 	}
 	packedVideos := toVideoDTOs(videos, authors)

@@ -28,8 +28,6 @@ func GetUserInfo(c *gin.Context) {
 		BaseResp: respond.Success,
 		User:     user,
 	}
-	resp.User.WorkCount = 1
-	resp.User.FavoriteCount = 2
 	respond.Send(c, resp)
 }
 
@@ -41,20 +39,20 @@ func Create(c *gin.Context) {
 		return
 	}
 
-	userID, err := application.UserAppIns.CreateUser(c, param.Username, param.Password)
+	userId, err := application.UserAppIns.CreateUser(c, param.Username, param.Password)
 	if err != nil {
 		respond.Error(c, err)
 		return
 	}
 
-	token, err := auth.GenerateToken(userID)
+	token, err := auth.GenerateToken(userId)
 	if err != nil {
 		respond.Error(c, err)
 		return
 	}
 	resp := &bizdto.UserRegisterResp{
 		BaseResp: respond.Success,
-		UserID:   userID,
+		UserID:   userId,
 		Token:    token,
 	}
 	respond.Send(c, resp)
@@ -68,19 +66,19 @@ func Check(c *gin.Context) {
 		return
 	}
 
-	userID, err := application.UserAppIns.CheckUser(c, param.Username, param.Password)
+	userId, err := application.UserAppIns.CheckUser(c, param.Username, param.Password)
 	if err != nil {
 		respond.Error(c, err)
 		return
 	}
-	token, err := auth.GenerateToken(userID)
+	token, err := auth.GenerateToken(userId)
 	if err != nil {
 		respond.Error(c, err)
 		return
 	}
 	resp := &bizdto.UserLoginResp{
 		BaseResp: respond.Success,
-		UserID:   userID,
+		UserID:   userId,
 		Token:    token,
 	}
 	respond.Send(c, resp)

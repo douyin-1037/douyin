@@ -6,6 +6,8 @@ package main
 import (
 	commentproto "douyin/code_gen/kitex_gen/commentproto/commentservice"
 	"douyin/comment/infra/dal"
+	"douyin/comment/infra/pulsar"
+	"douyin/comment/infra/redis"
 	config "douyin/common/conf"
 	"douyin/common/constant"
 	"douyin/pkg/middleware"
@@ -21,6 +23,8 @@ import (
 func Init() {
 	config.InitConfig()
 	dal.Init()
+	redis.Init()
+	pulsar.Init()
 }
 
 func main() {

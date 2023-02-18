@@ -26,24 +26,24 @@ func NewMGetLikeVideoService(ctx context.Context) *MGetLikeVideoService {
 // MGetLikeVideo 通过用户ID从DAO层获取喜欢视频的基本信息，并查出当前用户是否点赞，组装后返回
 func (s *MGetLikeVideoService) MGetLikeVideo(req *videoproto.GetLikeVideoListReq) ([]*videoproto.VideoInfo, error) {
 	appUserId := req.AppUserId
-	userID := req.UserId
+	userId := req.UserId
 	var likeList []int64
-	isLikeKeyExist, err := redis.IsLikeKeyExist(userID)
+	isLikeKeyExist, err := redis.IsLikeKeyExist(userId)
 	if err != nil {
 		klog.Error(err)
 	}
 	if isLikeKeyExist == true {
-		likeList, err = redis.GetLikeList(userID)
+		likeList, err = redis.GetLikeList(userId)
 		if err != nil {
 			return nil, err
 		}
 	} else {
 		// 缓存未命中，去数据库查询，然后缓存到redis
-		likeList, err = dal.MGetLikeList(s.ctx, userID)
+		likeList, err = dal.MGetLikeList(s.ctx, userId)
 		if err != nil {
 			return nil, err
 		}
-		if err := redis.AddLikeList(userID, likeList); err != nil {
+		if err := redis.AddLikeList(userId, likeList); err != nil {
 			klog.Error(err)
 		}
 	}
@@ -71,11 +71,11 @@ func (s *MGetLikeVideoService) MGetLikeVideo(req *videoproto.GetLikeVideoListReq
 		klog.Error(err)
 	}
 	if isLikeKeyExist == false {
-		likeList, err = dal.MGetLikeList(s.ctx, userID)
+		likeList, err = dal.MGetLikeList(s.ctx, userId)
 		if err != nil {
 			return nil, err
 		}
-		if err := redis.AddLikeList(userID, likeList); err != nil {
+		if err := redis.AddLikeList(userId, likeList); err != nil {
 			klog.Error(err)
 		}
 	}
