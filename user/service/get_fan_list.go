@@ -23,7 +23,7 @@ func (s *GetFanListService) GetFanList(appUserId int64, userId int64) ([]*userpr
 
 	fanIdList, redisErr := redis.GetFollowList(userId)
 	if redisErr != nil || fanIdList == nil || len(fanIdList) <= 0 {
-		klog.Error("get fan list Redis missed " + redisErr.Error())
+		klog.Error("get fan list Redis missed ", redisErr)
 	} else {
 		return GetFanListMakeList(s, appUserId, fanIdList)
 	}

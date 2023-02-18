@@ -28,11 +28,6 @@ func CommentAction(c *gin.Context) {
 			coredto.Error(c, err)
 			return
 		}
-		//author, err := application.UserAppIns.GetUser(c, appUserID, comment.User.ID)
-		//if err != nil {
-		//	coredto.Error(c, err)
-		//	return
-		//}
 		resp := &bizdto.CreateCommentResp{
 			BaseResp: coredto.Success,
 			Comment:  comment,

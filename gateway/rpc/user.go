@@ -2,7 +2,6 @@ package rpc
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/cloudwego/kitex/client"
