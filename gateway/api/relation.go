@@ -18,14 +18,14 @@ func Follow(c *gin.Context) {
 		return
 	}
 	switch param.ActionType {
-	case 1: // follow
+	case constant.FollowUser:
 		err := application.UserAppIns.FollowUser(c, appUserID, param.ToUserId)
 		if err != nil {
 			respond.Error(c, err)
 			return
 		}
 		respond.OK(c)
-	case 2: // unfollow
+	case constant.UnFollowUser:
 		err := application.UserAppIns.UnFollowUser(c, appUserID, param.ToUserId)
 		if err != nil {
 			respond.Error(c, err)

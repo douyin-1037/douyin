@@ -89,7 +89,7 @@ func AddCommentList(commentListp []*model.Comment) error {
 	redisConn.Send("multi")
 	for i := range commentListp {
 		commentRedis := redisModel.CommentRedis{
-			CommentId:  commentListp[i].CommentUUId,
+			CommentId:  commentListp[i].CommentUUID,
 			VideoId:    commentListp[i].VideoId,
 			UserId:     commentListp[i].UserId,
 			Content:    commentListp[i].Contents,

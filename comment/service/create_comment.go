@@ -7,11 +7,11 @@ import (
 	"context"
 	"douyin/code_gen/kitex_gen/commentproto"
 	"douyin/comment/infra/dal"
+	"douyin/comment/infra/pulsar"
 	"douyin/comment/infra/redis"
 	redisModel "douyin/comment/infra/redis/model"
 	"douyin/common/util"
 	"github.com/cloudwego/kitex/pkg/klog"
-	"github.com/hashicorp/go-multierror"
 	"time"
 )
 
@@ -73,45 +73,41 @@ func (s *CreateCommentService) CreateComment(userId int64, videoId int64, conten
 		CreateTime: nowTime,
 	}
 	// 开启go协程 写数据库
-	errChannel := make(chan error)
-	go func(ch chan error, ctx context.Context,
-		userID int64, videoId int64, content string, commentUUId int64, createTime int64) {
-		// 很笨的方法 context替代消息队列
-		//TODO MQ
-		subCtx, cancel := context.WithCancel(context.Background())
-		defer cancel()
-		go func(subCtx context.Context, ch chan error, ctx context.Context,
-			userID int64, videoId int64, content string, commentUUId int64, createTime int64) {
-			_, err := dal.CreateComment(ctx, userID, videoId, content, commentUUId, createTime)
-			if err != nil {
-				// 写数据库也失败，用channel返回错误
-				klog.Error("Database create comment failed, " + err.Error())
-			}
-			// 不论成功失败都需要将err写入channel，【不然主协程可能会一直阻塞】
-			// 同时记得【在发送端】关闭channel
-			ch <- err
-			close(ch)
-			<-subCtx.Done()
-		}(subCtx, errChannel, s.ctx, userId, videoId, content, int64(commentID), nowTime)
-
-	}(errChannel, s.ctx, userId, videoId, content, int64(commentID), nowTime)
+	//errChannel := make(chan error)
+	//go func(ch chan error, ctx context.Context,
+	//	userId int64, videoId int64, content string, commentUUID int64, createTime int64) {
+	//	// 很笨的方法 context替代消息队列
+	//	//TODO MQ
+	//	subCtx, cancel := context.WithCancel(context.Background())
+	//	defer cancel()
+	//	go func(subCtx context.Context, ch chan error, ctx context.Context,
+	//		userId int64, videoId int64, content string, commentUUID int64, createTime int64) {
+	//		_, err := dal.CreateComment(ctx, userId, videoId, content, commentUUID, createTime)
+	//		if err != nil {
+	//			// 写数据库也失败，用channel返回错误
+	//			klog.Error("Database create comment failed, " + err.Error())
+	//		}
+	//		// 不论成功失败都需要将err写入channel，【不然主协程可能会一直阻塞】
+	//		// 同时记得【在发送端】关闭channel
+	//		ch <- err
+	//		close(ch)
+	//		<-subCtx.Done()
+	//	}(subCtx, errChannel, s.ctx, userId, videoId, content, int64(commentID), nowTime)
+	//
+	//}(errChannel, s.ctx, userId, videoId, content, int64(commentID), nowTime)
 
 	// 在主协程中 写Redis
 	redisErr := redis.AddComment(commentRedis)
-
-	//TODO todo
-	//写入Redis和DB有出错的时候的一致性控制
 	if redisErr != nil {
 		klog.Error("Redis create comment failed, " + redisErr.Error())
-		// 这里先不返回，而是去阻塞地等写数据库的结果；数据库也写失败再返回error
-		dbErr := <-errChannel
-		if dbErr != nil {
-			// 数据库和缓存全都写失败了，抛出合并的error
-			klog.Error("DB and Redis create comment both failed, " + dbErr.Error())
-			return nil, multierror.Append(redisErr, dbErr)
-		}
 	}
-	// 只要Redis和DB有一个正确写入，这里就正确返回评论信息
+
+	//通过pulsar消息队列异步写入到数据库中
+	if err := pulsar.CreateCommentProduce(s.ctx, userId, videoId, content, int64(commentID), nowTime); err != nil {
+		klog.Error("pulsar send comment failed," + err.Error())
+		return nil, err
+	}
+
 	return &commentproto.CommentInfo{
 		CommentId:  int64(commentID),
 		UserId:     userId,

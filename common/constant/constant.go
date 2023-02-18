@@ -1,5 +1,6 @@
 package constant
 
+// rpc service name
 const (
 	IdentityKey              = "id"
 	VideoDomainServiceName   = "video_domain_service"
@@ -8,6 +9,7 @@ const (
 	MessageDomainServiceName = "message_domain_service"
 )
 
+// redis key prefix
 const (
 	UserInfoRedisPrefix          = "user_info:"
 	UserInfoCntRedisPrefix       = "user_info_cnt:"
@@ -27,4 +29,28 @@ const (
 	CommentInfoRedisPrefix       = "comment_info:"
 	MessageRedisPrefix           = "message:"
 	MessageLatestTimeRedisPrefix = "message_latest_time:"
+)
+
+// pulsar topic name
+const (
+	LikeVideoTopic     = "like_video"
+	FollowUserTopic    = "follow_user"
+	CreateMessageTopic = "create_message"
+	CommentTopic       = "comment"
+)
+
+// Action type
+const (
+	LikeVideo   = 1
+	UnLikeVideo = 2
+)
+
+const (
+	FollowUser   = 1
+	UnFollowUser = 2
+)
+
+const (
+	CreateComment = 1
+	DeleteComment = 2
 )

@@ -33,11 +33,11 @@ func testInit() {
 
 func TestCreateVideo(t *testing.T) {
 	testInit()
-	userID := int64(3)
+	userId := int64(3)
 	title := "3_title"
 	playUrl := "3_playUrl"
 	coverUrl := "3_coverUrl"
-	err := CreateVideo(context.Background(), userID, title, playUrl, coverUrl)
+	err := CreateVideo(context.Background(), userId, title, playUrl, coverUrl)
 	if err != nil {
 		panic(err)
 	}

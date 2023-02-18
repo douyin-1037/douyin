@@ -49,6 +49,7 @@ func InitConfig() {
 	vp.UnmarshalKey("JWT", &JWT)
 	vp.UnmarshalKey("COS", &COS)
 	vp.UnmarshalKey("Redis", &Redis)
+	vp.UnmarshalKey("Pulsar", &Pulsar)
 	JWT.Expires *= time.Hour
 	Redis.ExpireTime *= 3600
 	Redis.MaxRandAddTime *= 3600

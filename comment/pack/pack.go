@@ -12,7 +12,7 @@ import (
 
 func Comment(comment *model.Comment) *commentproto.CommentInfo {
 	return &commentproto.CommentInfo{
-		CommentId:  comment.CommentUUId,
+		CommentId:  comment.CommentUUID,
 		UserId:     comment.UserId,
 		Content:    comment.Contents,
 		CreateDate: time.Unix(comment.CreateTime, 0).Format("01-02"),

@@ -32,50 +32,50 @@ func TestCreateUser(t *testing.T) {
 	testInit()
 	userName := "test_user_2"
 	encPassword := "123456"
-	userID, err := CreateUser(context.Background(), userName, encPassword)
+	userId, err := CreateUser(context.Background(), userName, encPassword)
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Println(userID)
+	fmt.Println(userId)
 }
 
 func TestIsFollowByID(t *testing.T) {
 	testInit()
 	var fanID int64 = 27
-	var userID int64 = 26
-	isfollowed, err := IsFollowByID(context.Background(), fanID, userID)
+	var userId int64 = 26
+	isfollowed, err := IsFollowByID(context.Background(), fanID, userId)
 	if err != nil {
 		fmt.Println("********", err)
 	}
-	fmt.Println(isfollowed, " ", fanID, " follow ", userID)
+	fmt.Println(isfollowed, " ", fanID, " follow ", userId)
 }
 
 func TestFollowUser(t *testing.T) {
 	testInit()
 	var fanID int64 = 3
-	var userID int64 = 4
-	err := FollowUser(context.Background(), fanID, userID)
+	var userId int64 = 4
+	err := FollowUser(context.Background(), fanID, userId)
 	if err != nil {
 		fmt.Println("********", err)
 	}
-	fmt.Println(fanID, " follow ", userID)
+	fmt.Println(fanID, " follow ", userId)
 }
 
 func TestUnFollowUser(t *testing.T) {
 	testInit()
 	var fanID int64 = 3
-	var userID int64 = 4
-	err := UnFollowUser(context.Background(), fanID, userID)
+	var userId int64 = 4
+	err := UnFollowUser(context.Background(), fanID, userId)
 	if err != nil {
 		fmt.Println("********", err)
 	}
-	fmt.Println(fanID, " unfollow ", userID)
+	fmt.Println(fanID, " unfollow ", userId)
 }
 
 func TestGetFanList(t *testing.T) {
 	testInit()
-	var userID int64 = 34
-	list, err := GetFanList(context.Background(), userID)
+	var userId int64 = 34
+	list, err := GetFanList(context.Background(), userId)
 	if err != nil {
 		fmt.Println("********", err)
 	}
@@ -84,8 +84,8 @@ func TestGetFanList(t *testing.T) {
 
 func TestGetFollowList(t *testing.T) {
 	testInit()
-	var userID int64 = 34
-	list, err := GetFollowList(context.Background(), userID)
+	var userId int64 = 34
+	list, err := GetFollowList(context.Background(), userId)
 	if err != nil {
 		fmt.Println("********", err)
 	}
@@ -94,8 +94,8 @@ func TestGetFollowList(t *testing.T) {
 
 func TestGetFriendList(t *testing.T) {
 	testInit()
-	var userID int64 = 34
-	list, err := GetFriendList(context.Background(), userID)
+	var userId int64 = 34
+	list, err := GetFriendList(context.Background(), userId)
 	if err != nil {
 		fmt.Println("********", err)
 	}

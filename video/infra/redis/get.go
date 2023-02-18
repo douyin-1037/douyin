@@ -132,6 +132,8 @@ func GetIsLikeById(userId int64, videoId int64) (bool, error) {
 	if err != nil {
 		return false, err
 	}
+	// ZSCORE key member
+	// If the member element is not a member of the ordered set key, or if the key does not exist, result is nil.
 	if result == nil {
 		return false, nil
 	}

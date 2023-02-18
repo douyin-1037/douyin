@@ -14,7 +14,7 @@ import (
 func AddRelation(userId int64, toUserId int64) error {
 	redisConn := redisPool.Get()
 	defer redisConn.Close()
-
+	//follow:userId
 	key := constant.FollowRedisPrefix + strconv.FormatInt(userId, 10)
 
 	now := time.Now()

@@ -20,13 +20,13 @@ func (s *UserServiceImpl) CreateUser(ctx context.Context, req *userproto.CreateU
 		return resp, nil
 	}
 
-	userID, err := service.NewUserRegisterService(ctx).CreateUser(req)
+	userId, err := service.NewUserRegisterService(ctx).CreateUser(req)
 	if err != nil {
 		resp.BaseResp = pack.BuildBaseResp(err)
 		return resp, nil
 	}
 	resp.BaseResp = pack.BuildBaseResp(code.Success)
-	resp.UserId = userID
+	resp.UserId = userId
 	return resp, nil
 }
 
