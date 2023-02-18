@@ -33,10 +33,10 @@ const (
 
 // pulsar topic name
 const (
-	LikeVideoTopic     = "like_video"
-	FollowUserTopic    = "follow_user"
-	CreateMessageTopic = "create_message"
-	CommentTopic       = "comment"
+	LikeVideoTopic     = "persistent://public/douyin_test/like_video"
+	FollowUserTopic    = "persistent://public/douyin_test/follow_user"
+	CreateMessageTopic = "persistent://public/douyin_test/create_message"
+	CommentTopic       = "persistent://public/douyin_test/comment"
 )
 
 // Action type

@@ -18,7 +18,7 @@ func FollowUserConsume(ctx context.Context, client pulsar.Client) error {
 		Topic:            constant.FollowUserTopic,
 		SubscriptionName: "sub-1",
 		Schema:           consumerJS,
-		Type:             pulsar.Exclusive,
+		Type:             pulsar.Shared,
 		MessageChannel:   channel,
 	})
 	if err != nil {
