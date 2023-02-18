@@ -33,7 +33,7 @@ func (s *GetUserService) GetUserInfoByID(appUserId, userId int64) (*userproto.Us
 	var isFollow bool
 	userInfoRedis, redisErr := redis.GetUserInfo(userId)
 	if redisErr != nil || userInfoRedis == nil {
-		klog.Error("get user info by id Redis missed " + redisErr.Error())
+		klog.Error("get user info by id Redis missed ", redisErr)
 		isExist, _ := redis.IsKeyExistByBloom(constant.UserInfoRedisPrefix, userId)
 		if isExist == false {
 			return nil, gorm.ErrRecordNotFound

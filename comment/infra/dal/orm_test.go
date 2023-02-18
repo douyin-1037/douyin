@@ -98,7 +98,7 @@ func TestCommentGorm(t *testing.T) {
 //	}
 func TestGetCommentList(t *testing.T) {
 	testInit()
-	var videoID int64 = 634
+	var videoID int64 = 3
 	comments, err := GetCommentList(context.Background(), videoID)
 	if err != nil {
 		fmt.Println(err)

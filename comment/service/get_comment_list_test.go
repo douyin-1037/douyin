@@ -20,7 +20,7 @@ func initGetCommentListTest() {
 func TestGetCommentListService(t *testing.T) {
 	initGetCommentListTest()
 	ctx := context.Background()
-	req := &commentproto.GetCommentListReq{VideoId: 7}
+	req := &commentproto.GetCommentListReq{VideoId: 3}
 	comments, err := NewGetCommentListService(ctx).GetCommentList(req.VideoId)
 	if err != nil {
 		klog.Error(err.Error())
