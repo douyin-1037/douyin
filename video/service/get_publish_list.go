@@ -25,20 +25,20 @@ func NewMGetVideoByUserIdService(ctx context.Context) *MGetVideoByUserIdService 
 
 // MGetVideo 通过UserID从DAO层获取视频基本信息，并查出当前用户是否点赞，组装后返回
 func (s *MGetVideoByUserIdService) MGetVideo(req *videoproto.GetVideoListByUserIdReq) ([]*videoproto.VideoInfo, error) {
-	userID := req.UserId
+	userId := req.UserId
 	// 只能得到视频id,uid,title，play_url,cover_url,created_time
 	var videoModels []*model.Video
-	videoModels, err := redis.GetPublishList(userID)
+	videoModels, err := redis.GetPublishList(userId)
 	if err != nil {
 		if errors.Is(err, goredis.ErrNil) == false {
 			return nil, err
 		}
 		// 缓存未命中，去数据库查询，然后缓存到redis
-		videoModels, err = dal.MGetVideoByUserID(s.ctx, userID)
+		videoModels, err = dal.MGetVideoByUserID(s.ctx, userId)
 		if err != nil {
 			return nil, err
 		}
-		if err := redis.AddPublishList(videoModels, userID); err != nil {
+		if err := redis.AddPublishList(videoModels, userId); err != nil {
 			klog.Error(err)
 		}
 	}

@@ -41,13 +41,13 @@ func Init() {
 
 func JWT() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		userID, err := GetUserID(c)
+		userId, err := GetUserID(c)
 		if err != nil {
 			coredto.Error(c, err)
 			c.Abort()
 			return
 		}
-		c.Set(constant.IdentityKey, userID)
+		c.Set(constant.IdentityKey, userId)
 		c.Next()
 	}
 }
@@ -58,14 +58,14 @@ func GetUserID(c *gin.Context) (int64, error) {
 		return 0, errors.Wrap(code.UnauthorizedErr, err.Error())
 	}
 	tempUserID, ok := claims[constant.IdentityKey].(float64)
-	userID := int64(tempUserID)
-	if !ok || userID <= 0 {
+	userId := int64(tempUserID)
+	if !ok || userId <= 0 {
 		return 0, errors.Wrap(code.UnauthorizedErr, "jwt user_id error")
 	}
-	return userID, nil
+	return userId, nil
 }
 
-func GenerateToken(userID int64) (string, error) {
-	token, _, err := mw.TokenGenerator(userID)
+func GenerateToken(userId int64) (string, error) {
+	token, _, err := mw.TokenGenerator(userId)
 	return token, err
 }

@@ -19,18 +19,18 @@ func NewUserAppService() *UserAppService {
 	return &UserAppService{}
 }
 
-func (i *UserAppService) GetUser(ctx context.Context, appUserID int64, userID int64) (user *bizdto.User, err error) {
+func (i *UserAppService) GetUser(ctx context.Context, appUserID int64, userId int64) (user *bizdto.User, err error) {
 	u, err := rpc.GetUser(ctx, &userproto.GetUserReq{
 		AppUserId: appUserID,
-		UserId:    userID,
+		UserId:    userId,
 	})
 	if err != nil {
-		return nil, errors.Wrapf(err, "GetUser rpc failed, appUserID: %v, userID: %v", appUserID, userID)
+		return nil, errors.Wrapf(err, "GetUser rpc failed, appUserID: %v, userId: %v", appUserID, userId)
 	}
 	return toUserDTO(u), nil
 }
 
-func (i *UserAppService) CreateUser(ctx context.Context, username string, password string) (userID int64, err error) {
+func (i *UserAppService) CreateUser(ctx context.Context, username string, password string) (userId int64, err error) {
 	//TODO implement me done
 	req := &userproto.CreateUserReq{
 		UserAccount: &userproto.UserAccount{
@@ -38,14 +38,14 @@ func (i *UserAppService) CreateUser(ctx context.Context, username string, passwo
 			Password: password,
 		},
 	}
-	userID, err = rpc.CreateUser(ctx, req)
+	userId, err = rpc.CreateUser(ctx, req)
 	if err != nil {
 		return 0, errors.Wrapf(err, "CreateUser rpc failed, username: %v", username)
 	}
-	return userID, nil
+	return userId, nil
 }
 
-func (i *UserAppService) CheckUser(ctx context.Context, username string, password string) (userID int64, err error) {
+func (i *UserAppService) CheckUser(ctx context.Context, username string, password string) (userId int64, err error) {
 	//TODO implement me
 	req := &userproto.CheckUserReq{
 		UserAccount: &userproto.UserAccount{
@@ -53,11 +53,11 @@ func (i *UserAppService) CheckUser(ctx context.Context, username string, passwor
 			Password: password,
 		},
 	}
-	userID, err = rpc.CheckUser(ctx, req)
+	userId, err = rpc.CheckUser(ctx, req)
 	if err != nil {
 		return 0, errors.Wrapf(err, "CheckUser rpc failed, username: %v", username)
 	}
-	return userID, nil
+	return userId, nil
 }
 
 func (i *UserAppService) FollowUser(ctx context.Context, fanID int64, toUserID int64) (err error) {
@@ -82,35 +82,35 @@ func (i *UserAppService) UnFollowUser(ctx context.Context, fanID int64, toUserID
 	return nil
 }
 
-func (i *UserAppService) GetFollowList(ctx context.Context, appUserID int64, userID int64) (userList []*bizdto.User, err error) {
+func (i *UserAppService) GetFollowList(ctx context.Context, appUserID int64, userId int64) (userList []*bizdto.User, err error) {
 	us, err := rpc.GetFollowList(ctx, &userproto.GetFollowListReq{
 		AppUserId: appUserID,
-		UserId:    userID,
+		UserId:    userId,
 	})
 	if err != nil {
-		return nil, errors.Wrapf(err, "GetFollowList rpc failed, appUserID: %v, UserID: %v", appUserID, userID)
+		return nil, errors.Wrapf(err, "GetFollowList rpc failed, appUserID: %v, UserID: %v", appUserID, userId)
 	}
 	return toUserDTOs(us), nil
 }
 
-func (i *UserAppService) GetFanList(ctx context.Context, appUserID int64, userID int64) (userList []*bizdto.User, err error) {
+func (i *UserAppService) GetFanList(ctx context.Context, appUserID int64, userId int64) (userList []*bizdto.User, err error) {
 	us, err := rpc.GetFanList(ctx, &userproto.GetFanListReq{
 		AppUserId: appUserID,
-		UserId:    userID,
+		UserId:    userId,
 	})
 	if err != nil {
-		return nil, errors.Wrapf(err, "GetFanList rpc failed, appUserID: %v, UserID: %v", appUserID, userID)
+		return nil, errors.Wrapf(err, "GetFanList rpc failed, appUserID: %v, UserID: %v", appUserID, userId)
 	}
 	return toUserDTOs(us), nil
 }
 
-func (i *UserAppService) GetFriendList(ctx context.Context, appUserID int64, userID int64) (userList []*bizdto.User, err error) {
+func (i *UserAppService) GetFriendList(ctx context.Context, appUserID int64, userId int64) (userList []*bizdto.User, err error) {
 	us, err := rpc.GetFriendList(ctx, &userproto.GetFriendListReq{
 		AppUserId: appUserID,
-		UserId:    userID,
+		UserId:    userId,
 	})
 	if err != nil {
-		return nil, errors.Wrapf(err, "GetFriendList rpc failed, appUserID: %v, UserID: %v", appUserID, userID)
+		return nil, errors.Wrapf(err, "GetFriendList rpc failed, appUserID: %v, UserID: %v", appUserID, userId)
 	}
 	return toUserDTOs(us), nil
 }

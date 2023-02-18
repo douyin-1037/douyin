@@ -5,6 +5,7 @@ import (
 	"douyin/code_gen/kitex_gen/userproto"
 	"douyin/common/constant"
 	"douyin/user/infra/dal"
+	"douyin/user/infra/pulsar"
 	"douyin/user/infra/redis"
 	"github.com/pkg/errors"
 	"gorm.io/gorm"
@@ -48,9 +49,9 @@ func (s *FollowUserService) FollowUser(req *userproto.FollowUserReq) error {
 		return err
 	}
 
-	go func() {
-		dal.FollowUser(s.ctx, userId, followId)
-	}()
+	if err := pulsar.FollowUserProduce(s.ctx, userId, followId); err != nil {
+		return err
+	}
 	redis.AddBloomKey(constant.FollowRedisPrefix, userId)
 	redis.AddBloomKey(constant.FanRedisPrefix, followId)
 	return nil

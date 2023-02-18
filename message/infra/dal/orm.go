@@ -8,7 +8,7 @@ import (
 	"github.com/cloudwego/kitex/pkg/klog"
 )
 
-func CreateMessage(ctx context.Context, userID int64, toUserID int64, content string, createTime int64) error {
+func CreateMessage(ctx context.Context, userId int64, toUserID int64, content string, createTime int64) error {
 	uuid, err := util.GenSnowFlake(0)
 	if err != nil {
 		klog.Error("Failed to generate UUID" + err.Error())
@@ -16,10 +16,10 @@ func CreateMessage(ctx context.Context, userID int64, toUserID int64, content st
 	}
 
 	message := model.Message{
-		FromUserId:  userID,
+		FromUserId:  userId,
 		ToUserId:    toUserID,
 		Contents:    content,
-		MessageUUId: int64(uuid),
+		MessageUUID: int64(uuid),
 		CreateTime:  createTime,
 	}
 	err = DB.WithContext(ctx).Create(&message).Error
@@ -30,11 +30,11 @@ func CreateMessage(ctx context.Context, userID int64, toUserID int64, content st
 	return nil
 }
 
-func GetMessageList(ctx context.Context, userID int64, toUserID int64, latestTime int64) ([]*model.Message, error) {
+func GetMessageList(ctx context.Context, userId int64, toUserID int64, latestTime int64) ([]*model.Message, error) {
 	var messages []*model.Message
 	err := DB.WithContext(ctx).Where("from_user_id = ? AND to_user_id = ? AND create_time >= ?",
-		userID, toUserID, latestTime).Or("from_user_id = ? AND to_user_id = ? AND create_time >= ?",
-		toUserID, userID, latestTime).Find(&messages).Error
+		userId, toUserID, latestTime).Or("from_user_id = ? AND to_user_id = ? AND create_time >= ?",
+		toUserID, userId, latestTime).Find(&messages).Error
 	if err != nil {
 		return nil, err
 	}

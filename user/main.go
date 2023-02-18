@@ -6,6 +6,7 @@ import (
 	"douyin/common/constant"
 	"douyin/pkg/middleware"
 	"douyin/user/infra/dal"
+	"douyin/user/infra/pulsar"
 	"douyin/user/infra/redis"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/limit"
@@ -20,6 +21,7 @@ func Init() {
 	config.InitConfig()
 	dal.Init()
 	redis.Init()
+	pulsar.Init()
 }
 
 func main() {

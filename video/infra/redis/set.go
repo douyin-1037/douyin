@@ -114,7 +114,10 @@ func AddLike(userId int64, videoId int64) error {
 
 	_, err := redisConn.Do("zadd", key, time, videoId)
 	if err != nil {
-		redisConn.Do("del", key)
+		_, errDel := redisConn.Do("del", key)
+		if errDel != nil {
+			return errDel
+		}
 		return err
 	}
 

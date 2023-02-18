@@ -13,14 +13,14 @@ import (
 )
 
 // CreateComment
-// create a comment by (userID, videoId, content)
-// userID is the ID of the *author* of this comment
-func CreateComment(ctx context.Context, userID int64, videoId int64, content string, commentUUId int64, createTime int64) (*commentproto.CommentInfo, error) {
+// create a comment by (userId, videoId, content)
+// userId is the ID of the *author* of this comment
+func CreateComment(ctx context.Context, userId int64, videoId int64, content string, commentUUID int64, createTime int64) (*commentproto.CommentInfo, error) {
 	comment := model.Comment{
-		UserId:      userID,
+		UserId:      userId,
 		VideoId:     videoId,
 		Contents:    content,
-		CommentUUId: commentUUId,
+		CommentUUID: commentUUID,
 		CreateTime:  createTime,
 	}
 	// 创建评论 和 comment_count+1 要在一个Transaction事务中完成

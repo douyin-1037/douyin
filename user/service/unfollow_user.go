@@ -4,6 +4,7 @@ import (
 	"context"
 	"douyin/code_gen/kitex_gen/userproto"
 	"douyin/user/infra/dal"
+	"douyin/user/infra/pulsar"
 	"douyin/user/infra/redis"
 	"github.com/pkg/errors"
 	"gorm.io/gorm"
@@ -45,8 +46,8 @@ func (s *UnFollowUserService) UnFollowUser(req *userproto.UnFollowUserReq) error
 		return err
 	}
 
-	go func() {
-		dal.UnFollowUser(s.ctx, userId, followId)
-	}()
+	if err := pulsar.UnFollowUserProduce(s.ctx, userId, followId); err != nil {
+		return err
+	}
 	return nil
 }

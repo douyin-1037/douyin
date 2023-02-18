@@ -5,7 +5,8 @@ var (
 	COS      *COSConfig
 	Database *DatabaseConfig
 	JWT      *JWTConfig
-	Redis    *ReidsConfig
+	Redis    *RedisConfig
+	Pulsar   *PulsarConfig
 )
 
 type ServerConfig struct {
@@ -37,11 +38,17 @@ type DatabaseConfig struct {
 	ParseTime string
 }
 
-type ReidsConfig struct {
+type RedisConfig struct {
 	Address        string
 	MaxIdle        int
 	MaxActive      int
 	ExpireTime     int
 	MaxRandAddTime int
 	BloomOpen      bool
+}
+
+type PulsarConfig struct {
+	URL               string
+	OperationTimeout  int
+	ConnectionTimeout int
 }

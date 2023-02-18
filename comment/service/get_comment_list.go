@@ -25,8 +25,7 @@ func NewGetCommentListService(ctx context.Context) *GetCommentListService {
 
 func (s *GetCommentListService) GetCommentList(videoId int64) ([]*commentproto.CommentInfo, error) {
 	comments, redisErr := redis.GetCommentList(videoId)
-	//TODO todo
-	//写入Redis和DB有出错的时候的一致性控制
+	//读取Redis和DB有出错的时候的一致性控制
 	if redisErr != nil {
 		// 从redis中读取评论列表失败，转而从DB中读
 		klog.Error("GetCommentList from redis failed, " + redisErr.Error() + ", getting from DB..")

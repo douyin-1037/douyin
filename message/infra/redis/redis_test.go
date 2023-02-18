@@ -46,7 +46,7 @@ func TestAddMessageList(t *testing.T) {
 	testInit()
 	var messageListp []*model.Message
 	m1 := model.Message{
-		MessageUUId: 1,
+		MessageUUID: 1,
 		FromUserId:  3,
 		ToUserId:    4,
 		Contents:    "m1:3 to 4",
@@ -54,7 +54,7 @@ func TestAddMessageList(t *testing.T) {
 	}
 
 	m2 := model.Message{
-		MessageUUId: 2,
+		MessageUUID: 2,
 		FromUserId:  4,
 		ToUserId:    3,
 		Contents:    "m2:4 to 3",
