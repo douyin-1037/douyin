@@ -23,7 +23,7 @@ func (s *GetFriendListService) GetFriendList(appUserId int64, userId int64) ([]*
 
 	friendIdList, redisErr := redis.GetFollowList(userId)
 	if redisErr != nil || friendIdList == nil || len(friendIdList) <= 0 {
-		klog.Error("get fan list Redis missed " + redisErr.Error())
+		klog.Error("get fan list Redis missed ", redisErr)
 	} else {
 		return GetFriendListMakeList(s, appUserId, friendIdList)
 	}
