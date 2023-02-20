@@ -1,27 +1,23 @@
 FROM golang:1.19-alpine as builder
 
-ENV GO111MODULE="on" \
-GOARCH="amd64" \
-CGO_ENABLED="1" \
-GOOS="linux" \
-GOPROXY="https://goproxy.io,direct"
+ENV GO111MODULE=on \
+GOPROXY=https://goproxy.cn,direct
 
 WORKDIR /app
 
 COPY . .
-
-RUN go build -o message ./message
+RUN CGO_ENABLED=0 GOARCH=amd64 GOOS=linux go build -o message_service ./message
 
 FROM alpine as prod
 
 WORKDIR /app
 
-COPY --from=builder /app/conf/conf.yaml .
-COPY --from=builder /app/message .
+COPY --from=builder /app/conf/conf.yml .
+COPY --from=builder /app/message_service .
 
 # 指定运行时环境变量
 ENV GIN_MODE=release
 
 EXPOSE 8074
 
-ENTRYPOINT ["./message"]
+ENTRYPOINT ["./message_service"]
