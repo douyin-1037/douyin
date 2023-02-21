@@ -24,7 +24,7 @@ func TestCreateCommentService(t *testing.T) {
 	ctx := context.Background()
 	req := &commentproto.CreateCommentReq{
 		UserId:  15,
-		VideoId: 3,
+		VideoId: 14,
 		Content: "test comment",
 	}
 	comments, err := NewCreateCommentService(ctx).CreateComment(req.UserId, req.VideoId, req.Content)

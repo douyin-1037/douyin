@@ -58,6 +58,7 @@ func (s *CreateMessageService) CreateMessage(req *messageproto.CreateMessageReq)
 		CreateTime: createTime,
 	}
 	err = redis.AddMessage(req.UserId, req.ToUserId, message)
+	err = redis.AddMessageLatestTime(req.UserId, req.ToUserId, createTime+1)
 	if err := pulsar.CreateMessageProduce(s.ctx, req.UserId, req.ToUserId, req.Content, createTime); err != nil {
 		return err
 	}

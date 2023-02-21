@@ -60,7 +60,7 @@ func (s *LikeVideoService) LikeVideo(req *videoproto.LikeVideoReq) error {
 			klog.Error(err)
 		}
 	}
-	if err := pulsar.LikeVideoProduce(s.ctx, userId, videoID); err != nil {
+	if err = pulsar.LikeVideoProduce(s.ctx, userId, videoID); err != nil {
 		return err
 	}
 	return nil
