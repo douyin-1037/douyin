@@ -14,7 +14,7 @@ var (
 	//video_like producer
 	p_follow_user pulsar.Producer
 
-	FollowUserSchemaDef = "{\"type\":\"record\",\"name\":\"FollowUser\",\"namespace\":\"douyin_test\"," +
+	FollowUserSchemaDef = "{\"type\":\"record\",\"name\":\"FollowUser\",\"namespace\":\"douyin_prod\"," +
 		"\"fields\":[{\"name\":\"UserID\",\"type\":\"int\"},{\"name\":\"FollowID\",\"type\":\"int\"},{\"name\":\"ActionType\",\"type\":\"int\"}]}"
 )
 

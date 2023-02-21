@@ -71,7 +71,7 @@ func TestAddMessageList(t *testing.T) {
 func TestGetMessageList(t *testing.T) {
 	testInit()
 	nowTime := time.Now().Unix()
-	result, err := GetMessageList(38, 40, 0, nowTime)
+	result, err := GetMessageList(66, 67, 0, nowTime)
 	if err != nil {
 		fmt.Println(err)
 	}

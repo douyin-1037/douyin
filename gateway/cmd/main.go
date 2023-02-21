@@ -3,6 +3,8 @@ package main
 import (
 	"douyin/pkg/cos"
 	"github.com/gin-gonic/gin"
+	"io"
+	"os"
 
 	"douyin/common/conf"
 	"douyin/gateway/api/auth"
@@ -22,6 +24,8 @@ func Init() {
 func main() {
 	Init()
 	r := gin.New()
+	f, _ := os.Create("gin.log")
+	gin.DefaultWriter = io.MultiWriter(f)
 	if conf.Server.RunMode == "debug" {
 		r.Use(gin.Logger(), gin.Recovery())
 	} else {

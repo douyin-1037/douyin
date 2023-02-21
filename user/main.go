@@ -8,9 +8,11 @@ import (
 	"douyin/user/infra/dal"
 	"douyin/user/infra/pulsar"
 	"douyin/user/infra/redis"
+	"fmt"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/limit"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
+	"github.com/cloudwego/kitex/pkg/utils"
 	"github.com/cloudwego/kitex/server"
 	etcd "github.com/kitex-contrib/registry-etcd"
 	trace "github.com/kitex-contrib/tracer-opentracing"
@@ -36,11 +38,23 @@ func main() {
 		panic(err)
 	}
 
+	addrFind, err := net.ResolveTCPAddr("tcp", "10.233.56.233:31809")
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(addr)
+	fmt.Println(addrFind)
+	//regInfo := &registry.Info{
+	//	Addr:        addrFind,
+	//	ServiceName: constant.UserDomainServiceName,
+	//}
+
 	svr := userproto.NewServer(new(UserServiceImpl),
 		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{ServiceName: constant.UserDomainServiceName}), // server name
 		server.WithMiddleware(middleware.CommonMiddleware),                                                  // middleWare
 		server.WithMiddleware(middleware.ServerMiddleware),
-		server.WithServiceAddr(addr),                                       // address
+		//server.WithRegistryInfo(regInfo),
+		server.WithServiceAddr(utils.NewNetAddr("tcp", ":"+"8071")),        // address
 		server.WithLimit(&limit.Option{MaxConnections: 1000, MaxQPS: 100}), // limit
 		server.WithMuxTransport(),                                          // Multiplex
 		server.WithSuite(trace.NewDefaultServerSuite()),                    // tracer

@@ -18,7 +18,7 @@ var (
 
 	client pulsar.Client
 
-	LikeVideoSchemaDef = "{\"type\":\"record\",\"name\":\"LikeVideo\",\"namespace\":\"douyin_test\"," +
+	LikeVideoSchemaDef = "{\"type\":\"record\",\"name\":\"LikeVideo\",\"namespace\":\"douyin_prod\"," +
 		"\"fields\":[{\"name\":\"UserID\",\"type\":\"int\"},{\"name\":\"VideoID\",\"type\":\"int\"},{\"name\":\"ActionType\",\"type\":\"int\"}]}"
 )
 
