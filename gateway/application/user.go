@@ -122,7 +122,7 @@ func toUserDTO(user *userproto.UserInfo) *bizdto.User {
 	return &bizdto.User{
 		ID:            user.UserId,
 		Name:          user.Username,
-		FollowCount:   user.FollowerCount,
+		FollowCount:   user.FollowCount,
 		FollowerCount: user.FollowerCount,
 		IsFollow:      user.IsFollow,
 		WorkCount:     user.WorkCount,
