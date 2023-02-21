@@ -14,7 +14,7 @@ var (
 	//video_like producer
 	p_comment pulsar.Producer
 
-	CommentSchemaDef = "{\"type\":\"record\",\"name\":\"Comment\",\"namespace\":\"douyin_test\"," +
+	CommentSchemaDef = "{\"type\":\"record\",\"name\":\"Comment\",\"namespace\":\"douyin_prod\"," +
 		"\"fields\":[{\"name\":\"UserId\",\"type\":\"int\"},{\"name\":\"VideoId\",\"type\":\"int\"},{\"name\":\"Content\",\"type\":\"string\"},{\"name\":\"CommentUUID\",\"type\":\"int\"},{\"name\":\"CreateTime\",\"type\":\"int\"},{\"name\":\"ActionType\",\"type\":\"int\"}]}"
 )
 

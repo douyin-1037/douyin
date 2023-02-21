@@ -14,7 +14,7 @@ var (
 	//video_like producer
 	p_create_message pulsar.Producer
 
-	CreateMessageSchemaDef = "{\"type\":\"record\",\"name\":\"CreateMessage\",\"namespace\":\"douyin_test\"," +
+	CreateMessageSchemaDef = "{\"type\":\"record\",\"name\":\"CreateMessage\",\"namespace\":\"douyin_prod\"," +
 		"\"fields\":[{\"name\":\"UserId\",\"type\":\"int\"},{\"name\":\"ToUserId\",\"type\":\"int\"},{\"name\":\"Content\",\"type\":\"string\"}, {\"name\":\"CreateTime\",\"type\":\"int\"}]}"
 )
 
