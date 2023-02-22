@@ -2,4 +2,4 @@
 ## 项目文档
 https://gzd0wrb2k4.feishu.cn/docx/TlUxdrUiOoT9E8xiN4Ocwhhpnig
 ## 项目架构图
-![avatar](架构图DDD.jpg)
+![avatar](架构图.jpg)
