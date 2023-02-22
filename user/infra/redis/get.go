@@ -205,3 +205,34 @@ func IsKeyExistByBloom(prefix string, keyId int64) (bool, error) {
 	}
 	return true, nil
 }
+
+// IsLock 判断是否被登录锁定
+func IsLock(username string) (bool, error) {
+	redisConn := redisPool.Get()
+	defer redisConn.Close()
+
+	key := constant.LoginFailLockRedisPrefix + username
+	result, err := redis.Strings(redisConn.Do("keys", key))
+	if err != nil {
+		return false, err
+	}
+	//结果不存在，代表没有lock，则返回false
+	if len(result) == 0 {
+		return false, nil
+	}
+	return true, nil
+}
+
+// GetUnlockTime 获取解锁的时间
+func GetUnlockTime(username string) (int, error) {
+	redisConn := redisPool.Get()
+	defer redisConn.Close()
+	key := constant.LoginFailLockRedisPrefix + username
+	//获取key的过期时间 单位默认是秒
+	ttl, err := redis.Int(redisConn.Do("TTL", key))
+	if err != nil {
+		return 0, err
+	}
+	//转化为分钟
+	return ttl / 60, nil
+}

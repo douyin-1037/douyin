@@ -37,7 +37,7 @@ func CommentConsume(ctx context.Context, client pulsar.Client) error {
 		if err != nil {
 			return err
 		}
-		fmt.Println(commentJS)
+		fmt.Println("CommentConsume", commentJS)
 		switch commentJS.ActionType {
 		case constant.CreateComment:
 			if _, err := dal.CreateComment(ctx, commentJS.UserId, commentJS.VideoId, commentJS.Content, commentJS.CommentUUID, commentJS.CreateTime); err != nil {
