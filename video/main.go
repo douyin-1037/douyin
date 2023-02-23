@@ -12,6 +12,7 @@ import (
 	"douyin/video/infra/dal"
 	"douyin/video/infra/pulsar"
 	"douyin/video/infra/redis"
+	"douyin/video/service"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/limit"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
@@ -26,11 +27,12 @@ func Init() {
 	dal.Init()
 	redis.Init()
 	pulsar.Init()
-	tracer.InitJaeger(constant.VideoDomainServiceName)
+	service.Tracer, service.Closer = tracer.InitJaeger(constant.VideoDomainServiceName)
 }
 
 func main() {
 	Init()
+	defer service.Closer.Close()
 	r, err := etcd.NewEtcdRegistry([]string{conf.Server.EtcdAddress}) // r should not be reused.
 	if err != nil {
 		panic(err)
