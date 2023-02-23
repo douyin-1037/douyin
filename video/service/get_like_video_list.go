@@ -12,6 +12,7 @@ import (
 	"douyin/video/pack"
 	"github.com/cloudwego/kitex/pkg/klog"
 	goredis "github.com/gomodule/redigo/redis"
+	"github.com/opentracing/opentracing-go"
 	"github.com/pkg/errors"
 )
 
@@ -25,6 +26,9 @@ func NewMGetLikeVideoService(ctx context.Context) *MGetLikeVideoService {
 
 // MGetLikeVideo 通过用户ID从DAO层获取喜欢视频的基本信息，并查出当前用户是否点赞，组装后返回
 func (s *MGetLikeVideoService) MGetLikeVideo(req *videoproto.GetLikeVideoListReq) ([]*videoproto.VideoInfo, error) {
+	span := Tracer.StartSpan("get_like_video")
+	defer span.Finish()
+	s.ctx = opentracing.ContextWithSpan(s.ctx, span)
 	appUserId := req.AppUserId
 	userId := req.UserId
 	var likeList []int64

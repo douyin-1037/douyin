@@ -242,3 +242,98 @@ func incrCount(redisConn redis.Conn, cntKey string, filed string, v int, expireT
 	}
 	return nil
 }
+
+// SetCheckFailCounter 登录失败计数器，缓存key user_login_fail_counter:username:yyyyMMddHHmm
+func SetCheckFailCounter(username string) error {
+	redisConn := redisPool.Get()
+	defer redisConn.Close()
+
+	now := time.Now()
+	key := constant.LoginFailCounterRedisPrefix + username + ":" + now.Format("200601021504")
+	//设置过期时间为10分钟
+	expireTime := 600
+	_, getErr := redis.Int64(redisConn.Do("get", key))
+
+	//incr 命令将 key 中储存的数字值增一。如果 key 不存在，那么 key 的值会先被初始化为 0 ，然后再执行 INCR 操作。
+	_, err := redis.Int64(redisConn.Do("incr", key))
+
+	if err != nil {
+		return err
+	}
+
+	if getErr != nil {
+		//getErr为redis.ErrNil的情况，即key之前不存在，然后进行了incr操作，然后进行设置过期时间
+		if errors.Is(getErr, redis.ErrNil) {
+			_, err := redisConn.Do("expire", key, expireTime)
+			if err != nil {
+				return err
+			}
+		} else {
+			return getErr
+		}
+	}
+
+	//往前检查10分钟，统计失败次数
+	var tenMinuteKeys [10]string
+	oneMin, _ := time.ParseDuration("-1m")
+	for i := 0; i < 10; i++ {
+		tenMinuteKeys[i] = constant.LoginFailCounterRedisPrefix + username + ":" + now.Format("200601021504")
+		now = now.Add(oneMin)
+	}
+
+	var counts [10]int
+	for i := 0; i < 10; i++ {
+		counts[i], getErr = redis.Int(redisConn.Do("get", tenMinuteKeys[i]))
+	}
+
+	total := 0
+	for _, value := range counts {
+		total += value
+	}
+	if total >= 5 {
+		Lock(username)
+		//因为锁定半小时，所以十分钟内的计数器都可以主动删除了
+		redisConn.Send("MULTI")
+		for i, _ := range tenMinuteKeys {
+			redisConn.Send("DEL", tenMinuteKeys[i])
+		}
+		redisConn.Do("EXEC")
+	}
+	return nil
+}
+
+// DeleteLoginFailCounter 移除最近十分钟计数器
+func DeleteLoginFailCounter(username string) error {
+	redisConn := redisPool.Get()
+	defer redisConn.Close()
+
+	now := time.Now()
+	//往前检查10分钟
+	var tenMinuteKeys [10]string
+	oneMin, _ := time.ParseDuration("-1m")
+	for i := 0; i < 10; i++ {
+		tenMinuteKeys[i] = constant.LoginFailCounterRedisPrefix + username + ":" + now.Format("200601021504")
+		now = now.Add(oneMin)
+	}
+	redisConn.Send("MULTI")
+	for i, _ := range tenMinuteKeys {
+		redisConn.Send("DEL", tenMinuteKeys[i])
+	}
+	_, err := redisConn.Do("EXEC")
+	return err
+}
+
+// Lock 失败达到一定一定次数 锁定30分钟
+func Lock(username string) error {
+	redisConn := redisPool.Get()
+	defer redisConn.Close()
+
+	key := constant.LoginFailLockRedisPrefix + username
+	//设置过期时间为30分钟
+	expirTime := 1800
+	_, err := redisConn.Do("set", key, 1, "ex", expirTime)
+	if err != nil {
+		return err
+	}
+	return nil
+}

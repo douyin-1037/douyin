@@ -8,6 +8,7 @@ import (
 	"douyin/message/infra/pulsar"
 	"douyin/message/infra/redis"
 	"douyin/pkg/middleware"
+	"douyin/pkg/tracer"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/limit"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
@@ -22,6 +23,7 @@ func Init() {
 	redis.Init()
 	dal.Init()
 	pulsar.Init()
+	tracer.InitJaeger(constant.MessageDomainServiceName)
 }
 
 func main() {

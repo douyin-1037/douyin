@@ -7,13 +7,14 @@ import (
 )
 
 const (
-	SuccessCode             = 0
-	ServiceErrCode          = 10001
-	ParamErrCode            = 10002
-	LoginErrCode            = 10003
-	UserNotExistErrCode     = 10004
-	UserAlreadyExistErrCode = 10005
-	UnauthorizedErrCode     = 10006
+	SuccessCode               = 0
+	ServiceErrCode            = 10001
+	ParamErrCode              = 10002
+	LoginErrCode              = 10003
+	UserNotExistErrCode       = 10004
+	UserAlreadyExistErrCode   = 10005
+	UnauthorizedErrCode       = 10006
+	LoginFailedTooManyErrCode = 10007
 )
 
 type ErrNo struct {

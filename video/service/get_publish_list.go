@@ -12,6 +12,7 @@ import (
 	"douyin/video/pack"
 	"github.com/cloudwego/kitex/pkg/klog"
 	goredis "github.com/gomodule/redigo/redis"
+	"github.com/opentracing/opentracing-go"
 	"github.com/pkg/errors"
 )
 
@@ -25,6 +26,9 @@ func NewMGetVideoByUserIdService(ctx context.Context) *MGetVideoByUserIdService 
 
 // MGetVideo 通过UserID从DAO层获取视频基本信息，并查出当前用户是否点赞，组装后返回
 func (s *MGetVideoByUserIdService) MGetVideo(req *videoproto.GetVideoListByUserIdReq) ([]*videoproto.VideoInfo, error) {
+	span := Tracer.StartSpan("get_publish_list")
+	defer span.Finish()
+	s.ctx = opentracing.ContextWithSpan(s.ctx, span)
 	userId := req.UserId
 	// 只能得到视频id,uid,title，play_url,cover_url,created_time
 	var videoModels []*model.Video

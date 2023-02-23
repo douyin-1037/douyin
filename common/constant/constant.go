@@ -29,6 +29,8 @@ const (
 	CommentInfoRedisPrefix       = "comment_info:"
 	MessageRedisPrefix           = "message:"
 	MessageLatestTimeRedisPrefix = "message_latest_time:"
+	LoginFailCounterRedisPrefix  = "user_login_fail_counter:"
+	LoginFailLockRedisPrefix     = "user_login_fail_lock:"
 )
 
 // pulsar topic name

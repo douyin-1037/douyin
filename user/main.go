@@ -5,6 +5,7 @@ import (
 	config "douyin/common/conf"
 	"douyin/common/constant"
 	"douyin/pkg/middleware"
+	"douyin/pkg/tracer"
 	"douyin/user/infra/dal"
 	"douyin/user/infra/pulsar"
 	"douyin/user/infra/redis"
@@ -24,6 +25,7 @@ func Init() {
 	dal.Init()
 	redis.Init()
 	pulsar.Init()
+	tracer.InitJaeger(constant.UserDomainServiceName)
 }
 
 func main() {
