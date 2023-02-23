@@ -28,6 +28,9 @@ func Feed(c *gin.Context) {
 	if param.LatestTime <= 0 {
 		param.LatestTime = time.Now().Unix()
 	}
+	if param.LatestTime > time.Now().Unix() {
+		param.LatestTime = time.Now().Unix()
+	}
 
 	videoList, nextTime, err := application.VideoAppIns.Feed(c, appUserID, param.LatestTime)
 	if err != nil {
