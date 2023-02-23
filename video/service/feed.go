@@ -10,6 +10,7 @@ import (
 	"douyin/video/infra/redis"
 	"douyin/video/pack"
 	"github.com/cloudwego/kitex/pkg/klog"
+	"github.com/opentracing/opentracing-go"
 	"time"
 )
 
@@ -23,6 +24,9 @@ func NewMGetVideoByTimeService(ctx context.Context) *MGetVideoByTimeService {
 
 // MGetVideoByTime 通过指定latestTime和count，从DAO层获取视频基本信息，并查出当前用户是否点赞，组装后返回
 func (s *MGetVideoByTimeService) MGetVideoByTime(req *videoproto.GetVideoListByTimeReq) ([]*videoproto.VideoInfo, int64, error) {
+	span := Tracer.StartSpan("feed")
+	defer span.Finish()
+	s.ctx = opentracing.ContextWithSpan(s.ctx, span)
 	videoModels, nextTime, err := dal.MGetVideoByTime(s.ctx, time.Unix(req.LatestTime, 0), req.Count)
 	// 只能得到视频id，uid，title，play_url,cover_url,created_time
 	if err != nil {

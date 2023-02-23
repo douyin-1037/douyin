@@ -10,6 +10,7 @@ import (
 	"douyin/video/infra/pulsar"
 	"douyin/video/infra/redis"
 	"github.com/cloudwego/kitex/pkg/klog"
+	"github.com/opentracing/opentracing-go"
 )
 
 type UnLikeVideoService struct {
@@ -21,6 +22,9 @@ func NewUnLikeVideoService(ctx context.Context) *UnLikeVideoService {
 }
 
 func (s *UnLikeVideoService) UnLikeVideo(req *videoproto.UnLikeVideoReq) error {
+	span := Tracer.StartSpan("unlike_video")
+	defer span.Finish()
+	s.ctx = opentracing.ContextWithSpan(s.ctx, span)
 	userId := req.UserId
 	videoID := req.VideoId
 	isLikeKeyExist, err := redis.IsLikeKeyExist(userId)

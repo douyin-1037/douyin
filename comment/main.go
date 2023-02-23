@@ -11,6 +11,7 @@ import (
 	config "douyin/common/conf"
 	"douyin/common/constant"
 	"douyin/pkg/middleware"
+	"douyin/pkg/tracer"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/limit"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
@@ -25,6 +26,7 @@ func Init() {
 	dal.Init()
 	redis.Init()
 	pulsar.Init()
+	tracer.InitJaeger(constant.CommentDomainServiceName)
 }
 
 func main() {

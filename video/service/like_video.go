@@ -10,6 +10,7 @@ import (
 	"douyin/video/infra/pulsar"
 	"douyin/video/infra/redis"
 	"github.com/cloudwego/kitex/pkg/klog"
+	"github.com/opentracing/opentracing-go"
 )
 
 type LikeVideoService struct {
@@ -21,6 +22,9 @@ func NewLikeVideoService(ctx context.Context) *LikeVideoService {
 }
 
 func (s *LikeVideoService) LikeVideo(req *videoproto.LikeVideoReq) error {
+	span := Tracer.StartSpan("like_video")
+	defer span.Finish()
+	s.ctx = opentracing.ContextWithSpan(s.ctx, span)
 	userId := req.UserId
 	videoID := req.VideoId
 	isLikeKeyExist, err := redis.IsLikeKeyExist(userId)

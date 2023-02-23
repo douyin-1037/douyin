@@ -7,6 +7,7 @@ import (
 	"context"
 	"douyin/video/infra/dal/model"
 	"github.com/cloudwego/kitex/pkg/klog"
+	"github.com/opentracing/opentracing-go"
 	"gorm.io/gorm"
 	"math"
 	"time"
@@ -14,6 +15,8 @@ import (
 
 // CreateVideo 创建视频
 func CreateVideo(ctx context.Context, userId int64, title string, playUrl string, coverUrl string) error {
+	span, _ := opentracing.StartSpanFromContext(ctx, "dalCreateVideo")
+	defer span.Finish()
 	video := &model.Video{
 		UserId:   userId,
 		Title:    title,
@@ -38,6 +41,8 @@ func CreateVideo(ctx context.Context, userId int64, title string, playUrl string
 
 // MGetVideoByUserID 根据用户id查视频
 func MGetVideoByUserID(ctx context.Context, userId int64) ([]*model.Video, error) {
+	span, _ := opentracing.StartSpanFromContext(ctx, "dalMGetVideoByUserID")
+	defer span.Finish()
 	var videos []*model.Video
 	if err := DB.WithContext(ctx).Where("user_id = ?", userId).Find(&videos).Error; err != nil {
 		return nil, err
@@ -47,6 +52,8 @@ func MGetVideoByUserID(ctx context.Context, userId int64) ([]*model.Video, error
 
 // GetLikeCount 返回视频点赞数
 func GetLikeCount(ctx context.Context, videoID int64) (int64, error) {
+	span, _ := opentracing.StartSpanFromContext(ctx, "dalGetLikeCount")
+	defer span.Finish()
 	var video model.Video
 	if err := DB.WithContext(ctx).Where("ID = ?", videoID).First(&video).Error; err != nil {
 		return 0, err
@@ -56,6 +63,8 @@ func GetLikeCount(ctx context.Context, videoID int64) (int64, error) {
 
 // GetCommentCount 返回视频评论数
 func GetCommentCount(ctx context.Context, videoID int64) (int64, error) {
+	span, _ := opentracing.StartSpanFromContext(ctx, "dalGetCommentCount")
+	defer span.Finish()
 	var video model.Video
 	if err := DB.WithContext(ctx).Where("ID = ?", videoID).First(&video).Error; err != nil {
 		return 0, err
@@ -65,6 +74,8 @@ func GetCommentCount(ctx context.Context, videoID int64) (int64, error) {
 
 // IsFavorite 返回是否点赞
 func IsFavorite(ctx context.Context, videoID int64, userId int64) (bool, error) {
+	span, _ := opentracing.StartSpanFromContext(ctx, "dalIsFavorite")
+	defer span.Finish()
 	var favorites []*model.Favorite
 	result := DB.WithContext(ctx).Where("user_id = ? AND video_id = ?", userId, videoID).Find(&favorites)
 	if result.Error != nil {
@@ -75,6 +86,8 @@ func IsFavorite(ctx context.Context, videoID int64, userId int64) (bool, error) 
 
 // MGetVideoByTime 根据时间戳返回最近count个视频,还需要返回next time
 func MGetVideoByTime(ctx context.Context, latestTime time.Time, count int64) ([]*model.Video, int64, error) {
+	span, _ := opentracing.StartSpanFromContext(ctx, "dalGetVideoByTime")
+	defer span.Finish()
 	var videos []*model.Video
 	if err := DB.WithContext(ctx).Where("created_at < ?", latestTime).Limit(int(count)).Order("created_at DESC").Find(&videos).Error; err != nil {
 		return nil, 0, err
@@ -87,7 +100,8 @@ func MGetVideoByTime(ctx context.Context, latestTime time.Time, count int64) ([]
 }
 
 func LikeVideo(ctx context.Context, userID int64, videoID int64) error {
-
+	span, _ := opentracing.StartSpanFromContext(ctx, "LikeVideo")
+	defer span.Finish()
 	favorite := &model.Favorite{
 		UserId:  userID,
 		VideoId: videoID,
@@ -121,7 +135,8 @@ func LikeVideo(ctx context.Context, userID int64, videoID int64) error {
 
 // UnLikeVideo 取消点赞视频
 func UnLikeVideo(ctx context.Context, userID int64, videoID int64) error {
-
+	span, _ := opentracing.StartSpanFromContext(ctx, "UnLikeVideo")
+	defer span.Finish()
 	err := DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		err := tx.Table("favorite").Where("user_id = ? AND video_id = ?", userID, videoID).Delete(&model.Favorite{}).Error
 		if err != nil {
@@ -147,6 +162,8 @@ func UnLikeVideo(ctx context.Context, userID int64, videoID int64) error {
 
 // MGetLikeList 通过用户ID获取用户点赞的视频ID数组
 func MGetLikeList(ctx context.Context, userId int64) ([]int64, error) {
+	span, _ := opentracing.StartSpanFromContext(ctx, "MGetLikeList")
+	defer span.Finish()
 	var favorites []*model.Favorite
 	if err := DB.WithContext(ctx).Where("user_id = ?", userId).Find(&favorites).Error; err != nil {
 		return nil, err
@@ -160,6 +177,8 @@ func MGetLikeList(ctx context.Context, userId int64) ([]int64, error) {
 
 // MGetVideoInfo 通过视频ID查询得到model.Video信息
 func MGetVideoInfo(ctx context.Context, videoID int64) (*model.Video, error) {
+	span, _ := opentracing.StartSpanFromContext(ctx, "MGetVideoInfo")
+	defer span.Finish()
 	var videoInfo *model.Video
 	DB.WithContext(ctx).Where("ID = ?", videoID).First(&videoInfo)
 	return videoInfo, nil
