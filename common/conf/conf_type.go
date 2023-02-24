@@ -7,6 +7,7 @@ var (
 	JWT      *JWTConfig
 	Redis    *RedisConfig
 	Pulsar   *PulsarConfig
+	MongoDB  *MongoDBConfig
 )
 
 type ServerConfig struct {
@@ -51,4 +52,9 @@ type PulsarConfig struct {
 	URL               string
 	OperationTimeout  int
 	ConnectionTimeout int
+}
+
+type MongoDBConfig struct {
+	URL      string
+	DataBase string
 }
