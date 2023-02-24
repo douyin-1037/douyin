@@ -3,7 +3,9 @@ module douyin
 go 1.19
 
 require (
+	github.com/antlinker/go-dirtyfilter v1.2.0
 	github.com/apache/pulsar-client-go v0.9.0
+	github.com/apolloconfig/agollo/v4 v4.3.0
 	github.com/appleboy/gin-jwt/v2 v2.9.1
 	github.com/cloudwego/fastpb v0.0.3
 	github.com/cloudwego/kitex v0.4.4
@@ -32,6 +34,7 @@ require (
 	github.com/99designs/keyring v1.2.1 // indirect
 	github.com/AthenZ/athenz v1.10.39 // indirect
 	github.com/DataDog/zstd v1.5.0 // indirect
+	github.com/antlinker/go-cmap v0.0.0-20160407022646-0c5e57012e96 // indirect
 	github.com/apache/thrift v0.13.0 // indirect
 	github.com/ardielle/ardielle-go v1.5.2 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
@@ -120,6 +123,7 @@ require (
 	google.golang.org/genproto v0.0.0-20221227171554-f9683d7f8bef // indirect
 	google.golang.org/grpc v1.52.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
+	gopkg.in/mgo.v2 v2.0.0-20190816093944-a6b53ec6cb22 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
