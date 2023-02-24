@@ -14,7 +14,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-var loadLocalConfigFlag = flag.Bool("local", false, "是否从本地读取配置")
+var loadRemoteConfigFlag = flag.Bool("remote", false, "是否从远程apollo读取配置")
 
 func (d *DatabaseConfig) DSN() string {
 	return fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=%s&parseTime=%s&loc=Local",
@@ -37,7 +37,7 @@ func InitConfig() {
 
 	vp := viper.New()
 
-	if *loadLocalConfigFlag {
+	if !*loadRemoteConfigFlag {
 		workDirectory, err := os.Getwd()
 		if err != nil {
 			klog.Fatal(err)
@@ -91,5 +91,4 @@ func InitConfig() {
 
 func parseParam() {
 	flag.Parse()
-	fmt.Println("loadLocalConfigFlag", *loadLocalConfigFlag)
 }
