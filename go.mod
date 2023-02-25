@@ -21,6 +21,7 @@ require (
 	github.com/spf13/viper v1.15.0
 	github.com/tencentyun/cos-go-sdk-v5 v0.7.41
 	github.com/uber/jaeger-client-go v2.29.1+incompatible
+	//go.uber.org/fx v1.18.2
 	go.uber.org/fx v1.19.1
 	golang.org/x/crypto v0.4.0
 	google.golang.org/protobuf v1.28.1
@@ -49,6 +50,7 @@ require (
 	github.com/coreos/go-semver v0.3.0 // indirect
 	github.com/coreos/go-systemd/v22 v22.3.2 // indirect
 	github.com/danieljoos/wincred v1.1.2 // indirect
+	github.com/dlclark/regexp2 v1.8.1 // indirect
 	github.com/dvsekhvalnov/jose2go v1.5.0 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
