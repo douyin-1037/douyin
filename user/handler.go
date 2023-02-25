@@ -52,12 +52,24 @@ func (s *UserServiceImpl) GetUser(ctx context.Context, req *userproto.GetUserReq
 // CheckUser implements the UserServiceImpl interface.
 func (s *UserServiceImpl) CheckUser(ctx context.Context, req *userproto.CheckUserReq) (resp *userproto.CheckUserResp, err error) {
 	resp = new(userproto.CheckUserResp)
-
-	if len(req.UserAccount.Username) == 0 || len(req.UserAccount.Password) == 0 || len(req.UserAccount.Username) > 32 || len(req.UserAccount.Password) > 32 {
-		resp.BaseResp = pack.BuildBaseResp(code.ParamErr)
+	/*
+		if len(req.UserAccount.Username) == 0 || len(req.UserAccount.Password) == 0 || len(req.UserAccount.Username) > 32 || len(req.UserAccount.Password) > 32 {
+			resp.BaseResp = pack.BuildBaseResp(code.ParamErr)
+			return resp, nil
+		}
+	*/
+	name_check := service.CheckUsername(req.UserAccount.Username)
+	password_check := service.CheckPassword(req.UserAccount.Password)
+	// "用户名应当使用字母,数字,下划线,减号,且长度4-32位"
+	// "密码应当包含大写字母,小写字母,数字,且长度5-32位"
+	if name_check == "" {
+		resp.BaseResp = pack.BuildBaseResp(code.UsernameCheckErr)
 		return resp, nil
 	}
-
+	if password_check == "" {
+		resp.BaseResp = pack.BuildBaseResp(code.PasswordCheckErr)
+		return resp, nil
+	}
 	uid, err := service.NewCheckUserService(ctx).CheckUser(req)
 	if err != nil {
 		resp.BaseResp = pack.BuildBaseResp(err)
