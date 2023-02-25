@@ -9,7 +9,6 @@ import (
 	"douyin/user/infra/redis"
 	"errors"
 
-	"github.com/dlclark/regexp2"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -41,28 +40,4 @@ func (s *UserRegisterService) CreateUser(req *userproto.CreateUserReq) (int64, e
 	id, err := dal.CreateUser(s.ctx, req.UserAccount.Username, string(encryptedPassword))
 	redis.AddBloomKey(constant.UserInfoRedisPrefix, id)
 	return id, err
-}
-
-func CheckUsername(str string) string {
-	//expr := `^(?![0-9a-zA-Z]+$)(?![a-zA-Z!@#$%^&*]+$)(?![0-9!@#$%^&*]+$)[0-9A-Za-z!@#$%^&*]{8,16}$`
-	expr := `^[a-zA-Z0-9_-]{4,32}$`
-	reg, _ := regexp2.Compile(expr, 0)
-	m, _ := reg.FindStringMatch(str)
-	if m != nil {
-		res := m.String()
-		return res
-	}
-	return ""
-}
-
-func CheckPassword(str string) string {
-	//expr := `^(?![0-9a-zA-Z]+$)(?![a-zA-Z!@#$%^&*]+$)(?![0-9!@#$%^&*]+$)[0-9A-Za-z!@#$%^&*]{8,16}$`
-	expr := `^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9]{5,32}$`
-	reg, _ := regexp2.Compile(expr, 0)
-	m, _ := reg.FindStringMatch(str)
-	if m != nil {
-		res := m.String()
-		return res
-	}
-	return ""
 }
