@@ -45,17 +45,19 @@ CREATE TABLE `comment` (
 -- ----------------------------
 DROP TABLE IF EXISTS `favorite`;
 CREATE TABLE `favorite` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `user_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '用户id',
   `video_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '视频id',
   `created_at` timestamp NULL DEFAULT NULL COMMENT '创建时间',
   `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `deleted_at` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '删除时间(unix)，软删除',
-  PRIMARY KEY (`user_id`,`video_id`,`deleted_at`),
+  `deleted_at` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '软删除',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `uk_favorite` (`user_id`,`video_id`,`deleted_at`),
   KEY `fk_user_favorite` (`user_id`),
   KEY `fk_video_favorite` (`video_id`),
   CONSTRAINT `fk_user_favorite` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
   CONSTRAINT `fk_video_favorite` FOREIGN KEY (`video_id`) REFERENCES `video` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='点赞表';
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COMMENT='点赞表';
 
 -- ----------------------------
 -- Table structure for message
@@ -85,17 +87,19 @@ CREATE TABLE `message` (
 -- ----------------------------
 DROP TABLE IF EXISTS `relation`;
 CREATE TABLE `relation` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `user_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '用户id',
-  `to_user_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '关注的用户id',
+  `to_user_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '关注目标的用户id',
   `created_at` timestamp NULL DEFAULT NULL COMMENT '创建时间',
   `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `deleted_at` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '删除时间(unix)，软删除',
-  PRIMARY KEY (`user_id`,`to_user_id`,`deleted_at`),
+  `deleted_at` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '删除时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `uk_relation` (`user_id`,`to_user_id`,`deleted_at`),
   KEY `fk_user_relation` (`user_id`),
   KEY `fk_user_relation_to` (`to_user_id`),
   CONSTRAINT `fk_user_relation` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
   CONSTRAINT `fk_user_relation_to` FOREIGN KEY (`to_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='关注表';
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COMMENT='关注表';
 
 -- ----------------------------
 -- Table structure for user
