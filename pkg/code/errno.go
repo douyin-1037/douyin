@@ -45,8 +45,8 @@ var (
 	UserNotExistErr     = NewErrNo(UserNotExistErrCode, "User does not exists")
 	UserAlreadyExistErr = NewErrNo(UserAlreadyExistErrCode, "User already exists")
 	UnauthorizedErr     = NewErrNo(UnauthorizedErrCode, "JWT Token Unauthorized")
-	UsernameCheckErr    = NewErrNo(UsernameCheckErrCode, "用户名应当使用字母,数字,下划线,减号,且长度4-32位")
-	PasswordCheckErr    = NewErrNo(PasswordCheckErrCode, "密码应当包含大写字母,小写字母,数字,且长度5-32位")
+	UsernameCheckErr    = NewErrNo(UsernameCheckErrCode, "User name should contain only letters, numbers, underscores, minus signs, and the length of 4-32 bits")
+	PasswordCheckErr    = NewErrNo(PasswordCheckErrCode, "Password should be composed of uppercase letters, lowercase letters, numbers, and the length of 5-32 digits")
 )
 
 // ConvertErr convert error to ErrNo
