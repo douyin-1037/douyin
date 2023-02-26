@@ -32,6 +32,7 @@ require (
 
 require (
 	github.com/dlclark/regexp2 v1.8.1
+	github.com/gin-contrib/pprof v1.4.0
 	gopkg.in/mgo.v2 v2.0.0-20190816093944-a6b53ec6cb22
 )
 
