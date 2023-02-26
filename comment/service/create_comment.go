@@ -11,6 +11,7 @@ import (
 	"douyin/comment/infra/redis"
 	redisModel "douyin/comment/infra/redis/model"
 	"douyin/common/util"
+	filter "douyin/pkg/words_filter"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"time"
 )
@@ -65,6 +66,7 @@ func (s *CreateCommentService) CreateComment(userId int64, videoId int64, conten
 	// 先把评论添加到Redis缓存
 	// 构建redisModel.CommentRedis
 	nowTime := time.Now().Unix()
+	content = filter.WordsFilter(content)
 	commentRedis := redisModel.CommentRedis{
 		CommentId:  int64(commentID),
 		VideoId:    videoId,

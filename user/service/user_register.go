@@ -8,6 +8,7 @@ import (
 	"douyin/user/infra/dal"
 	"douyin/user/infra/redis"
 	"errors"
+
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -34,6 +35,7 @@ func (s *UserRegisterService) CreateUser(req *userproto.CreateUserReq) (int64, e
 		//other error type
 		return 0, err
 	}
+
 	encryptedPassword, _ := bcrypt.GenerateFromPassword([]byte(req.UserAccount.Password), bcrypt.DefaultCost)
 	id, err := dal.CreateUser(s.ctx, req.UserAccount.Username, string(encryptedPassword))
 	redis.AddBloomKey(constant.UserInfoRedisPrefix, id)

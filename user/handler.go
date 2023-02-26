@@ -6,6 +6,8 @@ import (
 	"douyin/pkg/code"
 	"douyin/user/pack"
 	"douyin/user/service"
+
+	"github.com/dlclark/regexp2"
 )
 
 // UserServiceImpl implements the last service interface defined in the IDL.
@@ -17,6 +19,19 @@ func (s *UserServiceImpl) CreateUser(ctx context.Context, req *userproto.CreateU
 
 	if len(req.UserAccount.Username) == 0 || len(req.UserAccount.Password) == 0 || len(req.UserAccount.Username) > 32 || len(req.UserAccount.Password) > 32 {
 		resp.BaseResp = pack.BuildBaseResp(code.ParamErr)
+		return resp, nil
+	}
+
+	name_check := checkUsername(req.UserAccount.Username)
+	password_check := checkPassword(req.UserAccount.Password)
+	// "用户名应当使用字母,数字,下划线,减号,且长度4-32位"
+	// "密码应当包含大写字母,小写字母,数字,且长度5-32位"
+	if name_check == "" {
+		resp.BaseResp = pack.BuildBaseResp(code.UsernameCheckErr)
+		return resp, nil
+	}
+	if password_check == "" {
+		resp.BaseResp = pack.BuildBaseResp(code.PasswordCheckErr)
 		return resp, nil
 	}
 
@@ -162,4 +177,28 @@ func (s *UserServiceImpl) GetFriendList(ctx context.Context, req *userproto.GetF
 	resp.UserInfos = fans
 	resp.BaseResp = pack.BuildBaseResp(code.Success)
 	return resp, nil
+}
+
+func checkUsername(str string) string {
+	//expr := `^(?![0-9a-zA-Z]+$)(?![a-zA-Z!@#$%^&*]+$)(?![0-9!@#$%^&*]+$)[0-9A-Za-z!@#$%^&*]{8,16}$`
+	expr := `^[a-zA-Z0-9_-]{4,32}$`
+	reg, _ := regexp2.Compile(expr, 0)
+	m, _ := reg.FindStringMatch(str)
+	if m != nil {
+		res := m.String()
+		return res
+	}
+	return ""
+}
+
+func checkPassword(str string) string {
+	//expr := `^(?![0-9a-zA-Z]+$)(?![a-zA-Z!@#$%^&*]+$)(?![0-9!@#$%^&*]+$)[0-9A-Za-z!@#$%^&*]{8,16}$`
+	expr := `^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9]{5,32}$`
+	reg, _ := regexp2.Compile(expr, 0)
+	m, _ := reg.FindStringMatch(str)
+	if m != nil {
+		res := m.String()
+		return res
+	}
+	return ""
 }

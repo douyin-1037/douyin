@@ -15,6 +15,8 @@ const (
 	UserAlreadyExistErrCode   = 10005
 	UnauthorizedErrCode       = 10006
 	LoginFailedTooManyErrCode = 10007
+	UsernameCheckErrCode      = 10008
+	PasswordCheckErrCode      = 10009
 )
 
 type ErrNo struct {
@@ -43,6 +45,8 @@ var (
 	UserNotExistErr     = NewErrNo(UserNotExistErrCode, "User does not exists")
 	UserAlreadyExistErr = NewErrNo(UserAlreadyExistErrCode, "User already exists")
 	UnauthorizedErr     = NewErrNo(UnauthorizedErrCode, "JWT Token Unauthorized")
+	UsernameCheckErr    = NewErrNo(UsernameCheckErrCode, "User name should contain only letters, numbers, underscores, minus signs, and the length of 4-32 bits")
+	PasswordCheckErr    = NewErrNo(PasswordCheckErrCode, "Password should be composed of uppercase letters, lowercase letters, numbers, and the length of 5-32 digits")
 )
 
 // ConvertErr convert error to ErrNo

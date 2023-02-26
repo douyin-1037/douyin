@@ -35,3 +35,12 @@ Redis:
   ExpireTime: 24 #hours
   MaxRandAddTime: 1 #hours
   BloomOpen: false
+
+Pulsar:
+  URL: pulsar url
+  OperationTimeout: 30
+  ConnectionTimeout: 30
+
+MongoDB:
+  URl: mongodb url
+  DataBase: sensitive_words
