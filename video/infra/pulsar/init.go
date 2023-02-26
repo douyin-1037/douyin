@@ -10,11 +10,9 @@ import (
 )
 
 var (
-	ctx context.Context
-	//video_like producer
+	ctx = context.Background()
+	//like_video producer
 	p_like_video pulsar.Producer
-	//consumer
-	//c pulsar.Consumer
 
 	client pulsar.Client
 

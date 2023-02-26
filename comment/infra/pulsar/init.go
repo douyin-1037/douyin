@@ -10,8 +10,8 @@ import (
 )
 
 var (
-	ctx context.Context
-	//video_like producer
+	ctx = context.Background()
+	//comment producer
 	p_comment pulsar.Producer
 
 	CommentSchemaDef = "{\"type\":\"record\",\"name\":\"Comment\",\"namespace\":\"douyin_prod\"," +

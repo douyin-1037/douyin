@@ -10,8 +10,8 @@ import (
 )
 
 var (
-	ctx context.Context
-	//video_like producer
+	ctx = context.Background()
+	//message producer
 	p_create_message pulsar.Producer
 
 	CreateMessageSchemaDef = "{\"type\":\"record\",\"name\":\"CreateMessage\",\"namespace\":\"douyin_prod\"," +
