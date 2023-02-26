@@ -10,8 +10,8 @@ import (
 )
 
 var (
-	ctx context.Context
-	//video_like producer
+	ctx = context.Background()
+	//follow_user producer
 	p_follow_user pulsar.Producer
 
 	FollowUserSchemaDef = "{\"type\":\"record\",\"name\":\"FollowUser\",\"namespace\":\"douyin_prod\"," +
@@ -20,7 +20,7 @@ var (
 
 type FollowUserJSON struct {
 	UserID     int64 `json:"userId"`
-	FollowID   int64 `json:"followID"`
+	FollowID   int64 `json:"followId"`
 	ActionType int   `json:"actionType"`
 }
 
