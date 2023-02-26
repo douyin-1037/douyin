@@ -31,7 +31,6 @@ func (i *UserAppService) GetUser(ctx context.Context, appUserID int64, userId in
 }
 
 func (i *UserAppService) CreateUser(ctx context.Context, username string, password string) (userId int64, err error) {
-	//TODO implement me done
 	req := &userproto.CreateUserReq{
 		UserAccount: &userproto.UserAccount{
 			Username: username,
@@ -46,7 +45,6 @@ func (i *UserAppService) CreateUser(ctx context.Context, username string, passwo
 }
 
 func (i *UserAppService) CheckUser(ctx context.Context, username string, password string) (userId int64, err error) {
-	//TODO implement me
 	req := &userproto.CheckUserReq{
 		UserAccount: &userproto.UserAccount{
 			Username: username,
