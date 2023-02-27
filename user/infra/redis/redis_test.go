@@ -1,14 +1,17 @@
 package redis
 
 import (
+	"context"
 	"douyin/common/conf"
 	"douyin/common/constant"
 	"douyin/common/util"
 	"douyin/user/infra/redis/model"
+	"fmt"
 	"github.com/gomodule/redigo/redis"
 	. "github.com/smartystreets/goconvey/convey"
 	"strconv"
 	"testing"
+	"time"
 )
 
 func testInit() {
@@ -206,4 +209,38 @@ func deleteTestKey(keyId int64, prefix string) error {
 	key := prefix + strconv.FormatInt(keyId, 10)
 	_, err := redisConn.Do("del", key)
 	return err
+}
+
+func TestDistributedLock_TryLock(t *testing.T) {
+	testInit()
+	redisConn := redisPool.Get()
+	defer redisConn.Close()
+	lock := DistributedLock{
+		TTL:         60,
+		Key:         "testkey",
+		RandomValue: 10,
+	}
+	fmt.Println(lock.TryLock(redisConn))
+}
+
+func TestDistributedLock_Unlock(t *testing.T) {
+	testInit()
+	lock := DistributedLock{
+		TTL:         60,
+		Key:         "testkey",
+		RandomValue: 100,
+	}
+	fmt.Println(lock.Unlock())
+}
+
+func TestDistributedLock_Lock(t *testing.T) {
+	testInit()
+	lock := DistributedLock{
+		TTL:             60,
+		Key:             "testkey",
+		RandomValue:     100,
+		TryLockInterval: time.Duration(100),
+	}
+	ctx := context.Background()
+	fmt.Println(lock.Lock(ctx))
 }
