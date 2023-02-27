@@ -18,6 +18,8 @@ const (
 	LoginFailedTooManyErrCode = 10007
 	UsernameCheckErrCode      = 10008
 	PasswordCheckErrCode      = 10009
+	DistributedLockErrCode    = 10010
+	LockTimeOutErrCode        = 10011
 )
 
 type ErrNo struct {
@@ -48,6 +50,8 @@ var (
 	UnauthorizedErr     = NewErrNo(UnauthorizedErrCode, "JWT Token Unauthorized")
 	UsernameCheckErr    = NewErrNo(UsernameCheckErrCode, "User name should contain only letters, numbers, underscores, minus signs, and the length of 4-32 bits")
 	PasswordCheckErr    = NewErrNo(PasswordCheckErrCode, "Password should be composed of uppercase letters, lowercase letters, numbers, and the length of 5-32 digits")
+	DistributedLockErr  = NewErrNo(DistributedLockErrCode, "Lock err")
+	LockTimeOutErr      = NewErrNo(LockTimeOutErrCode, "Lock timeout err")
 )
 
 // ConvertErr convert error to ErrNo
