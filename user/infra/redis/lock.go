@@ -2,7 +2,6 @@ package redis
 
 import (
 	"context"
-	"douyin/common/constant"
 	"douyin/common/util"
 	"douyin/pkg/code"
 	"github.com/gomodule/redigo/redis"
@@ -105,12 +104,12 @@ func (l *DistributedLock) startWatchDog() {
 	}
 }
 
-func NewFollowKeyLock(userId int64) DistributedLock {
+func NewUserKeyLock(userId int64, prefix string) DistributedLock {
 	value, _ := util.GenSnowFlake(0)
 	deltTime := time.Duration(100)
 	watchDog := make(chan bool)
 	return DistributedLock{
-		Key:             constant.FollowRedisPrefix + strconv.FormatInt(userId, 10),
+		Key:             prefix + strconv.FormatInt(userId, 10),
 		RandomValue:     value,
 		TTL:             1,
 		TryLockInterval: deltTime,

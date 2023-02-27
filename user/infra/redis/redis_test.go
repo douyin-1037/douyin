@@ -226,9 +226,11 @@ func TestDistributedLock_TryLock(t *testing.T) {
 func TestDistributedLock_Unlock(t *testing.T) {
 	testInit()
 	lock := DistributedLock{
-		TTL:         60,
-		Key:         "testkey",
-		RandomValue: 100,
+		TTL:             60,
+		Key:             "testkey",
+		RandomValue:     100,
+		TryLockInterval: time.Duration(100),
+		watchDog:        make(chan bool),
 	}
 	fmt.Println(lock.Unlock())
 }
@@ -240,6 +242,7 @@ func TestDistributedLock_Lock(t *testing.T) {
 		Key:             "testkey",
 		RandomValue:     100,
 		TryLockInterval: time.Duration(100),
+		watchDog:        make(chan bool),
 	}
 	ctx := context.Background()
 	fmt.Println(lock.Lock(ctx))
