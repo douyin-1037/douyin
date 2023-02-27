@@ -3,9 +3,11 @@ package service
 import (
 	"context"
 	"douyin/code_gen/kitex_gen/userproto"
+	"douyin/common/constant"
 	"douyin/user/infra/dal"
 	"douyin/user/infra/pulsar"
 	"douyin/user/infra/redis"
+	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/pkg/errors"
 	"gorm.io/gorm"
 )
@@ -34,11 +36,20 @@ func (s *UnFollowUserService) UnFollowUser(req *userproto.UnFollowUserReq) error
 		redis.AddFollowList(userId, followIdDalList)
 	}
 	if exist, _ := redis.IsFanKeyExist(followId); exist == false {
-		fanIdDalList, err := dal.GetFollowList(s.ctx, followId)
-		if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
-			return err
+		lock := redis.NewUserKeyLock(userId, constant.FanRedisPrefix)
+		err := lock.Lock(s.ctx)
+		if err != nil {
+			klog.Error(err)
 		}
-		redis.AddFollowList(followId, fanIdDalList)
+		// DCL
+		if existDC, _ := redis.IsFollowKeyExist(userId); existDC == false {
+			fanIdDalList, err := dal.GetFollowList(s.ctx, followId)
+			if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+				return err
+			}
+			redis.AddFollowList(followId, fanIdDalList)
+		}
+		lock.Unlock()
 	}
 
 	err := redis.DeleteRelation(userId, followId)
