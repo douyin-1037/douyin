@@ -11,6 +11,7 @@ import (
 	"douyin/gateway/rpc"
 
 	"github.com/cloudwego/kitex/pkg/klog"
+	"github.com/gin-contrib/pprof"
 )
 
 func Init() {
@@ -32,6 +33,9 @@ func main() {
 		gin.SetMode(gin.ReleaseMode)
 	}
 	register(r)
+	if conf.Server.PprofSwitch == "on" {
+		pprof.Register(r)
+	}
 	if err := r.Run(conf.Server.HttpPort); err != nil {
 		klog.Fatal(err)
 	}
