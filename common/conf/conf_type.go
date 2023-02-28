@@ -20,6 +20,7 @@ type ServerConfig struct {
 	Timeout            int
 	EtcdAddress        string
 	FeedCount          int64
+	PprofSwitch        string
 }
 
 type COSConfig struct {
