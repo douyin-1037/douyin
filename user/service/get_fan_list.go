@@ -21,7 +21,7 @@ func NewGetFanListService(ctx context.Context) *GetFanListService {
 
 func (s *GetFanListService) GetFanList(appUserId int64, userId int64) ([]*userproto.UserInfo, error) {
 
-	fanIdList, redisErr := redis.GetFollowList(userId)
+	fanIdList, redisErr := redis.GetFanList(userId)
 	if redisErr != nil || fanIdList == nil || len(fanIdList) <= 0 {
 		klog.Error("get fan list Redis missed ", redisErr)
 	} else {

@@ -90,9 +90,7 @@ func (l *DistributedLock) startWatchDog() {
 		select {
 		case <-ticker.C:
 			// 延长锁的过期时间
-			_, cancel := context.WithTimeout(context.Background(), delteTime*2)
 			ok, err := redis.Int(redisConn.Do("expire", l.Key, l.TTL))
-			cancel()
 			// 异常或锁已经不存在则不再续期
 			if (err != nil) || ok == 0 {
 				return
