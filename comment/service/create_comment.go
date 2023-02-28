@@ -78,8 +78,7 @@ func (s *CreateCommentService) CreateComment(userId int64, videoId int64, conten
 	//errChannel := make(chan error)
 	//go func(ch chan error, ctx context.Context,
 	//	userId int64, videoId int64, content string, commentUUID int64, createTime int64) {
-	//	// 很笨的方法 context替代消息队列
-	//	//TODO MQ
+	//	// 很笨的方法 context替代消息队列 后续用MQ改进
 	//	subCtx, cancel := context.WithCancel(context.Background())
 	//	defer cancel()
 	//	go func(subCtx context.Context, ch chan error, ctx context.Context,

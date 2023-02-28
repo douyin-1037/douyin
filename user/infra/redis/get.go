@@ -2,8 +2,10 @@ package redis
 
 import (
 	"douyin/common/constant"
+	"douyin/pkg/mapreduce"
 	"douyin/user/infra/redis/model"
 	"encoding/json"
+	"errors"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/gomodule/redigo/redis"
 	"strconv"
@@ -95,45 +97,107 @@ func GetIsFollowById(userId int64, followId int64) (bool, error) {
 	return true, nil
 }
 
+// GetUserInfo Use mapreduce to get different fields of user information in parallel
 func GetUserInfo(userId int64) (*model.UserRedis, error) {
-	redisConn := redisPool.Get()
-	defer redisConn.Close()
 
-	key := constant.UserInfoRedisPrefix + strconv.FormatInt(userId, 10)
-	result, err := redis.Bytes(redisConn.Do("get", key))
-	if err != nil {
-		return nil, err
-	}
 	userInfo := new(model.UserInfoRedis)
-	err = json.Unmarshal(result, userInfo)
+	var followCount, fanCount, workCount, favoriteCount int64
+	cntKey := constant.UserInfoCntRedisPrefix + strconv.FormatInt(userId, 10)
+	var err error
+	expireTime := expireTimeUtil.GetRandTime()
+	err = mapreduce.Finish(func() error {
+		redisConn := redisPool.Get()
+		defer redisConn.Close()
+
+		key := constant.UserInfoRedisPrefix + strconv.FormatInt(userId, 10)
+		result, err := redis.Bytes(redisConn.Do("get", key))
+		if err != nil {
+			if errors.Is(err, redis.ErrNil) {
+				return nil
+			}
+			klog.Error("get user info err:", err)
+			return err
+		}
+		err = json.Unmarshal(result, userInfo)
+		if err != nil {
+			return err
+		}
+		_, err = redisConn.Do("expire", key, expireTime)
+		if err != nil {
+			klog.Error(err)
+		}
+		return nil
+	}, func() error {
+		redisConn := redisPool.Get()
+		defer redisConn.Close()
+
+		var cntErr error
+		followCount, cntErr = redis.Int64(redisConn.Do("hget",
+			cntKey, constant.FollowCountRedisPrefix))
+		if cntErr != nil {
+			if errors.Is(err, redis.ErrNil) {
+				return nil
+			}
+			return cntErr
+		}
+		return nil
+	}, func() error {
+		redisConn := redisPool.Get()
+		defer redisConn.Close()
+
+		var cntErr error
+		fanCount, cntErr = redis.Int64(redisConn.Do("hget",
+			cntKey, constant.FanCountRedisPrefix))
+		if cntErr != nil {
+			if errors.Is(err, redis.ErrNil) {
+				return nil
+			}
+			return cntErr
+		}
+		return nil
+	}, func() error {
+		redisConn := redisPool.Get()
+		defer redisConn.Close()
+
+		var cntErr error
+		workCount, cntErr = redis.Int64(redisConn.Do("hget",
+			cntKey, constant.WorkCountRedisPrefix))
+		if cntErr != nil {
+			if errors.Is(err, redis.ErrNil) {
+				return nil
+			}
+			return cntErr
+		}
+		return nil
+	}, func() error {
+		redisConn := redisPool.Get()
+		defer redisConn.Close()
+
+		var cntErr error
+		favoriteCount, cntErr = redis.Int64(redisConn.Do("hget",
+			cntKey, constant.FavoriteCountRedisPrefix))
+		if cntErr != nil {
+			if errors.Is(err, redis.ErrNil) {
+				return nil
+			}
+			return cntErr
+		}
+		return nil
+	})
 	if err != nil {
 		return nil, err
-	}
-
-	expireTime := expireTimeUtil.GetRandTime()
-	_, err = redisConn.Do("expire", key, expireTime)
-	if err != nil {
-		klog.Error(err)
-	}
-
-	cntKey := constant.UserInfoCntRedisPrefix + strconv.FormatInt(userId, 10)
-	cnt, cntErr := redis.Int64s(redisConn.Do("hmget",
-		cntKey, constant.FollowCountRedisPrefix, constant.FanCountRedisPrefix,
-		constant.WorkCountRedisPrefix, constant.FavoriteCountRedisPrefix))
-	if cntErr != nil {
-		return nil, cntErr
-	}
-	if cnt == nil || len(cnt) == 0 {
-		return nil, redis.ErrNil
 	}
 	user := &model.UserRedis{
 		UserId:      userId,
 		UserName:    userInfo.UserName,
-		FollowCnt:   cnt[0],
-		FanCnt:      cnt[1],
-		WorkCnt:     cnt[2],
-		FavoriteCnt: cnt[3],
+		FollowCnt:   followCount,
+		FanCnt:      fanCount,
+		WorkCnt:     workCount,
+		FavoriteCnt: favoriteCount,
 	}
+	redisConn := redisPool.Get()
+	defer redisConn.Close()
+
 	redisConn.Do("expire", cntKey, expireTime)
 
 	return user, nil

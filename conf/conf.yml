@@ -8,6 +8,7 @@ Server:
   Timeout: 86400 #seconds
   EtcdAddress: 127.0.0.1:2379
   FeedCount: 5
+  PprofSwitch: off
 
 Database:
   DBType: mysql

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"strconv"
 )
 
 const (
@@ -41,7 +42,7 @@ func (e ErrNo) WithMessage(msg string) ErrNo {
 
 var (
 	Success             = NewErrNo(SuccessCode, "Success")
-	ServiceErr          = NewErrNo(ServiceErrCode, "Service is unable to start successfully")
+	ServiceErr          = NewErrNo(ServiceErrCode, "Service is unable to run successfully")
 	ParamErr            = NewErrNo(ParamErrCode, "Wrong Parameter has been given")
 	LoginErr            = NewErrNo(LoginErrCode, "Wrong username or password")
 	UserNotExistErr     = NewErrNo(UserNotExistErrCode, "User does not exists")
@@ -70,4 +71,8 @@ func ConvertErr(err error) ErrNo {
 
 func (e ErrNo) StatusCode() int {
 	return http.StatusOK
+}
+
+func NewLoginFailedTooManyErr(minute int) ErrNo {
+	return ErrNo{LoginFailedTooManyErrCode, "Login verification failed too many times, please try again after " + strconv.Itoa(minute) + " minutes!"}
 }
