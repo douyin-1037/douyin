@@ -21,7 +21,7 @@ type DistributedLock struct {
 
 func (l *DistributedLock) TryLock(redisConn redis.Conn) error {
 
-	_, err := redis.String(redisConn.Do("set", l.Key, l.RandomValue, "ex", l.TTL, "nx"))
+	_, err := redis.String(redisConn.Do("set", l.Key, l.RandomValue, "px", l.TTL, "nx"))
 
 	// 加锁失败
 	if err == redis.ErrNil {
@@ -81,7 +81,8 @@ func (l *DistributedLock) Lock(ctx context.Context) error {
 }
 
 func (l *DistributedLock) startWatchDog() {
-	delteTime := time.Duration(l.TTL / 3)
+	t := l.TTL * 500
+	delteTime := time.Duration(t)
 	ticker := time.NewTicker(delteTime)
 	defer ticker.Stop()
 	redisConn := redisPool.Get()
@@ -109,7 +110,7 @@ func NewUserKeyLock(userId int64, prefix string) DistributedLock {
 	return DistributedLock{
 		Key:             prefix + strconv.FormatInt(userId, 10),
 		RandomValue:     value,
-		TTL:             1,
+		TTL:             500,
 		TryLockInterval: deltTime,
 		watchDog:        watchDog,
 	}
