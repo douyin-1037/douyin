@@ -87,15 +87,14 @@ func TestCommentGorm(t *testing.T) {
 //			fmt.Println(err)
 //		}
 //	}
-//
-//	func TestDeleteComment(t *testing.T) {
-//		testInit()
-//		var commentID int64 = 1
-//		err := DeleteComment(context.Background(), commentID)
-//		if err != nil {
-//			fmt.Println(err)
-//		}
-//	}
+func TestDeleteComment(t *testing.T) {
+	testInit()
+	var commentID int64 = 1243
+	err := DeleteComment(context.Background(), commentID, 23)
+	if err != nil {
+		fmt.Println(err)
+	}
+}
 func TestGetCommentList(t *testing.T) {
 	testInit()
 	var videoID int64 = 3
