@@ -4,6 +4,7 @@ import (
 	"context"
 	"douyin/common/constant"
 	"douyin/video/infra/dal"
+	"douyin/video/infra/redis"
 	"github.com/apache/pulsar-client-go/pulsar"
 	"github.com/cloudwego/kitex/pkg/klog"
 )
@@ -30,23 +31,29 @@ func LikeVideoConsume(ctx context.Context, client pulsar.Client) error {
 		msg := cm.Message
 		err = msg.GetSchemaValue(&likeVideoJS)
 		if err != nil {
-			return err
+			klog.Error(err)
 		}
 		err = consumer.Ack(msg)
 		if err != nil {
-			return err
+			klog.Error(err)
 		}
 		switch likeVideoJS.ActionType {
 		case constant.LikeVideo:
 			if err := dal.LikeVideo(ctx, likeVideoJS.UserID, likeVideoJS.VideoID); err != nil {
 				klog.Error("mysql error:", err)
-				return err
+				redis.DeleteLikeKey(likeVideoJS.UserID, likeVideoJS.VideoID)
+				if err != nil {
+					klog.Error("del redis key err", err)
+				}
 			}
 			break
 		case constant.UnLikeVideo:
 			if err := dal.UnLikeVideo(ctx, likeVideoJS.UserID, likeVideoJS.VideoID); err != nil {
 				klog.Error("mysql error:", err)
-				return err
+				redis.DeleteLikeKey(likeVideoJS.UserID, likeVideoJS.VideoID)
+				if err != nil {
+					klog.Error("del redis key err", err)
+				}
 			}
 			break
 		}

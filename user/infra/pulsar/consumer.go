@@ -4,6 +4,7 @@ import (
 	"context"
 	"douyin/common/constant"
 	"douyin/user/infra/dal"
+	"douyin/user/infra/redis"
 
 	"github.com/apache/pulsar-client-go/pulsar"
 	"github.com/cloudwego/kitex/pkg/klog"
@@ -31,23 +32,29 @@ func FollowUserConsume(ctx context.Context, client pulsar.Client) error {
 		msg := cm.Message
 		err = msg.GetSchemaValue(&followUserJS)
 		if err != nil {
-			return err
+			klog.Error(err)
 		}
 		err = consumer.Ack(msg)
 		if err != nil {
-			return err
+			klog.Error(err)
 		}
 		switch followUserJS.ActionType {
 		case constant.FollowUser:
 			if err := dal.FollowUser(ctx, followUserJS.UserID, followUserJS.FollowID); err != nil {
 				klog.Error("mysql error:", err)
-				return err
+				err = redis.DeleteRelationKey(followUserJS.UserID, followUserJS.FollowID)
+				if err != nil {
+					klog.Error("del redis key err", err)
+				}
 			}
 			break
 		case constant.UnFollowUser:
 			if err := dal.UnFollowUser(ctx, followUserJS.UserID, followUserJS.FollowID); err != nil {
 				klog.Error("mysql error:", err)
-				return err
+				err = redis.DeleteRelationKey(followUserJS.UserID, followUserJS.FollowID)
+				if err != nil {
+					klog.Error("del redis key err", err)
+				}
 			}
 			break
 		}
