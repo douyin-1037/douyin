@@ -3,6 +3,7 @@ package pulsar
 import (
 	"context"
 	"douyin/comment/infra/dal"
+	"douyin/comment/infra/redis"
 	"douyin/common/constant"
 	"fmt"
 	"github.com/apache/pulsar-client-go/pulsar"
@@ -31,24 +32,30 @@ func CommentConsume(ctx context.Context, client pulsar.Client) error {
 		msg := cm.Message
 		err = msg.GetSchemaValue(&commentJS)
 		if err != nil {
-			return err
+			klog.Error(err)
 		}
 		err = consumer.Ack(msg)
 		if err != nil {
-			return err
+			klog.Error(err)
 		}
 		fmt.Println("CommentConsume", commentJS)
 		switch commentJS.ActionType {
 		case constant.CreateComment:
 			if _, err := dal.CreateComment(ctx, commentJS.UserId, commentJS.VideoId, commentJS.Content, commentJS.CommentUUID, commentJS.CreateTime); err != nil {
 				klog.Error("mysql error:", err)
-				return err
+				err = redis.DeleteCommentKey(commentJS.VideoId, commentJS.CommentUUID)
+				if err != nil {
+					klog.Error("redis del key err", err)
+				}
 			}
 			break
 		case constant.DeleteComment:
 			if err := dal.DeleteComment(ctx, commentJS.CommentUUID, commentJS.VideoId); err != nil {
 				klog.Error("mysql error:", err)
-				return err
+				err = redis.DeleteCommentKey(commentJS.VideoId, commentJS.CommentUUID)
+				if err != nil {
+					klog.Error("redis del key err", err)
+				}
 			}
 			break
 		}

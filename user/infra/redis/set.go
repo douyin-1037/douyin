@@ -337,3 +337,31 @@ func Lock(username string) error {
 	}
 	return nil
 }
+
+func DeleteRelationKey(userId int64, toUserId int64) error {
+	redisConn := redisPool.Get()
+	defer redisConn.Close()
+	//follow:userId
+	key := constant.FollowRedisPrefix + strconv.FormatInt(userId, 10)
+	_, err := redisConn.Do("del", key)
+	if err != nil {
+		return err
+	}
+	key = constant.FanRedisPrefix + strconv.FormatInt(toUserId, 10)
+	_, err = redisConn.Do("del", key)
+	if err != nil {
+		return err
+	}
+
+	key = constant.UserInfoCntRedisPrefix + strconv.FormatInt(userId, 10)
+	_, err = redisConn.Do("del", key)
+	if err != nil {
+		return err
+	}
+	key = constant.UserInfoCntRedisPrefix + strconv.FormatInt(toUserId, 10)
+	_, err = redisConn.Do("del", key)
+	if err != nil {
+		return err
+	}
+	return err
+}

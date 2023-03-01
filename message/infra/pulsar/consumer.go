@@ -4,6 +4,7 @@ import (
 	"context"
 	"douyin/common/constant"
 	"douyin/message/infra/dal"
+	"douyin/message/infra/redis"
 	"github.com/apache/pulsar-client-go/pulsar"
 	"github.com/cloudwego/kitex/pkg/klog"
 )
@@ -31,17 +32,18 @@ func CreateMessageConsume(ctx context.Context, client pulsar.Client) error {
 		err = msg.GetSchemaValue(&createMessageJS)
 		if err != nil {
 			klog.Error(err)
-			return err
 		}
 		err = consumer.Ack(msg)
 		if err != nil {
 			klog.Error(err)
-			return err
 		}
 
 		if err := dal.CreateMessage(ctx, createMessageJS.UserId, createMessageJS.ToUserId, createMessageJS.Content, createMessageJS.CreateTime); err != nil {
 			klog.Error("mysql error:", err)
-			return err
+			err = redis.DeleteMessageKey(createMessageJS.UserId, createMessageJS.ToUserId)
+			if err != nil {
+				klog.Error("del redis key err", err)
+			}
 		}
 	}
 
