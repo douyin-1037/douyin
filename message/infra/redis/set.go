@@ -83,3 +83,16 @@ func AddMessageLatestTime(userId int64, toUserId int64, latestTime int64) error 
 	_, err := redisConn.Do("hset", key, toUserId, latestTime)
 	return err
 }
+
+func DeleteMessageKey(userId int64, toUserId int64) error {
+	redisConn := redisPool.Get()
+	defer redisConn.Close()
+	var key string
+	if userId < toUserId {
+		key = constant.MessageRedisPrefix + strconv.FormatInt(userId, 10) + ":" + strconv.FormatInt(toUserId, 10)
+	} else {
+		key = constant.MessageRedisPrefix + strconv.FormatInt(toUserId, 10) + ":" + strconv.FormatInt(userId, 10)
+	}
+	_, err := redisConn.Do("del", key)
+	return err
+}

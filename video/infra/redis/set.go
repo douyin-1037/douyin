@@ -258,3 +258,26 @@ func AddBloomKey(prefix string, keyId int64) error {
 	}
 	return nil
 }
+
+func DeleteLikeKey(userId int64, videoId int64) error {
+	redisConn := redisPool.Get()
+	defer redisConn.Close()
+
+	key := constant.LikeRedisPrefix + strconv.FormatInt(userId, 10)
+	_, err := redisConn.Do("del", key)
+	if err != nil {
+		return err
+	}
+	key = constant.VideoInfoCntRedisPrefix + strconv.FormatInt(videoId, 10)
+	_, err = redisConn.Do("del", key)
+	if err != nil {
+		return err
+	}
+	key = constant.UserInfoCntRedisPrefix + strconv.FormatInt(userId, 10)
+	_, err = redisConn.Do("del", key)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

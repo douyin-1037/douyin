@@ -145,3 +145,25 @@ func incrCount(redisConn redis.Conn, cntKey string, filed string, v int, expireT
 	}
 	return nil
 }
+
+func DeleteCommentKey(videoId int64, commentId int64) error {
+	redisConn := redisPool.Get()
+	defer redisConn.Close()
+
+	key := constant.CommentRedisPrefix + strconv.FormatInt(videoId, 10)
+	_, err := redisConn.Do("del", key)
+	if err != nil {
+		return err
+	}
+	key = constant.CommentInfoRedisPrefix + strconv.FormatInt(commentId, 10)
+	_, err = redisConn.Do("del", key)
+	if err != nil {
+		return err
+	}
+	key = constant.VideoInfoCntRedisPrefix + strconv.FormatInt(videoId, 10)
+	_, err = redisConn.Do("del", key)
+	if err != nil {
+		return err
+	}
+	return nil
+}
